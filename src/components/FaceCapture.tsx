@@ -184,7 +184,7 @@ const FaceCapture = () => {
               mirrored
               className="absolute z-10 h-full w-full object-cover"
               onUserMedia={handleUserMedia}
-              videoConstraints={{ width: 640, height: 480 }}
+              videoConstraints={{ width: 1280, height: 720 }}
             />
             <canvas
               ref={canvasRef}
