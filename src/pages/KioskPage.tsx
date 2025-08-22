@@ -1,3 +1,9 @@
+import FaceCapture from '../components/FaceCapture';
+
 export default function KioskPage() {
-  return <h1 className="text-3xl font-bold">키오스크 화면</h1>;
+  return (
+    <div className="flex min-h-screen flex-col items-center justify-center">
+      <FaceCapture />
+    </div>
+  );
 }
