@@ -4,9 +4,9 @@
   "version": "0.0.0",
   "type": "module",
   "scripts": {
-    "dev": "vite",
+    "dev": "pnpm run prebuild && vite",
     "prebuild": "rm -rf public/models && mkdir -p public/models && cp node_modules/@mediapipe/tasks-vision/wasm/* public/models && curl -L https://storage.googleapis.com/mediapipe-models/face_landmarker/face_landmarker/float16/1/face_landmarker.task -o public/models/face_landmarker.task",
-    "build": "pnpm prebuild && tsc -b && vite build",
+    "build": "pnpm run prebuild && tsc -b && vite build",
     "lint": "eslint .",
     "preview": "vite preview"
   },
