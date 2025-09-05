@@ -17,6 +17,9 @@ importers:
       '@tanstack/react-query':
         specifier: ^5.85.5
         version: 5.85.5(react@19.1.1)
+      '@toss/ky':
+        specifier: ^1.2.1
+        version: 1.2.1
       react:
         specifier: ^19.1.1
         version: 19.1.1
@@ -599,6 +602,9 @@ packages:
     resolution: {integrity: sha512-/X4EFNcnPiSs8wM2v+b6DqS5mmGeuJQvxBglmDxl6ZQb5V26ouD2SJYAcC3VjbNwqhY2zjxVD15rDA5nGbMn3A==}
     peerDependencies:
       react: ^18 || ^19
+
+  '@toss/ky@1.2.1':
+    resolution: {integrity: sha512-72qJyUVyyNC7d4EOKVyjPQH3UH3GnVSAo3mM+3vqGVTgh84vPPW3KPFvrV/DZe33dHMygCUsmIhnP9G5T5n9AQ==}
 
   '@types/estree@1.0.8':
     resolution: {integrity: sha512-dWHzHa2WqEXI/O1E9OjrocMTKJl2mSrEolh1Iomrv6U+JuNwaHXsXx9bLu5gG7BUWFIN0skIQJQ/L1rIex4X6w==}
@@ -1676,6 +1682,8 @@ snapshots:
     dependencies:
       '@tanstack/query-core': 5.85.5
       react: 19.1.1
+
+  '@toss/ky@1.2.1': {}
 
   '@types/estree@1.0.8': {}
 

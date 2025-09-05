@@ -1,19 +1,34 @@
 import { useRef, useEffect, useState, useCallback } from 'react';
 import Webcam from 'react-webcam';
 import { FaceLandmarker, FilesetResolver } from '@mediapipe/tasks-vision';
+import { useMutation } from '@tanstack/react-query';
+import { httpAkool } from '../api/akoolApi';
+
+// --- API 요청 타입 정의 ---
+// Akool API 문서에 따라 응답 타입을 정의합니다. (예시)
+interface AkoolApiResponse {
+  job_id: string;
+  status: string;
+  // ... 기타 응답 필드
+}
+
+// --- 유틸리티 함수 ---
+// 데이터 URL을 Blob 객체로 변환하는 함수
+const dataUrlToBlob = async (dataUrl: string): Promise<Blob> => {
+  const res = await fetch(dataUrl);
+  return await res.blob();
+};
 
 // --- 컴포넌트 스타일 설정 ---
-// 이 값을 변경하여 컴포넌트의 전체적인 '보이는' 크기를 조절하세요. 내부 비율은 모두 유지됩니다.
-const COMPONENT_SIZE_CLASS = 'max-w-lg'; // 예: 'max-w-md', 'max-w-xl', 'max-w-[500px]'
+const COMPONENT_SIZE_CLASS = 'max-w-lg';
 
 // --- 가이드라인 설정 ---
-// 가이드라인 원의 직경이 보이는 영역 높이의 몇 퍼센트를 차지할지 결정합니다. (0.0 ~ 1.0)
-const GUIDELINE_DIAMETER_RATIO = 0.5; // 50%
+const GUIDELINE_DIAMETER_RATIO = 0.5;
 
 const FACE_ALIGNMENT_CONFIG = {
-  MIN_FACE_SCALE: 0.6, // 얼굴이 원 안에 최소 얼마나 채워져야 하는가
-  MAX_FACE_SCALE: 1.0, // 얼굴이 원 안에 최대 얼마나 채워져야 하는가
-  CENTER_OFFSET_THRESHOLD: 0.1, // 중앙에서 얼마나 벗어나도 되는가 (10%)
+  MIN_FACE_SCALE: 0.6,
+  MAX_FACE_SCALE: 1.0,
+  CENTER_OFFSET_THRESHOLD: 0.1,
 };
 
 const FaceCapture = () => {
@@ -30,6 +45,36 @@ const FaceCapture = () => {
   const [userMessage, setUserMessage] = useState(
     '얼굴 인식 모델을 불러오는 중...'
   );
+
+  // Akool API 호출을 위한 useMutation 설정
+  const akoolApiMutation = useMutation<
+    AkoolApiResponse,
+    Error,
+    { imageBlob: Blob }
+  >({
+    mutationFn: async ({ imageBlob }) => {
+      const formData = new FormData();
+      // Akool API 문서에 명시된 파라미터 이름으로 변경해야 합니다.
+      // 예: 'source_image', 'face_image' 등
+      formData.append('face_image', imageBlob, 'captured_face.jpg');
+      // 다른 파라미터가 있다면 함께 추가합니다.
+      // formData.append('target_video', videoFile);
+
+      // httpAkool 클라이언트를 사용하여 API 호출
+      // 엔드포인트 URL은 Akool 문서에 따라 수정해야 합니다. (예: 'face/swap')
+      return httpAkool.post<AkoolApiResponse>('face/swap', formData);
+    },
+    onSuccess: (data) => {
+      console.log('Akool API 응답:', data);
+      setUserMessage('이미지 전송 성공!');
+      // 성공 후 다음 단계로 넘어가는 로직 (예: 페이지 이동)
+      // navigate(`/result/${data.job_id}`);
+    },
+    onError: (error) => {
+      console.error('Akool API 에러:', error);
+      setUserMessage(`에러 발생: ${error.message}`);
+    },
+  });
 
   useEffect(() => {
     const createFaceLandmarker = async () => {
@@ -54,11 +99,23 @@ const FaceCapture = () => {
   }, []);
 
   useEffect(() => {
-    if (capturedImage) setUserMessage('촬영된 사진');
-    else if (!modelsLoaded) setUserMessage('얼굴 인식 모델을 불러오는 중...');
-    else if (!isWebcamReady) setUserMessage('카메라를 준비하는 중...');
-    else setUserMessage('얼굴을 가이드라인에 맞춰주세요');
-  }, [modelsLoaded, isWebcamReady, capturedImage]);
+    if (akoolApiMutation.isPending) {
+      setUserMessage('이미지를 서버로 전송하는 중...');
+    } else if (capturedImage) {
+      setUserMessage('이 사진을 사용하시겠습니까?');
+    } else if (!modelsLoaded) {
+      setUserMessage('얼굴 인식 모델을 불러오는 중...');
+    } else if (!isWebcamReady) {
+      setUserMessage('카메라를 준비하는 중...');
+    } else {
+      setUserMessage('얼굴을 가이드라인에 맞춰주세요');
+    }
+  }, [
+    modelsLoaded,
+    isWebcamReady,
+    capturedImage,
+    akoolApiMutation.isPending,
+  ]);
 
   const predictWebcam = useCallback(() => {
     if (
@@ -128,9 +185,13 @@ const FaceCapture = () => {
             faceScale < FACE_ALIGNMENT_CONFIG.MAX_FACE_SCALE
           ) {
             faceAligned = true;
-            setUserMessage('준비 완료! 촬영 버튼을 누르세요.');
+            if (!capturedImage && !akoolApiMutation.isPending) {
+              setUserMessage('준비 완료! 촬영 버튼을 누르세요.');
+            }
           } else {
-            setUserMessage('얼굴을 가이드라인에 맞춰주세요');
+            if (!capturedImage && !akoolApiMutation.isPending) {
+              setUserMessage('얼굴을 가이드라인에 맞춰주세요');
+            }
           }
         } else {
           setDebugInfo('얼굴이 중앙에 오도록 조절해주세요.');
@@ -159,7 +220,7 @@ const FaceCapture = () => {
     }
 
     animationFrameId.current = requestAnimationFrame(predictWebcam);
-  }, [setUserMessage]);
+  }, [setUserMessage, capturedImage, akoolApiMutation.isPending]);
 
   useEffect(() => {
     if (modelsLoaded && isWebcamReady && !capturedImage) {
@@ -197,10 +258,21 @@ const FaceCapture = () => {
     }
   };
 
-  const handleRetake = () => setCapturedImage(null);
-  const handleUsePhoto = () => {
-    if (capturedImage)
-      console.log('Using photo:', capturedImage.substring(0, 30) + '...');
+  const handleRetake = () => {
+    setCapturedImage(null);
+    akoolApiMutation.reset(); // 이전 API 호출 상태 초기화
+  };
+
+  const handleUsePhoto = async () => {
+    if (capturedImage) {
+      try {
+        const imageBlob = await dataUrlToBlob(capturedImage);
+        akoolApiMutation.mutate({ imageBlob });
+      } catch (error) {
+        console.error('이미지 변환 실패:', error);
+        setUserMessage('이미지 처리 중 오류가 발생했습니다.');
+      }
+    }
   };
 
   return (
@@ -241,21 +313,28 @@ const FaceCapture = () => {
             </div>
           </>
         )}
+        {akoolApiMutation.isPending && (
+          <div className="absolute inset-0 z-30 flex items-center justify-center bg-black bg-opacity-50">
+            <div className="h-16 w-16 animate-spin rounded-full border-8 border-t-indigo-500 border-white"></div>
+          </div>
+        )}
       </div>
       <div className="mt-6 flex w-full justify-center space-x-4">
         {capturedImage ? (
           <>
             <button
               onClick={handleRetake}
-              className="w-40 rounded-lg bg-gray-500 px-6 py-3 text-lg font-bold text-white transition-all hover:bg-gray-400"
+              className="w-40 rounded-lg bg-gray-500 px-6 py-3 text-lg font-bold text-white transition-all hover:bg-gray-400 disabled:cursor-not-allowed disabled:opacity-50"
+              disabled={akoolApiMutation.isPending}
             >
               다시 찍기
             </button>
             <button
               onClick={handleUsePhoto}
-              className="w-40 rounded-lg bg-green-600 px-6 py-3 text-lg font-bold text-white transition-all hover:bg-green-500"
+              className="w-40 rounded-lg bg-green-600 px-6 py-3 text-lg font-bold text-white transition-all hover:bg-green-500 disabled:cursor-not-allowed disabled:opacity-50"
+              disabled={akoolApiMutation.isPending}
             >
-              사진 사용
+              {akoolApiMutation.isPending ? '전송 중...' : '사진 사용'}
             </button>
           </>
         ) : (
