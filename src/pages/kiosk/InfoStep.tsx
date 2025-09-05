@@ -1,12 +1,12 @@
-import { useState } from 'react';
 import { RadioGroup } from '../../components/ui/RadioGroup';
 import Arrowleft from '../../assets/icons/arrow-narrow-left.svg?react';
 import ArrowRighgt from '../../assets/icons/arrow-narrow-right.svg?react';
 import { Link } from 'react-router-dom';
 import { ROUTER_PATH } from '../../router';
+import { useKiosk } from '../../contexts/KioskContext';
+
 const InfoStep = () => {
-  const [sexGroup, setSexGroup] = useState<string | null>('male');
-  const [ageGroup, setAgeGroup] = useState<string | null>('20');
+  const { sexGroup, setSexGroup, ageGroup, setAgeGroup } = useKiosk();
 
   return (
     <div className="flex h-full flex-col  py-[130px] px-20">
@@ -29,7 +29,7 @@ const InfoStep = () => {
 
       <section className="pb-40">
         <h2 className="pb-15 text-center text-white text-5xl font-semibold">
-          1. 체험하실 성별을 선택해 주세요.
+          2. 체험하실 연령대를 선택해 주세요.
         </h2>
         <RadioGroup
           name="ageGroup"

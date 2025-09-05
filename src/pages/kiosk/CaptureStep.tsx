@@ -1,7 +1,11 @@
 import FaceCapture from '../../components/kiosk/FaceCapture';
+import { useKiosk } from '../../contexts/KioskContext';
 // import { useNavigate } from 'react-router-dom';
 
 const CaptureStep = () => {
+  const { sexGroup, ageGroup } = useKiosk();
+  console.log('Selected Sex:', sexGroup);
+  console.log('Selected Age:', ageGroup);
   // const navigate = useNavigate();
 
   // TODO: FaceCapture 컴포넌트에서 사진 전송 성공 시 다음 페이지로 이동하는 로직 필요

@@ -1,6 +1,7 @@
 import { Outlet, useLocation } from 'react-router-dom';
 import { ROUTER_PATH } from '../router';
 import KioskHeader from '../components/kiosk/KioskHeader';
+import { KioskProvider } from '../contexts/KioskContext';
 
 const KioskPage = () => {
   const location = useLocation();
@@ -22,7 +23,7 @@ const KioskPage = () => {
     // 배경 이미지를 전체 화면에 적용합니다.
     <main className="bg-[url('/src/assets/images/kiosk/kiosk-bg.png')]  bg-contain bg-no-repeat bg-center min-h-screen flex items-center justify-center">
       <div className="grid w-[1080px] h-[1920px] mx-auto border-l border-r border-gray-300">
-        {layoutRenderer()}
+        <KioskProvider>{layoutRenderer()}</KioskProvider>
       </div>
     </main>
   );
