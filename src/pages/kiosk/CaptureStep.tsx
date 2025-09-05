@@ -1,4 +1,4 @@
-import FaceCapture from '../../components/FaceCapture';
+import FaceCapture from '../../components/kiosk/FaceCapture';
 // import { useNavigate } from 'react-router-dom';
 
 const CaptureStep = () => {

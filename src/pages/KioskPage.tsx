@@ -1,13 +1,30 @@
-import { Outlet } from 'react-router-dom';
+import { Outlet, useLocation } from 'react-router-dom';
+import { ROUTER_PATH } from '../router';
+import KioskHeader from '../components/kiosk/KioskHeader';
 
 const KioskPage = () => {
+  const location = useLocation();
+  const layoutRenderer = () => {
+    if (location.pathname === ROUTER_PATH.KIOSK) {
+      return <Outlet />;
+    } else {
+      return (
+        <div className="h-full ">
+          <KioskHeader />
+          <div className="h-[calc(100%-136px)] ">
+            <Outlet />
+          </div>
+        </div>
+      );
+    }
+  };
   return (
-    <div className="h-screen w-screen bg-gray-100 p-8">
-      {/* TODO: 키오스크 플로우에 공통으로 필요한 UI (헤더, 푸터, 배경 등)를 여기에 추가 */}
-      <main className="mx-auto h-full max-w-4xl rounded-lg bg-white shadow-xl">
-        <Outlet />
-      </main>
-    </div>
+    // 배경 이미지를 전체 화면에 적용합니다.
+    <main className="bg-[url('/src/assets/images/kiosk/kiosk-bg.png')]  bg-contain bg-no-repeat bg-center min-h-screen flex items-center justify-center">
+      <div className="grid w-[1080px] h-[1920px] mx-auto border-l border-r border-gray-300">
+        {layoutRenderer()}
+      </div>
+    </main>
   );
 };
 

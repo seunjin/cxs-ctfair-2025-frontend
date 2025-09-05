@@ -11,9 +11,21 @@ import KeywordsStep from './pages/kiosk/KeywordsStep';
 import CompleteStep from './pages/kiosk/CompleteStep';
 import PhoneStep from './pages/kiosk/PhoneStep';
 
+export const ROUTER_PATH = {
+  HOME: '/',
+  KIOSK: '/kiosk',
+  ADMIN: '/admin',
+  DISPLAY: '/display',
+  KIOSK_MAIN: '/kiosk',
+  KIOSK_INFO: '/kiosk/info',
+  KIOSK_CAPTURE: '/kiosk/capture',
+  KIOSK_KEYWORDS: '/kiosk/keywords',
+  KIOSK_COMPLETE: '/kiosk/complete',
+  KIOSK_PHONE: '/kiosk/phone',
+};
 const router = createBrowserRouter([
   {
-    path: '/',
+    path: ROUTER_PATH.HOME,
     element: <App />,
     children: [
       {
@@ -21,7 +33,7 @@ const router = createBrowserRouter([
         element: <HomePage />,
       },
       {
-        path: 'kiosk',
+        path: ROUTER_PATH.KIOSK,
         element: <KioskPage />,
         children: [
           {
@@ -29,33 +41,33 @@ const router = createBrowserRouter([
             element: <MainStep />,
           },
           {
-            path: 'info', // /kiosk/info
+            path: ROUTER_PATH.KIOSK_INFO, // /kiosk/info
             element: <InfoStep />,
           },
           {
-            path: 'capture', // /kiosk/capture
+            path: ROUTER_PATH.KIOSK_CAPTURE, // /kiosk/capture
             element: <CaptureStep />,
           },
           {
-            path: 'keywords', // /kiosk/keywords
+            path: ROUTER_PATH.KIOSK_KEYWORDS, // /kiosk/keywords
             element: <KeywordsStep />,
           },
           {
-            path: 'complete', // /kiosk/complete
+            path: ROUTER_PATH.KIOSK_COMPLETE, // /kiosk/complete
             element: <CompleteStep />,
           },
           {
-            path: 'phone', // /kiosk/phone
+            path: ROUTER_PATH.KIOSK_PHONE, // /kiosk/phone
             element: <PhoneStep />,
           },
         ],
       },
       {
-        path: 'admin',
+        path: ROUTER_PATH.ADMIN,
         element: <AdminPage />,
       },
       {
-        path: 'display',
+        path: ROUTER_PATH.DISPLAY,
         element: <DisplayPage />,
       },
     ],

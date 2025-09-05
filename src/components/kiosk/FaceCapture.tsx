@@ -2,7 +2,7 @@ import { useRef, useEffect, useState, useCallback } from 'react';
 import Webcam from 'react-webcam';
 import { FaceLandmarker, FilesetResolver } from '@mediapipe/tasks-vision';
 import { useMutation } from '@tanstack/react-query';
-import { httpAkool } from '../api/akoolApi';
+import { httpAkool } from '../../api/akoolApi';
 
 // --- API 요청 타입 정의 ---
 // Akool API 문서에 따라 응답 타입을 정의합니다. (예시)
@@ -110,12 +110,7 @@ const FaceCapture = () => {
     } else {
       setUserMessage('얼굴을 가이드라인에 맞춰주세요');
     }
-  }, [
-    modelsLoaded,
-    isWebcamReady,
-    capturedImage,
-    akoolApiMutation.isPending,
-  ]);
+  }, [modelsLoaded, isWebcamReady, capturedImage, akoolApiMutation.isPending]);
 
   const predictWebcam = useCallback(() => {
     if (
