@@ -2,28 +2,44 @@ import { Outlet, useLocation } from 'react-router-dom';
 import { ROUTER_PATH } from '../router';
 import KioskHeader from '../components/kiosk/KioskHeader';
 import { KioskProvider } from '../contexts/kiosk/KioskProvider';
+import CaptureStep from './kiosk/CaptureStep'; // CaptureStep을 직접 임포트
 
 const KioskPage = () => {
   const location = useLocation();
-  const layoutRenderer = () => {
-    if (location.pathname === ROUTER_PATH.KIOSK) {
-      return <Outlet />;
-    } else {
-      return (
-        <div className="h-full ">
-          <KioskHeader />
-          <div className="h-[calc(100%-136px)] ">
-            <Outlet />
-          </div>
-        </div>
-      );
-    }
-  };
+  const isCapturePage = location.pathname === ROUTER_PATH.KIOSK_CAPTURE;
+  const isMainPage = location.pathname === ROUTER_PATH.KIOSK_MAIN;
+
   return (
-    // 배경 이미지를 전체 화면에 적용합니다.
-    <main className="bg-[url('/src/assets/images/kiosk/kiosk-bg.png')]  bg-contain bg-no-repeat bg-center min-h-screen flex items-center justify-center">
+    <main className="bg-[url('/src/assets/images/kiosk/kiosk-bg.png')] bg-contain bg-no-repeat bg-center min-h-screen flex items-center justify-center">
       <div className="grid w-[1080px] h-[1920px] mx-auto border-l border-r border-gray-300">
-        <KioskProvider>{layoutRenderer()}</KioskProvider>
+        <KioskProvider>
+          <div
+            style={{ display: isCapturePage ? 'none' : 'block' }}
+            className="h-full"
+          >
+            {isMainPage ? (
+              <Outlet />
+            ) : (
+              <div className="h-full">
+                <KioskHeader />
+                <div className="h-[calc(100%-136px)]">
+                  <Outlet />
+                </div>
+              </div>
+            )}
+          </div>
+
+          {/* CaptureStep은 항상 렌더링하되, 경로가 일치할 때만 보여줍니다. */}
+          <div
+            style={{ display: isCapturePage ? 'block' : 'none' }}
+            className="h-full"
+          >
+            <KioskHeader />
+            <div className="h-[calc(100%-136px)]">
+              <CaptureStep />
+            </div>
+          </div>
+        </KioskProvider>
       </div>
     </main>
   );

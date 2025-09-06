@@ -46,7 +46,7 @@ const router = createBrowserRouter([
           },
           {
             path: ROUTER_PATH.KIOSK_CAPTURE, // /kiosk/capture
-            element: <CaptureStep />,
+            element: <></>, // Outlet 렌더링 방지를 위해 빈 엘리먼트 설정
           },
           {
             path: ROUTER_PATH.KIOSK_KEYWORDS, // /kiosk/keywords

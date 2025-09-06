@@ -3,9 +3,10 @@ import SettingIcon from '../../assets/icons/settings.svg?react';
 import { ROUTER_PATH } from '../../router';
 import { useKiosk } from '../../contexts/kiosk';
 import { useEffect } from 'react';
+import clsx from 'clsx';
 
 const MainStep = () => {
-  const { resetState } = useKiosk();
+  const { resetState, modelsLoaded } = useKiosk();
 
   // MainStep이 렌더링될 때마다 상태를 초기화합니다.
   useEffect(() => {
@@ -34,10 +35,15 @@ const MainStep = () => {
       <section>
         <div className="flex justify-center ">
           <Link
-            to={ROUTER_PATH.KIOSK_INFO}
-            className="w-[920px] px-2.5 py-12 bg-blue-700 rounded-[32px] mx-auto shadow-[0px_0px_15px_0px_rgba(208,82,153,1.00)]  text-center justify-start text-white text-5xl font-bold font-['Pretendard'] leading-[75px] cursor-pointer"
+            to={modelsLoaded ? ROUTER_PATH.KIOSK_INFO : '#'}
+            className={clsx(
+              "w-[920px] px-2.5 py-12 rounded-[32px] mx-auto shadow-[0px_0px_15px_0px_rgba(208,82,153,1.00)] text-center text-white text-5xl font-bold font-['Pretendard'] leading-[75px]",
+              modelsLoaded
+                ? 'bg-blue-700 cursor-pointer'
+                : 'bg-gray-500 cursor-not-allowed'
+            )}
           >
-            체험 시작하기
+            {modelsLoaded ? '체험 시작하기' : 'AI 모델을 불러오는 중...'}
           </Link>
         </div>
       </section>

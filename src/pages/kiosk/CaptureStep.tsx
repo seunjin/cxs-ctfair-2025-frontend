@@ -14,7 +14,6 @@ const CaptureStep = () => {
   const {
     webcamRef,
     canvasRef,
-    modelsLoaded,
     isFaceAligned,
     capturedImage,
     userMessage,
@@ -119,7 +118,7 @@ const CaptureStep = () => {
             <button
               onClick={handleCapture}
               className="flex flex-1 items-center justify-center gap-3 rounded-full bg-blue-600 h-40 text-[50px] font-bold text-white disabled:cursor-not-allowed disabled:bg-gray-500 "
-              disabled={!modelsLoaded || !isFaceAligned}
+              disabled={!isFaceAligned}
             >
               <CameraIcon /> 촬영하기
             </button>

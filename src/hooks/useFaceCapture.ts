@@ -1,6 +1,5 @@
 import { useRef, useEffect, useState, useCallback } from 'react';
 import Webcam from 'react-webcam';
-import { FaceLandmarker, FilesetResolver } from '@mediapipe/tasks-vision';
 import { useMutation } from '@tanstack/react-query';
 import { detectFace } from '../api/akoolApi';
 import { useKiosk } from '../contexts/kiosk';
@@ -35,21 +34,19 @@ export const useFaceCapture = () => {
   const webcamRef = useRef<Webcam>(null);
   const canvasRef = useRef<HTMLCanvasElement>(null);
   const animationFrameId = useRef<number | null>(null);
-  const faceLandmarker = useRef<FaceLandmarker | null>(null);
 
-  const [modelsLoaded, setModelsLoaded] = useState(false);
   const [isWebcamReady, setIsWebcamReady] = useState(false);
   const [debugInfo, setDebugInfo] = useState('');
   const [isFaceAligned, setIsFaceAligned] = useState(false);
   const [capturedImage, setCapturedImage] = useState<string | null>(null);
-  const [userMessage, setUserMessage] = useState(
-    '얼굴 인식 모델을 불러오는 중...'
-  );
+  const [userMessage, setUserMessage] = useState('카메라를 준비하는 중...');
   const [isCountingDown, setIsCountingDown] = useState(false);
   const [countdown, setCountdown] = useState(5);
   const {
     setCapturedImage: setGlobalCapturedImage,
-    setLandmarks, // KioskContext에서 setLandmarks 함수 가져오기
+    setLandmarks,
+    modelsLoaded, // 컨텍스트에서 모델 로딩 상태 가져오기
+    faceLandmarker, // 컨텍스트에서 모델 인스턴스 가져오기
   } = useKiosk();
 
   // --- 재시도 및 상태 초기화 함수 ---
@@ -64,7 +61,6 @@ export const useFaceCapture = () => {
     mutationFn: detectFace,
     onSuccess: (data) => {
       console.log('✅ Face Detect API 성공:', data);
-      // data가 FaceDetectResponse 타입으로 추론되므로 안전하게 속성에 접근할 수 있습니다.
       setLandmarks(data.landmarks_str);
     },
     onError: (error) => {
@@ -72,7 +68,6 @@ export const useFaceCapture = () => {
 
       let alertMessage = DEFAULT_ERROR_MESSAGE;
       if (error instanceof Error && error.message.startsWith('API Error')) {
-        // "API Error (1003): ..." 형식의 메시지에서 에러 코드를 추출합니다.
         const errorCodeMatch = error.message.match(/\((\d+)\)/);
         if (errorCodeMatch) {
           const errorCode = parseInt(errorCodeMatch[1], 10);
@@ -81,41 +76,19 @@ export const useFaceCapture = () => {
             `오류가 발생했습니다. (코드: ${errorCode})`;
         }
       } else {
-        // 네트워크 오류 등 일반적인 HTTP 에러
         alertMessage = '네트워크 오류가 발생했습니다. 잠시 후 다시 시도해주세요.';
       }
 
       alert(alertMessage);
-      resetCapture(); // 실패 시 자동으로 상태 리셋
+      resetCapture();
     },
   });
-
-  useEffect(() => {
-    const createFaceLandmarker = async () => {
-      try {
-        const vision = await FilesetResolver.forVisionTasks('/models');
-        const landmarker = await FaceLandmarker.createFromOptions(vision, {
-          baseOptions: {
-            modelAssetPath: '/models/face_landmarker.task',
-            delegate: 'GPU',
-          },
-          runningMode: 'VIDEO',
-          numFaces: 2,
-        });
-        faceLandmarker.current = landmarker;
-        setModelsLoaded(true);
-      } catch (error) {
-        console.error('Failed to create FaceLandmarker:', error);
-      }
-    };
-    createFaceLandmarker();
-    return () => faceLandmarker.current?.close();
-  }, []);
 
   useEffect(() => {
     if (capturedImage) {
       setUserMessage('이 사진을 사용하시겠습니까?');
     } else if (!modelsLoaded) {
+      // 이 메시지는 이제 거의 표시되지 않음
       setUserMessage('얼굴 인식 모델을 불러오는 중...');
     } else if (!isWebcamReady) {
       setUserMessage('카메라를 준비하는 중...');
@@ -131,7 +104,7 @@ export const useFaceCapture = () => {
       !webcamRef.current?.video ||
       !canvasRef.current ||
       !faceLandmarker.current ||
-      capturedImage // 이미지가 캡처된 상태에서는 예측 중지
+      capturedImage
     ) {
       return;
     }
@@ -213,7 +186,7 @@ export const useFaceCapture = () => {
     }
 
     animationFrameId.current = requestAnimationFrame(predictWebcam);
-  }, [capturedImage]);
+  }, [capturedImage, faceLandmarker]);
 
   useEffect(() => {
     if (modelsLoaded && isWebcamReady && !capturedImage) {
@@ -243,8 +216,8 @@ export const useFaceCapture = () => {
             const offsetX = (image.width - size) / 2;
             ctx.drawImage(image, offsetX, 0, size, size, 0, 0, size, size);
             const croppedImageSrc = canvas.toDataURL('image/jpeg', 1.0);
-            setCapturedImage(croppedImageSrc); // UI에 이미지 즉시 표시
-            runFaceDetect(croppedImageSrc); // API 호출 시작
+            setCapturedImage(croppedImageSrc);
+            runFaceDetect(croppedImageSrc);
           }
         };
         image.src = imageSrc;
@@ -285,7 +258,6 @@ export const useFaceCapture = () => {
   return {
     webcamRef,
     canvasRef,
-    modelsLoaded,
     isWebcamReady,
     isFaceAligned,
     capturedImage,
@@ -293,7 +265,7 @@ export const useFaceCapture = () => {
     debugInfo,
     isCountingDown,
     countdown,
-    isDetectingFace, // API 로딩 상태
+    isDetectingFace,
     setIsWebcamReady,
     handleCapture,
     resetCapture,
