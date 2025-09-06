@@ -27,7 +27,7 @@ const FaceCapture = ({
         <div
           className={clsx(
             'px-7 py-3  bg-rose-600 rounded-[99px] inline-flex justify-center items-center gap-2',
-            userMessage === 'OK' ? 'opacity-0' : ''
+            userMessage === 'OK' || capturedImage ? 'opacity-0' : ''
           )}
         >
           <CautionIcon />
@@ -37,7 +37,7 @@ const FaceCapture = ({
         </div>
       </div>
       <div
-        className="relative w-full overflow-hidden rounded-lg shadow-lg"
+        className="relative w-full overflow-hidden rounded-lg"
         style={{ aspectRatio: '1 / 1' }}
       >
         {capturedImage ? (
