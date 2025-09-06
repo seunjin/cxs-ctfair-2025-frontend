@@ -1,13 +1,15 @@
 import { Link, useNavigate } from 'react-router-dom';
-import FaceCapture from '../../components/kiosk/FaceCapture';
+import clsx from 'clsx';
 import { useFaceCapture } from '../../hooks/useFaceCapture';
 import { ROUTER_PATH } from '../../router';
+
+import FaceCapture from '../../components/kiosk/FaceCapture';
+import CaptureCountdown from '../../components/ui/CaptureCountdown';
 import Arrowleft from '../../assets/icons/arrow-narrow-left.svg?react';
 import CameraIcon from '../../assets/icons/camera.svg?react';
-import CaptureCountdown from '../../components/ui/CaptureCountdown';
-import clsx from 'clsx';
 import ArrowRight from '../../assets/icons/arrow-narrow-right.svg?react';
 import RefreshIcon from '../../assets/icons/refresh.svg?react';
+
 const CaptureStep = () => {
   const {
     webcamRef,
@@ -19,105 +21,105 @@ const CaptureStep = () => {
     debugInfo,
     isCountingDown,
     countdown,
+    isDetectingFace, // react-query가 제공하는 API 로딩 상태
     setIsWebcamReady,
     handleCapture,
-    handleRetake,
+    resetCapture,
     handleUsePhoto,
   } = useFaceCapture();
 
   const navigate = useNavigate();
 
   const handleConfirmPhoto = () => {
-    handleUsePhoto(); // Context에 이미지 저장
-    navigate(ROUTER_PATH.KIOSK_KEYWORDS); // 키워드 선택 페이지로 이동
+    handleUsePhoto();
+    navigate(ROUTER_PATH.KIOSK_KEYWORDS);
   };
 
   return (
-    <div className="flex h-full flex-col py-[130px] px-20">
+    <div className="flex h-full flex-col px-20 py-[130px]">
+      {/* 1. 상단 텍스트 영역 */}
       <section>
         <div className="relative pb-[50px]">
           {isCountingDown && <CaptureCountdown count={countdown} />}
-
           <h2
             className={clsx(
-              "flex items-center justify-center h-[140px] text-center  text-white text-5xl font-semibold font-['Pretendard'] leading-[70px] ",
-              isCountingDown && 'opacity-0',
-              capturedImage && 'opacity-100'
+              "flex h-[140px] items-center justify-center text-center text-5xl font-semibold text-white font-['Pretendard'] leading-[70px]",
+              { 'opacity-0': isCountingDown || capturedImage }
             )}
           >
-            {capturedImage ? (
-              <>이 사진으로 진행할까요?</>
-            ) : (
-              <>
-                얼굴을 프레임 중앙에 맞추고
-                <br />
-                정면을 바라본 상태에서 촬영해주세요!
-              </>
+            얼굴을 프레임 중앙에 맞추고
+            <br />
+            정면을 바라본 상태에서 촬영해주세요!
+          </h2>
+          <h2
+            className={clsx(
+              'absolute inset-0 flex h-[140px] items-center justify-center text-center text-5xl font-semibold text-white font-["Pretendard"] leading-[70px] transition-opacity',
+              { 'opacity-0': !capturedImage }
             )}
+          >
+            이 사진으로 진행할까요?
           </h2>
         </div>
-        <div className="pb-10">
+
+        {/* 2. 웹캠 / 캡처 이미지 표시 영역 */}
+        <div className="relative pb-10">
           <FaceCapture
             webcamRef={webcamRef}
             canvasRef={canvasRef}
             userMessage={userMessage}
             debugInfo={debugInfo}
             capturedImage={capturedImage}
+            isDetectingFace={isDetectingFace}
             setIsWebcamReady={setIsWebcamReady}
           />
         </div>
 
-        <div
-          className={clsx(
-            'text-center justify-start text-yellow-300 text-3xl font-bold leading-10',
-            isCountingDown && 'opacity-0',
-            capturedImage && 'opacity-100'
-          )}
-        >
+        {/* 3. 하단 주의사항 텍스트 영역 */}
+        <div className="text-center text-3xl font-bold leading-10 text-yellow-300">
           {capturedImage
             ? '* 촬영된 사진은 이미지 생성 후 즉시 파기됩니다.'
-            : '* 선글라스, 모자, 마스크 등 얼굴을 가리는 소품은 착용하지 말아주세요.'}
+            : isCountingDown
+              ? ''
+              : '* 선글라스, 모자, 마스크 등 얼굴을 가리는 소품은 착용하지 말아주세요.'}
         </div>
       </section>
-      <section
-        className={clsx(
-          'flex-1 flex items-end',
-          isCountingDown && 'opacity-0',
-          capturedImage && 'opacity-100'
-        )}
-      >
+
+      {/* 4. 하단 버튼 영역 */}
+      <section className="flex flex-1 items-end">
         {capturedImage ? (
-          <div className="mt-6 flex w-full justify-center gap-[30px] ">
+          // 촬영 성공 후 버튼
+          <div className="mt-6 flex w-full justify-center gap-[30px]">
             <button
-              onClick={handleRetake}
-              className="inline-flex justify-center items-center gap-3  flex-1 rounded-full h-40 bg-white text-[50px] font-bold text-blue-700"
+              onClick={resetCapture}
+              className="inline-flex flex-1 items-center justify-center gap-3 rounded-full bg-white h-40 text-[50px] font-bold text-blue-700"
             >
               <RefreshIcon /> 재촬영
             </button>
             <button
               onClick={handleConfirmPhoto}
-              className="flex justify-center items-center gap-3 flex-1 rounded-full h-40 bg-blue-600 text-[50px] font-bold text-white"
+              className="flex flex-1 items-center justify-center gap-3 rounded-full bg-blue-600 h-40 text-[50px] font-bold text-white disabled:cursor-not-allowed disabled:bg-gray-500"
+              disabled={isDetectingFace} // API 로딩 중에는 '다음' 버튼 비활성화
             >
-              다음 <ArrowRight className="w-13 h-13" />
+              다음 <ArrowRight className="h-13 w-13" />
             </button>
           </div>
         ) : (
+          // 촬영 준비 버튼
           <div
-            className={clsx(
-              'mt-6 flex w-full justify-center gap-[30px]',
-              isCountingDown && 'opacity-0'
-            )}
+            className={clsx('mt-6 flex w-full justify-center gap-[30px]', {
+              'opacity-0': isCountingDown,
+            })}
           >
             <Link
               to={ROUTER_PATH.KIOSK_INFO}
-              className="inline-flex justify-center items-center gap-3  w-[310px] rounded-full h-40 bg-white text-[50px] font-bold text-blue-700"
+              className="inline-flex w-[310px] items-center justify-center gap-3 rounded-full bg-white h-40 text-[50px] font-bold text-blue-700"
             >
-              <Arrowleft className="w-13 h-13" /> 이전
+              <Arrowleft className="h-13 w-13" /> 이전
             </Link>
             <button
               onClick={handleCapture}
-              className="flex  justify-center items-center gap-3 flex-1 rounded-full h-40 bg-blue-600 text-[50px] font-bold text-white disabled:cursor-not-allowed disabled:bg-gray-500 "
-              disabled={!modelsLoaded || !isFaceAligned || isCountingDown}
+              className="flex flex-1 items-center justify-center gap-3 rounded-full bg-blue-600 h-40 text-[50px] font-bold text-white disabled:cursor-not-allowed disabled:bg-gray-500 "
+              disabled={!modelsLoaded || !isFaceAligned}
             >
               <CameraIcon /> 촬영하기
             </button>
