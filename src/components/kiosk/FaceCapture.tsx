@@ -37,7 +37,12 @@ const FaceCapture = ({
         </div>
       </div>
       <div
-        className="relative w-full overflow-hidden rounded-lg"
+        className={clsx(
+          'relative w-full overflow-hidden bg-zinc-800',
+          capturedImage
+            ? 'rounded-[60px] shadow-[0px_0px_50px_10px_rgba(208,82,153,0.80)] outline-[10px] outline-blue-700'
+            : 'rounded-lg'
+        )}
         style={{ aspectRatio: '1 / 1' }}
       >
         {capturedImage ? (
