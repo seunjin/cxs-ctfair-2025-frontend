@@ -54,7 +54,7 @@ const FaceCapture = ({
             <div
               className={clsx(
                 'absolute inset-0 z-10 flex flex-col items-center justify-center transition-all duration-500',
-                isDetectingFace ? 'backdrop-blur-md' : 'backdrop-blur-none'
+                isDetectingFace ? 'backdrop-blur-[100px]' : 'backdrop-blur-none'
               )}
             >
               {isDetectingFace && (
