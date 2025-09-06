@@ -1,10 +1,10 @@
 import { useState, type ReactNode } from 'react';
 import { KioskContext } from './KioskContext';
 export const KioskProvider = ({ children }: { children: ReactNode }) => {
-  const [sexGroup, setSexGroup] = useState('');
-  const [ageGroup, setAgeGroup] = useState('');
-  const [styleGroup, setStyleGroup] = useState('');
-  const [moodGroup, setMoodGroup] = useState('');
+  const [sexGroup, setSexGroup] = useState('남성');
+  const [ageGroup, setAgeGroup] = useState('20대');
+  const [styleGroup, setStyleGroup] = useState('랜덤');
+  const [moodGroup, setMoodGroup] = useState('랜덤');
   const [capturedImage, setCapturedImage] = useState<string | null>(null);
   const [landmarks, setLandmarks] = useState<string | null>(null);
 

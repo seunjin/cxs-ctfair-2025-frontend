@@ -27,7 +27,7 @@ const KeywordsStep = () => {
           키워드를 골라주세요!
         </h2>
 
-        <div className="px-10 mb-[75px]">
+        <div className="mb-[75px]">
           <div className="flex justify-center mb-[30px]">
             <KeywardSectionLabel text="색감&스타일" />
           </div>
@@ -36,7 +36,7 @@ const KeywordsStep = () => {
             selectedValue={styleGroup}
             onChange={setStyleGroup}
             className="flex justify-center flex-wrap gap-5"
-            labelClassName="text-[30px] tracking-[-0.01em]  h-[98px] px-[46px] rounded-[32px] outline outline-[3px] outline-offset-[-3px] " // 라벨에 적용할 클래스
+            labelClassName="text-[30px] tracking-[-0.01em]  h-[98px] px-[46px] rounded-[24px] outline outline-[3px] outline-offset-[-3px] " // 라벨에 적용할 클래스
             options={[
               { value: '랜덤', label: '랜덤' },
               { value: '네온', label: '네온' },
@@ -58,7 +58,7 @@ const KeywordsStep = () => {
           />
         </div>
 
-        <div className="px-10">
+        <div className="">
           <div className="flex justify-center mb-[30px]">
             <KeywardSectionLabel text="분위기&무드" />
           </div>
@@ -67,8 +67,9 @@ const KeywordsStep = () => {
             selectedValue={moodGroup}
             onChange={setMoodGroup}
             className="flex justify-center flex-wrap gap-5"
-            labelClassName="text-[30px] tracking-[-0.01em]  h-[98px] px-[46px] rounded-[32px] outline outline-[3px] outline-offset-[-3px] " // 라벨에 적용할 클래스
+            labelClassName="text-[30px] tracking-[-0.01em]  h-[98px] px-[46px] rounded-[24px] outline outline-[3px] outline-offset-[-3px] " // 라벨에 적용할 클래스
             options={[
+              // { value: '랜덤', label: '랜덤' },
               { value: '사이버펑크', label: '사이버펑크' },
               { value: '아방가르드', label: '아방가르드' },
               { value: '몽환적인', label: '몽환적인' },
