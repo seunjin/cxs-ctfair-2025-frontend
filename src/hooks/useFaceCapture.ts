@@ -18,10 +18,25 @@ const dataUrlToBlob = async (dataUrl: string): Promise<Blob> => {
 };
 
 // --- 가이드라인 및 정렬 설정 ---
-const GUIDELINE_DIAMETER_RATIO = 0.5;
+const GUIDELINE_DIAMETER_RATIO = 0.45;
 const FACE_ALIGNMENT_CONFIG = {
+  /**
+   * 얼굴 크기 최소 허용치 (가이드라인 대비 비율)
+   * 값이 작을수록 카메라에서 멀리 떨어져도 인식됩니다.
+   * @default 0.6
+   */
   MIN_FACE_SCALE: 0.6,
+  /**
+   * 얼굴 크기 최대 허용치 (가이드라인 대비 비율)
+   * 값이 클수록 카메라에 가까이 다가가도 인식됩니다.
+   * @default 1.0
+   */
   MAX_FACE_SCALE: 1.0,
+  /**
+   * 얼굴 중심점의 허용 오차 (화면 높이 대비 비율)
+   * 값이 클수록 얼굴이 중앙에서 벗어나도 인식됩니다.
+   * @default 0.1
+   */
   CENTER_OFFSET_THRESHOLD: 0.1,
 };
 
@@ -101,10 +116,18 @@ export const useFaceCapture = () => {
       setUserMessage('얼굴 인식 모델을 불러오는 중...');
     } else if (!isWebcamReady) {
       setUserMessage('카메라를 준비하는 중...');
+    } else if (isFaceAligned) {
+      setUserMessage('OK');
     } else {
       setUserMessage('얼굴이 프레임 중앙에 오도록 맞춰주세요!');
     }
-  }, [modelsLoaded, isWebcamReady, capturedImage, akoolApiMutation.isPending]);
+  }, [
+    modelsLoaded,
+    isWebcamReady,
+    capturedImage,
+    akoolApiMutation.isPending,
+    isFaceAligned,
+  ]);
 
   const predictWebcam = useCallback(() => {
     if (

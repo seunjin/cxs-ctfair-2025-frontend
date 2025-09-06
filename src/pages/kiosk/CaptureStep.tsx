@@ -1,6 +1,6 @@
 import { Link } from 'react-router-dom';
 import FaceCapture from '../../components/kiosk/FaceCapture';
-import { useKiosk } from '../../contexts/KioskContext';
+import { useKiosk } from '../../contexts/kiosk';
 import { useFaceCapture } from '../../hooks/useFaceCapture';
 import { ROUTER_PATH } from '../../router';
 import Arrowleft from '../../assets/icons/arrow-narrow-left.svg?react';

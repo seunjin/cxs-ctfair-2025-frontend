@@ -1,4 +1,4 @@
-import { ReactNode, createContext, useContext, useState } from 'react';
+import { createContext, useState, type ReactNode } from 'react';
 
 type KioskContextType = {
   sexGroup: string;
@@ -7,7 +7,9 @@ type KioskContextType = {
   setAgeGroup: (age: string) => void;
 };
 
-const KioskContext = createContext<KioskContextType | undefined>(undefined);
+export const KioskContext = createContext<KioskContextType | undefined>(
+  undefined
+);
 
 export const KioskProvider = ({ children }: { children: ReactNode }) => {
   const [sexGroup, setSexGroup] = useState('');
@@ -25,12 +27,4 @@ export const KioskProvider = ({ children }: { children: ReactNode }) => {
       {children}
     </KioskContext.Provider>
   );
-};
-
-export const useKiosk = () => {
-  const context = useContext(KioskContext);
-  if (!context) {
-    throw new Error('useKiosk must be used within a KioskProvider');
-  }
-  return context;
 };

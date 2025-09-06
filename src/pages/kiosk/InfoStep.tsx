@@ -3,7 +3,7 @@ import Arrowleft from '../../assets/icons/arrow-narrow-left.svg?react';
 import ArrowRighgt from '../../assets/icons/arrow-narrow-right.svg?react';
 import { Link } from 'react-router-dom';
 import { ROUTER_PATH } from '../../router';
-import { useKiosk } from '../../contexts/KioskContext';
+import { useKiosk } from '../../contexts/kiosk/useKiosk';
 
 const InfoStep = () => {
   const { sexGroup, setSexGroup, ageGroup, setAgeGroup } = useKiosk();
