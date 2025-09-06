@@ -18,7 +18,7 @@ const dataUrlToBlob = async (dataUrl: string): Promise<Blob> => {
 };
 
 // --- 가이드라인 및 정렬 설정 ---
-const GUIDELINE_DIAMETER_RATIO = 0.45;
+const GUIDELINE_DIAMETER_RATIO = 0.4;
 const FACE_ALIGNMENT_CONFIG = {
   /**
    * 얼굴 크기 최소 허용치 (가이드라인 대비 비율)
@@ -63,6 +63,8 @@ export const useFaceCapture = () => {
   const [userMessage, setUserMessage] = useState(
     '얼굴 인식 모델을 불러오는 중...'
   );
+  const [isCountingDown, setIsCountingDown] = useState(false);
+  const [countdown, setCountdown] = useState(5);
 
   const akoolApiMutation = useMutation<
     AkoolApiResponse,
@@ -255,7 +257,31 @@ export const useFaceCapture = () => {
     };
   }, [modelsLoaded, isWebcamReady, capturedImage, predictWebcam]);
 
-  const handleCapture = () => {
+  // 카운트다운 로직
+  useEffect(() => {
+    if (!isCountingDown) return;
+
+    // 얼굴이 벗어나면 카운트다운 취소
+    if (!isFaceAligned) {
+      setIsCountingDown(false);
+      setUserMessage('얼굴이 벗어났습니다. 다시 맞춰주세요.');
+      return;
+    }
+
+    if (countdown === 0) {
+      triggerCapture();
+      setIsCountingDown(false);
+      return;
+    }
+
+    const timerId = setTimeout(() => {
+      setCountdown(countdown - 1);
+    }, 1000);
+
+    return () => clearTimeout(timerId);
+  }, [isCountingDown, countdown, isFaceAligned]);
+
+  const triggerCapture = () => {
     if (webcamRef.current) {
       const imageSrc = webcamRef.current.getScreenshot({
         width: 1920,
@@ -278,6 +304,14 @@ export const useFaceCapture = () => {
         };
         image.src = imageSrc;
       }
+    }
+  };
+
+  // '촬영하기' 버튼을 누르면 카운트다운 시작
+  const handleCapture = () => {
+    if (isFaceAligned) {
+      setCountdown(5); // 카운트다운 숫자 초기화
+      setIsCountingDown(true);
     }
   };
 
@@ -308,6 +342,8 @@ export const useFaceCapture = () => {
     userMessage,
     debugInfo,
     isApiLoading: akoolApiMutation.isPending,
+    isCountingDown,
+    countdown,
     setIsWebcamReady,
     handleCapture,
     handleRetake,

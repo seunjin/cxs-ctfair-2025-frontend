@@ -1,6 +1,7 @@
 import React from 'react';
 import Webcam from 'react-webcam';
 import CautionIcon from '../../assets/icons/caution.svg?react';
+import clsx from 'clsx';
 const COMPONENT_SIZE_CLASS = 'w-[920px]';
 
 type FaceCaptureProps = {
@@ -25,7 +26,12 @@ const FaceCapture = ({
   return (
     <div className={`${COMPONENT_SIZE_CLASS} `}>
       <div className="flex justify-center mb-10">
-        <div className="px-7 py-3  bg-rose-600 rounded-[99px] inline-flex justify-center items-center gap-2">
+        <div
+          className={clsx(
+            'px-7 py-3  bg-rose-600 rounded-[99px] inline-flex justify-center items-center gap-2',
+            userMessage === 'OK' ? 'opacity-0' : ''
+          )}
+        >
           <CautionIcon />
           <div className="text-center justify-start text-white text-3xl font-bold leading-10">
             {userMessage}
