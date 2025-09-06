@@ -1,6 +1,6 @@
 import React from 'react';
 import Webcam from 'react-webcam';
-
+import CautionIcon from '../../assets/icons/caution.svg?react';
 const COMPONENT_SIZE_CLASS = 'w-[920px]';
 
 type FaceCaptureProps = {
@@ -17,14 +17,21 @@ const FaceCapture = ({
   webcamRef,
   canvasRef,
   userMessage,
-  debugInfo,
+  // debugInfo,
   capturedImage,
   isApiLoading,
   setIsWebcamReady,
 }: FaceCaptureProps) => {
   return (
     <div className={`${COMPONENT_SIZE_CLASS} `}>
-      <h2 className="mb-4 h-8 text-center text-2xl font-bold">{userMessage}</h2>
+      <div className="flex justify-center mb-10">
+        <div className="px-7 py-3  bg-rose-600 rounded-[99px] inline-flex justify-center items-center gap-2">
+          <CautionIcon />
+          <div className="text-center justify-start text-white text-3xl font-bold leading-10">
+            {userMessage}
+          </div>
+        </div>
+      </div>
       <div
         className="relative w-full overflow-hidden rounded-lg shadow-lg"
         style={{ aspectRatio: '1 / 1' }}
@@ -49,7 +56,8 @@ const FaceCapture = ({
             />
             <canvas
               ref={canvasRef}
-              className="absolute z-20 h-full w-full"
+              className="absolute left-1/2 top-1/2 z-20 h-full -translate-x-1/2 -translate-y-1/2"
+              style={{ width: `${(16 / 9) * 100}%` }}
               width={1920}
               height={1080}
             />

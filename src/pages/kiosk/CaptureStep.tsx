@@ -1,7 +1,11 @@
+import { Link } from 'react-router-dom';
 import FaceCapture from '../../components/kiosk/FaceCapture';
 import { useKiosk } from '../../contexts/KioskContext';
 import { useFaceCapture } from '../../hooks/useFaceCapture';
-// import { useNavigate } from 'react-router-dom';
+import { ROUTER_PATH } from '../../router';
+import Arrowleft from '../../assets/icons/arrow-narrow-left.svg?react';
+import CameraIcon from '../../assets/icons/camera.svg?react';
+import CaptureCountdown from '../../components/ui/CaptureCountdown';
 
 const CaptureStep = () => {
   const {
@@ -32,43 +36,69 @@ const CaptureStep = () => {
 
   return (
     <div className="flex h-full flex-col py-[130px] px-20">
-      <FaceCapture
-        webcamRef={webcamRef}
-        canvasRef={canvasRef}
-        userMessage={userMessage}
-        debugInfo={debugInfo}
-        capturedImage={capturedImage}
-        isApiLoading={isApiLoading}
-        setIsWebcamReady={setIsWebcamReady}
-      />
-      <div className="mt-6 flex w-full max-w-lg justify-center space-x-4">
-        {capturedImage ? (
-          <>
-            <button
-              onClick={handleRetake}
-              className="w-40 rounded-lg bg-gray-500 px-6 py-3 text-lg font-bold text-white transition-all hover:bg-gray-400 disabled:cursor-not-allowed disabled:opacity-50"
-              disabled={isApiLoading}
-            >
-              다시 찍기
-            </button>
-            <button
-              onClick={handleUsePhoto}
-              className="w-40 rounded-lg bg-green-600 px-6 py-3 text-lg font-bold text-white transition-all hover:bg-green-500 disabled:cursor-not-allowed disabled:opacity-50"
-              disabled={isApiLoading}
-            >
-              {isApiLoading ? '전송 중...' : '사진 사용'}
-            </button>
-          </>
-        ) : (
-          <button
-            onClick={handleCapture}
-            className="w-48 rounded-lg bg-indigo-600 px-6 py-3 text-lg font-bold text-white transition-all hover:bg-indigo-500 disabled:cursor-not-allowed disabled:bg-gray-500 disabled:opacity-70"
-            disabled={!modelsLoaded || !isFaceAligned}
-          >
-            촬영하기
-          </button>
-        )}
-      </div>
+      <section>
+        <div className="relative">
+          <CaptureCountdown />
+          <h2 className="text-center justify-start text-white text-5xl font-semibold font-['Pretendard'] leading-[70px] pb-[50px]">
+            얼굴을 프레임 중앙에 맞추고
+            <br />
+            정면을 바라본 상태에서 촬영해주세요!
+          </h2>
+        </div>
+        <div className="pb-10">
+          <FaceCapture
+            webcamRef={webcamRef}
+            canvasRef={canvasRef}
+            userMessage={userMessage}
+            debugInfo={debugInfo}
+            capturedImage={capturedImage}
+            isApiLoading={isApiLoading}
+            setIsWebcamReady={setIsWebcamReady}
+          />
+        </div>
+
+        <div className="text-center justify-start text-yellow-300 text-3xl font-bold font-['Pretendard'] leading-10">
+          * 선글라스, 모자, 마스크 등 얼굴을 가리는 소품은 착용하지 말아주세요.
+        </div>
+      </section>
+      <section className="flex-1 flex items-end">
+        <div className="mt-6 flex w-full justify-center gap-[30px] ">
+          {capturedImage ? (
+            <>
+              <button
+                onClick={handleRetake}
+                className="w-40 rounded-lg bg-gray-500 px-6 py-3 text-lg font-bold text-white transition-all hover:bg-gray-400 disabled:cursor-not-allowed disabled:opacity-50"
+                disabled={isApiLoading}
+              >
+                다시 찍기
+              </button>
+              <button
+                onClick={handleUsePhoto}
+                className="w-40 rounded-lg bg-green-600 px-6 py-3 text-lg font-bold text-white transition-all hover:bg-green-500 disabled:cursor-not-allowed disabled:opacity-50"
+                disabled={isApiLoading}
+              >
+                {isApiLoading ? '전송 중...' : '사진 사용'}
+              </button>
+            </>
+          ) : (
+            <>
+              <Link
+                to={ROUTER_PATH.KIOSK_INFO}
+                className="inline-flex justify-center items-center gap-3  w-[310px] rounded-full h-40 bg-white text-[50px] font-bold text-blue-700"
+              >
+                <Arrowleft className="w-13 h-13" /> 이전
+              </Link>
+              <button
+                onClick={handleCapture}
+                className="flex  justify-center items-center gap-3 flex-1 rounded-full h-40 bg-blue-600 text-[50px] font-bold text-white disabled:cursor-not-allowed disabled:bg-gray-500 "
+                disabled={!modelsLoaded || !isFaceAligned}
+              >
+                <CameraIcon /> 촬영하기
+              </button>
+            </>
+          )}
+        </div>
+      </section>
     </div>
   );
 };
