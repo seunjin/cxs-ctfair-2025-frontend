@@ -50,14 +50,22 @@ const FaceCapture = ({
       >
         {capturedImage ? (
           <>
-            {' '}
-            {/* API 로딩 시 블러 및 스피너 효과 */}
-            {isDetectingFace && (
-              <div className="absolute inset-0 z-10 flex flex-col items-center justify-center backdrop-blur-md">
-                <div className="mb-8 h-16 w-16 animate-spin rounded-full border-8 border-t-blue-500 border-white"></div>
-                <p className="text-4xl font-bold text-white">얼굴 분석 중...</p>
-              </div>
-            )}
+            {/* API 로딩 상태에 따라 블러 효과를 동적으로 적용하고 트랜지션 효과를 추가합니다. */}
+            <div
+              className={clsx(
+                'absolute inset-0 z-10 flex flex-col items-center justify-center transition-all duration-500',
+                isDetectingFace ? 'backdrop-blur-md' : 'backdrop-blur-none'
+              )}
+            >
+              {isDetectingFace && (
+                <>
+                  <div className="mb-8 h-16 w-16 animate-spin rounded-full border-8 border-t-blue-500 border-white"></div>
+                  <p className="text-4xl font-bold text-white">
+                    Face Detecting...
+                  </p>
+                </>
+              )}
+            </div>
             <img
               src={capturedImage}
               alt="Captured face"
