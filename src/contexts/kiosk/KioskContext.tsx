@@ -11,6 +11,8 @@ type KioskContextType = {
   setMoodGroup: (mood: string) => void;
   capturedImage: string | null;
   setCapturedImage: (image: string | null) => void;
+  landmarks: string | null;
+  setLandmarks: (landmarks: string) => void;
 };
 
 export const KioskContext = createContext<KioskContextType | undefined>(

@@ -6,6 +6,7 @@ export const KioskProvider = ({ children }: { children: ReactNode }) => {
   const [styleGroup, setStyleGroup] = useState('');
   const [moodGroup, setMoodGroup] = useState('');
   const [capturedImage, setCapturedImage] = useState<string | null>(null);
+  const [landmarks, setLandmarks] = useState<string | null>(null);
 
   return (
     <KioskContext.Provider
@@ -20,6 +21,8 @@ export const KioskProvider = ({ children }: { children: ReactNode }) => {
         setMoodGroup,
         capturedImage,
         setCapturedImage,
+        landmarks,
+        setLandmarks,
       }}
     >
       {children}

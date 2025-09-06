@@ -5,6 +5,17 @@ import { useMutation } from '@tanstack/react-query';
 import { detectFace } from '../api/akoolApi';
 import { useKiosk } from '../contexts/kiosk';
 
+// --- 에러 코드 한글 메시지 맵 ---
+const AKOOL_ERROR_MESSAGES: { [key: number]: string } = {
+  1003: '잘못된 요청입니다. 다시 시도해주세요.',
+  1005: '요청이 너무 많습니다. 잠시 후 다시 시도해주세요.',
+  1006: 'API 사용량이 초과되었습니다. 관리자에게 문의하세요.',
+  1101: '인증에 실패했습니다. 새로고침 후 다시 시도해주세요.',
+  1102: '인증 정보가 없습니다. 새로고침 후 다시 시도해주세요.',
+  1200: '사용이 중지된 계정입니다. 관리자에게 문의하세요.',
+};
+const DEFAULT_ERROR_MESSAGE = '알 수 없는 오류가 발생했습니다.';
+
 // --- 가이드라인 및 정렬 설정 ---
 const GUIDELINE_DIAMETER_RATIO = 0.4;
 const FACE_ALIGNMENT_CONFIG = {
@@ -36,7 +47,10 @@ export const useFaceCapture = () => {
   );
   const [isCountingDown, setIsCountingDown] = useState(false);
   const [countdown, setCountdown] = useState(5);
-  const { setCapturedImage: setGlobalCapturedImage } = useKiosk();
+  const {
+    setCapturedImage: setGlobalCapturedImage,
+    setLandmarks, // KioskContext에서 setLandmarks 함수 가져오기
+  } = useKiosk();
 
   // --- 재시도 및 상태 초기화 함수 ---
   const resetCapture = useCallback(() => {
@@ -50,11 +64,28 @@ export const useFaceCapture = () => {
     mutationFn: detectFace,
     onSuccess: (data) => {
       console.log('✅ Face Detect API 성공:', data);
-      // 성공 시 특별한 액션이 필요하다면 여기에 추가
+      // data가 FaceDetectResponse 타입으로 추론되므로 안전하게 속성에 접근할 수 있습니다.
+      setLandmarks(data.landmarks_str);
     },
     onError: (error) => {
       console.error('❌ Face Detect API 실패:', error);
-      alert('얼굴 인식에 실패했습니다. 다시 시도해주세요.');
+
+      let alertMessage = DEFAULT_ERROR_MESSAGE;
+      if (error instanceof Error && error.message.startsWith('API Error')) {
+        // "API Error (1003): ..." 형식의 메시지에서 에러 코드를 추출합니다.
+        const errorCodeMatch = error.message.match(/\((\d+)\)/);
+        if (errorCodeMatch) {
+          const errorCode = parseInt(errorCodeMatch[1], 10);
+          alertMessage =
+            AKOOL_ERROR_MESSAGES[errorCode] ||
+            `오류가 발생했습니다. (코드: ${errorCode})`;
+        }
+      } else {
+        // 네트워크 오류 등 일반적인 HTTP 에러
+        alertMessage = '네트워크 오류가 발생했습니다. 잠시 후 다시 시도해주세요.';
+      }
+
+      alert(alertMessage);
       resetCapture(); // 실패 시 자동으로 상태 리셋
     },
   });
