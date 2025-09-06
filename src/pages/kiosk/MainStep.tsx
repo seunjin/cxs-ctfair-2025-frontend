@@ -1,7 +1,17 @@
 import { Link } from 'react-router-dom';
 import SettingIcon from '../../assets/icons/settings.svg?react';
 import { ROUTER_PATH } from '../../router';
+import { useKiosk } from '../../contexts/kiosk';
+import { useEffect } from 'react';
+
 const MainStep = () => {
+  const { resetState } = useKiosk();
+
+  // MainStep이 렌더링될 때마다 상태를 초기화합니다.
+  useEffect(() => {
+    resetState();
+  }, [resetState]);
+
   return (
     <div className="flex flex-col h-full pt-76 pb-15">
       <section className="pb-50">

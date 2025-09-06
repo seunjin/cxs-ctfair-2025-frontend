@@ -1,6 +1,7 @@
 import { createContext } from 'react';
 
 type KioskContextType = {
+  id: string; // 세션 ID
   sexGroup: string;
   setSexGroup: (sex: string) => void;
   ageGroup: string;
@@ -13,6 +14,7 @@ type KioskContextType = {
   setCapturedImage: (image: string | null) => void;
   landmarks: string | null;
   setLandmarks: (landmarks: string) => void;
+  resetState: () => void; // 모든 상태를 초기화하는 함수
 };
 
 export const KioskContext = createContext<KioskContextType | undefined>(
