@@ -5,6 +5,8 @@ type KioskContextType = {
   setSexGroup: (sex: string) => void;
   ageGroup: string;
   setAgeGroup: (age: string) => void;
+  capturedImage: string | null;
+  setCapturedImage: (image: string | null) => void;
 };
 
 export const KioskContext = createContext<KioskContextType | undefined>(
@@ -14,6 +16,7 @@ export const KioskContext = createContext<KioskContextType | undefined>(
 export const KioskProvider = ({ children }: { children: ReactNode }) => {
   const [sexGroup, setSexGroup] = useState('');
   const [ageGroup, setAgeGroup] = useState('');
+  const [capturedImage, setCapturedImage] = useState<string | null>(null);
 
   return (
     <KioskContext.Provider
@@ -22,6 +25,8 @@ export const KioskProvider = ({ children }: { children: ReactNode }) => {
         setSexGroup,
         ageGroup,
         setAgeGroup,
+        capturedImage,
+        setCapturedImage,
       }}
     >
       {children}

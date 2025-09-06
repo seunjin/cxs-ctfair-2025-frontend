@@ -10,7 +10,6 @@ type FaceCaptureProps = {
   userMessage: string;
   debugInfo: string;
   capturedImage: string | null;
-  isApiLoading: boolean;
   setIsWebcamReady: (isReady: boolean) => void;
 };
 
@@ -20,7 +19,6 @@ const FaceCapture = ({
   userMessage,
   // debugInfo,
   capturedImage,
-  isApiLoading,
   setIsWebcamReady,
 }: FaceCaptureProps) => {
   return (
@@ -71,11 +69,6 @@ const FaceCapture = ({
               {debugInfo}
             </div> */}
           </>
-        )}
-        {isApiLoading && (
-          <div className="absolute inset-0 z-30 flex items-center justify-center bg-black bg-opacity-50">
-            <div className="h-16 w-16 animate-spin rounded-full border-8 border-t-indigo-500 border-white"></div>
-          </div>
         )}
       </div>
     </div>

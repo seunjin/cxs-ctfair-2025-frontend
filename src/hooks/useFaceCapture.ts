@@ -1,21 +1,13 @@
 import { useRef, useEffect, useState, useCallback } from 'react';
 import Webcam from 'react-webcam';
 import { FaceLandmarker, FilesetResolver } from '@mediapipe/tasks-vision';
-import { useMutation } from '@tanstack/react-query';
-import { httpAkool } from '../api/akoolApi';
-
-// --- API 요청 타입 정의 ---
-interface AkoolApiResponse {
-  job_id: string;
-  status: string;
-  // ... 기타 응답 필드
-}
+import { useKiosk } from '../contexts/kiosk';
 
 // --- 유틸리티 함수 ---
-const dataUrlToBlob = async (dataUrl: string): Promise<Blob> => {
-  const res = await fetch(dataUrl);
-  return await res.blob();
-};
+// const dataUrlToBlob = async (dataUrl: string): Promise<Blob> => {
+//   const res = await fetch(dataUrl);
+//   return await res.blob();
+// };
 
 // --- 가이드라인 및 정렬 설정 ---
 const GUIDELINE_DIAMETER_RATIO = 0.4;
@@ -65,27 +57,7 @@ export const useFaceCapture = () => {
   );
   const [isCountingDown, setIsCountingDown] = useState(false);
   const [countdown, setCountdown] = useState(5);
-
-  const akoolApiMutation = useMutation<
-    AkoolApiResponse,
-    Error,
-    { imageBlob: Blob }
-  >({
-    mutationFn: async ({ imageBlob }) => {
-      const formData = new FormData();
-      formData.append('face_image', imageBlob, 'captured_face.jpg');
-      return httpAkool.post<AkoolApiResponse>('face/swap', formData);
-    },
-    onSuccess: (data) => {
-      console.log('Akool API 응답:', data);
-      setUserMessage('이미지 전송 성공!');
-      // 성공 후 로직 (예: onSuccess 콜백 호출)
-    },
-    onError: (error) => {
-      console.error('Akool API 에러:', error);
-      setUserMessage(`에러 발생: ${error.message}`);
-    },
-  });
+  const { setCapturedImage: setGlobalCapturedImage } = useKiosk();
 
   useEffect(() => {
     const createFaceLandmarker = async () => {
@@ -110,9 +82,7 @@ export const useFaceCapture = () => {
   }, []);
 
   useEffect(() => {
-    if (akoolApiMutation.isPending) {
-      setUserMessage('이미지를 서버로 전송하는 중...');
-    } else if (capturedImage) {
+    if (capturedImage) {
       setUserMessage('이 사진을 사용하시겠습니까?');
     } else if (!modelsLoaded) {
       setUserMessage('얼굴 인식 모델을 불러오는 중...');
@@ -123,13 +93,7 @@ export const useFaceCapture = () => {
     } else {
       setUserMessage('얼굴이 프레임 중앙에 오도록 맞춰주세요!');
     }
-  }, [
-    modelsLoaded,
-    isWebcamReady,
-    capturedImage,
-    akoolApiMutation.isPending,
-    isFaceAligned,
-  ]);
+  }, [modelsLoaded, isWebcamReady, capturedImage, isFaceAligned]);
 
   const predictWebcam = useCallback(() => {
     if (
@@ -317,18 +281,11 @@ export const useFaceCapture = () => {
 
   const handleRetake = () => {
     setCapturedImage(null);
-    akoolApiMutation.reset();
   };
 
-  const handleUsePhoto = async () => {
+  const handleUsePhoto = () => {
     if (capturedImage) {
-      try {
-        const imageBlob = await dataUrlToBlob(capturedImage);
-        akoolApiMutation.mutate({ imageBlob });
-      } catch (error) {
-        console.error('이미지 변환 실패:', error);
-        setUserMessage('이미지 처리 중 오류가 발생했습니다.');
-      }
+      setGlobalCapturedImage(capturedImage);
     }
   };
 
@@ -341,7 +298,6 @@ export const useFaceCapture = () => {
     capturedImage,
     userMessage,
     debugInfo,
-    isApiLoading: akoolApiMutation.isPending,
     isCountingDown,
     countdown,
     setIsWebcamReady,
