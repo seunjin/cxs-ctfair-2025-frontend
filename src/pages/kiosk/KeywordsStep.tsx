@@ -1,5 +1,5 @@
 import { RadioGroup } from '../../components/ui/RadioGroup';
-import { Link } from 'react-router-dom';
+import { Link, useNavigate } from 'react-router-dom';
 import { ROUTER_PATH } from '../../router';
 import { useKiosk } from '../../contexts/kiosk/useKiosk';
 import Arrowleft from '../../assets/icons/arrow-narrow-left.svg?react';
@@ -8,7 +8,7 @@ import ArrowRighgt from '../../assets/icons/arrow-narrow-right.svg?react';
 const KeywardSectionLabel = ({ text }: { text: string }) => {
   return (
     <div className="px-7 py-3 bg-white/30 rounded-[99px] shadow-[0px_2px_10px_0px_rgba(0,0,0,0.25)]  outline-[3px] outline-offset-[-3px] outline-blue-700 backdrop-blur-[1px] inline-flex justify-center items-center gap-2">
-      <div className="text-center justify-start text-blue-700 text-3xl font-bold font-['Pretendard'] leading-10">
+      <div className="text-center justify-start text-[#0033FF] text-3xl font-bold font-['Pretendard'] leading-10">
         {text}
       </div>
     </div>
@@ -16,8 +16,33 @@ const KeywardSectionLabel = ({ text }: { text: string }) => {
 };
 
 const KeywordsStep = () => {
-  const { styleGroup, setStyleGroup, moodGroup, setMoodGroup } = useKiosk();
+  const kiosk = useKiosk();
+  const rouer = useNavigate();
+  const {
+    id,
+    sexGroup,
+    ageGroup,
+    styleGroup,
+    setStyleGroup,
+    moodGroup,
+    setMoodGroup,
+    landmarks,
+    capturedImage,
+  } = kiosk;
 
+  const data = {
+    styleGroup,
+    moodGroup,
+    id,
+    sexGroup,
+    ageGroup,
+    landmarks,
+    capturedImage,
+  };
+
+  const handleNext = () => {
+    rouer(ROUTER_PATH.KIOSK_COMPLETE);
+  };
   return (
     <div className="flex h-full flex-col py-[130px] px-20">
       <section className="pb-40">
@@ -89,17 +114,17 @@ const KeywordsStep = () => {
       <section className="flex-1 flex items-end">
         <div className="flex w-full gap-[30px]">
           <Link
-            to={ROUTER_PATH.KIOSK}
-            className="inline-flex justify-center items-center gap-3 flex-1 rounded-full h-40 bg-white text-[50px] font-bold text-blue-700"
-          >
-            <Arrowleft className="w-13 h-13" /> 이전
-          </Link>
-          <Link
             to={ROUTER_PATH.KIOSK_CAPTURE}
-            className="inline-flex justify-center items-center gap-3 flex-1 rounded-full h-40 bg-blue-600 text-[50px] font-bold text-white"
+            className="inline-flex justify-center items-center gap-3 flex-1 rounded-full h-40 bg-white text-[50px] font-bold text-[#0033FF]"
           >
-            다음 <ArrowRighgt className="w-13 h-13" />
+            <Arrowleft /> 이전
           </Link>
+          <button
+            onClick={handleNext}
+            className="inline-flex justify-center items-center gap-3 flex-1 rounded-full h-40 bg-[#0033FF] text-[50px] font-bold text-white"
+          >
+            다음 <ArrowRighgt />
+          </button>
         </div>
       </section>
     </div>

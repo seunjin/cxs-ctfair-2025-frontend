@@ -59,7 +59,7 @@ const FaceCapture = ({
             >
               {isDetectingFace && (
                 <>
-                  <div className="mb-8 h-16 w-16 animate-spin rounded-full border-8 border-t-blue-500 border-white"></div>
+                  <div className="mb-8 h-16 w-16 animate-spin rounded-full border-8 border-t-[#0033FF] border-white"></div>
                   <p className="text-4xl font-bold text-white">
                     Face Detecting...
                   </p>

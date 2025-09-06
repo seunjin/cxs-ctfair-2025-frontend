@@ -1,4 +1,4 @@
-import { createContext, RefObject } from 'react';
+import { createContext, type RefObject } from 'react';
 import { FaceLandmarker } from '@mediapipe/tasks-vision';
 
 type KioskContextType = {

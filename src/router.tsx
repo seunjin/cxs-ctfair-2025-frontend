@@ -6,7 +6,6 @@ import AdminPage from './pages/AdminPage';
 import DisplayPage from './pages/DisplayPage';
 import MainStep from './pages/kiosk/MainStep';
 import InfoStep from './pages/kiosk/InfoStep';
-import CaptureStep from './pages/kiosk/CaptureStep';
 import KeywordsStep from './pages/kiosk/KeywordsStep';
 import CompleteStep from './pages/kiosk/CompleteStep';
 import PhoneStep from './pages/kiosk/PhoneStep';

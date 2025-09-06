@@ -1,4 +1,4 @@
-import React, { createContext, useContext } from 'react';
+import { createContext, useContext } from 'react';
 
 // --- 타입 정의 ---
 interface RadioOption {
@@ -98,7 +98,7 @@ export const Radio = ({
       />
       <label
         htmlFor={finalId}
-        className={`font-semibold inline-flex items-center justify-center text-white text-center outline-white backdrop-blur-sm shadow-[0px_2px_10px_0px_rgba(0,0,0,0.25)] peer-checked:bg-blue-700 peer-checked:outline-blue-600 ${labelClassName}`}
+        className={`font-semibold inline-flex items-center justify-center text-white text-center outline-white backdrop-blur-sm shadow-[0px_2px_10px_0px_rgba(0,0,0,0.25)] peer-checked:bg-[#0033FF] peer-checked:outline-[#355EFF] ${labelClassName}`}
       >
         <span>{label}</span>
       </label>

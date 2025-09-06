@@ -16,7 +16,7 @@ const MainStep = () => {
   return (
     <div className="flex flex-col h-full pt-76 pb-15">
       <section className="pb-50">
-        <h1 className="self-stretch text-center justify-start text-blue-700 text-9xl font-extrabold font-['Pretendard'] leading-[150px] [text-shadow:_0px_0px_15px_rgb(208_82_153_/_1.00)] pb-25">
+        <h1 className="self-stretch text-center justify-start text-[#0033FF] text-9xl font-extrabold font-['Pretendard'] leading-[150px] [text-shadow:_0px_0px_15px_rgb(208_82_153_/_1.00)] pb-25">
           SIMULATED
           <br />
           RUNWAY

@@ -90,16 +90,17 @@ const CaptureStep = () => {
           <div className="mt-6 flex w-full justify-center gap-[30px]">
             <button
               onClick={resetCapture}
-              className="inline-flex flex-1 items-center justify-center gap-3 rounded-full bg-white h-40 text-[50px] font-bold text-blue-700"
+              className="inline-flex flex-1 items-center justify-center gap-3 rounded-full bg-white h-40 text-[50px] font-bold text-[#0033FF]"
             >
               <RefreshIcon /> 재촬영
             </button>
             <button
               onClick={handleConfirmPhoto}
-              className="flex flex-1 items-center justify-center gap-3 rounded-full bg-blue-600 h-40 text-[50px] font-bold text-white disabled:cursor-not-allowed disabled:bg-gray-500"
+              className="flex flex-1 items-center justify-center gap-3 rounded-full bg-[#0033FF] h-40 text-[50px] font-bold text-white disabled:cursor-not-allowed disabled:text-white/40"
               disabled={isDetectingFace} // API 로딩 중에는 '다음' 버튼 비활성화
             >
-              다음 <ArrowRight className="h-13 w-13" />
+              다음{' '}
+              <ArrowRight className={clsx(isDetectingFace && 'opacity-40')} />
             </button>
           </div>
         ) : (
@@ -111,16 +112,17 @@ const CaptureStep = () => {
           >
             <Link
               to={ROUTER_PATH.KIOSK_INFO}
-              className="inline-flex w-[310px] items-center justify-center gap-3 rounded-full bg-white h-40 text-[50px] font-bold text-blue-700"
+              className="inline-flex w-[310px] items-center justify-center gap-3 rounded-full bg-white h-40 text-[50px] font-bold text-[#0033FF]"
             >
               <Arrowleft className="h-13 w-13" /> 이전
             </Link>
             <button
               onClick={handleCapture}
-              className="flex flex-1 items-center justify-center gap-3 rounded-full bg-blue-600 h-40 text-[50px] font-bold text-white disabled:cursor-not-allowed disabled:bg-gray-500 "
+              className="flex flex-1 items-center justify-center gap-3 rounded-full bg-[#0033FF] h-40 text-[50px] font-bold text-white disabled:cursor-not-allowed  disabled:text-white/40 "
               disabled={!isFaceAligned}
             >
-              <CameraIcon /> 촬영하기
+              <CameraIcon className={clsx(!isFaceAligned && 'opacity-40')} />{' '}
+              촬영하기
             </button>
           </div>
         )}

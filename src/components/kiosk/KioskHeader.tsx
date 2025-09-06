@@ -3,7 +3,7 @@ import { Link } from 'react-router-dom';
 const KioskHeader = () => {
   return (
     <header className="sticky z-100 top-0 w-full h-[136px] flex items-center justify-between px-10">
-      <h1 className="text-center justify-start text-blue-700 text-[50px] font-extrabold   [text-shadow:_0px_0px_15px_rgb(208_82_153_/_1.00)] ">
+      <h1 className="text-center justify-start text-[#0033FF] text-[50px] font-extrabold   [text-shadow:_0px_0px_15px_rgb(208_82_153_/_1.00)] ">
         SIMULATED RUNWAY
       </h1>
       <Link

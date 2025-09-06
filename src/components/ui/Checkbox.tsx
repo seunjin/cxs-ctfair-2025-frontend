@@ -1,5 +1,3 @@
-import React from 'react';
-
 interface CheckboxProps {
   /** 체크박스의 고유 ID */
   id: string;

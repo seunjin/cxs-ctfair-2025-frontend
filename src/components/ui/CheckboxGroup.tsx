@@ -1,4 +1,3 @@
-import React from 'react';
 import { Checkbox } from './Checkbox';
 
 // --- 타입 정의 ---
