@@ -1,7 +1,7 @@
 import { Outlet, useLocation } from 'react-router-dom';
 import { ROUTER_PATH } from '../router';
 import KioskHeader from '../components/kiosk/KioskHeader';
-import { KioskProvider } from '../contexts/kiosk';
+import { KioskProvider } from '../contexts/kiosk/KioskProvider';
 
 const KioskPage = () => {
   const location = useLocation();

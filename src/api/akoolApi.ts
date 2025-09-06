@@ -35,6 +35,45 @@ const akoolApiOptions: Options = {
 // 설정이 적용된 Akool API용 ky 인스턴스 생성
 const akoolApi = ky.create(akoolApiOptions);
 
+// 유틸리티 함수: 데이터 URL(Base64)을 Blob 객체로 변환
+const dataUrlToBlob = async (dataUrl: string): Promise<Blob> => {
+  const res = await fetch(dataUrl);
+  return await res.blob();
+};
+
+/**
+ * Akool API에 얼굴 인식을 요청합니다. (face-detect)
+ * @param base64ImageDataUrl base64로 인코딩된 이미지 데이터 URL (e.g., 'data:image/jpeg;base64,...')
+ * @returns API 응답 데이터
+ */
+export const detectFace = async (base64ImageDataUrl: string) => {
+  // --- 디버깅 로그 추가 ---
+  console.log('전송할 데이터 URL:', base64ImageDataUrl.substring(0, 100));
+  // --------------------
+
+  const payload = {
+    // 데이터 URL 전체를 'img' 파라미터로 전송합니다.
+    img: base64ImageDataUrl,
+    single_face: true, // 단일 얼굴 감지 모드 활성화
+  };
+
+  // face-detect API는 다른 URL을 사용하므로, 별도의 ky 인턴스로 요청합니다.
+  // 기존 akoolApiOptions에서 인증 훅만 가져와 사용합니다.
+  const api = ky.create({
+    timeout: 30000,
+    hooks: {
+      beforeRequest: akoolApiOptions.hooks!.beforeRequest,
+    },
+  });
+
+  // POST 요청을 보냅니다. 본문을 JSON 형식으로 전송합니다.
+  const response = await api.post('https://sg3.akool.com/detect', {
+    json: payload,
+  });
+
+  return response.json<unknown>();
+};
+
 /**
  * Akool API 호출을 위한 HTTP 메서드 래퍼
  * - FormData 등 다양한 요청 본문을 처리할 수 있도록 유연하게 작성합니다.

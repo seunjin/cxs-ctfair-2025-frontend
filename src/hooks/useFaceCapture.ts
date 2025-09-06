@@ -1,6 +1,7 @@
 import { useRef, useEffect, useState, useCallback } from 'react';
 import Webcam from 'react-webcam';
 import { FaceLandmarker, FilesetResolver } from '@mediapipe/tasks-vision';
+import { detectFace } from '../api/akoolApi';
 import { useKiosk } from '../contexts/kiosk';
 
 // --- 유틸리티 함수 ---
@@ -245,7 +246,7 @@ export const useFaceCapture = () => {
     return () => clearTimeout(timerId);
   }, [isCountingDown, countdown, isFaceAligned]);
 
-  const triggerCapture = () => {
+  const triggerCapture = async () => {
     if (webcamRef.current) {
       const imageSrc = webcamRef.current.getScreenshot({
         width: 1920,
@@ -253,7 +254,7 @@ export const useFaceCapture = () => {
       });
       if (imageSrc) {
         const image = new Image();
-        image.onload = () => {
+        image.onload = async () => {
           const canvas = document.createElement('canvas');
           const size = image.height;
           canvas.width = size;
@@ -264,6 +265,18 @@ export const useFaceCapture = () => {
             ctx.drawImage(image, offsetX, 0, size, size, 0, 0, size, size);
             const croppedImageSrc = canvas.toDataURL('image/jpeg', 1.0);
             setCapturedImage(croppedImageSrc);
+
+            // --- Face Detect API 호출 ---
+            try {
+              console.log('📸 Face Detect API 호출을 시작합니다...');
+              const response = await detectFace(croppedImageSrc);
+              console.log('✅ Face Detect API 성공:', response);
+            } catch (error) {
+              console.error('❌ Face Detect API 실패:', error);
+              // 사용자에게 에러 메시지를 보여줄 수도 있습니다.
+              setUserMessage('얼굴 분석 중 에러가 발생했습니다.');
+            }
+            // --------------------------
           }
         };
         image.src = imageSrc;
