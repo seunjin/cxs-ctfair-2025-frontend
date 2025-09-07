@@ -9,6 +9,7 @@ import InfoStep from './pages/kiosk/InfoStep';
 import KeywordsStep from './pages/kiosk/KeywordsStep';
 import CompleteStep from './pages/kiosk/CompleteStep';
 import PhoneStep from './pages/kiosk/PhoneStep';
+import ResultPage from './pages/kiosk/ResultPage';
 
 export const ROUTER_PATH = {
   HOME: '/',
@@ -21,6 +22,7 @@ export const ROUTER_PATH = {
   KIOSK_KEYWORDS: '/kiosk/keywords',
   KIOSK_COMPLETE: '/kiosk/complete',
   KIOSK_PHONE: '/kiosk/phone',
+  KIOSK_RESULT: '/kiosk/result/:id',
 };
 const router = createBrowserRouter([
   {
@@ -60,6 +62,10 @@ const router = createBrowserRouter([
             element: <PhoneStep />,
           },
         ],
+      },
+      {
+        path: ROUTER_PATH.KIOSK_RESULT,
+        element: <ResultPage />,
       },
       {
         path: ROUTER_PATH.ADMIN,
