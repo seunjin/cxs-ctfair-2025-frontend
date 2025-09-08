@@ -1,7 +1,11 @@
 import { Link } from 'react-router-dom';
 import { ROUTER_PATH } from '../../router';
 import ArrowRighgt from '../../assets/icons/arrow-narrow-right.svg?react';
+import { useKiosk } from '../../contexts/kiosk';
+
 const CompleteStep = () => {
+  const { resetState } = useKiosk();
+
   return (
     <div className="flex h-full flex-col py-[130px] px-20">
       <section className="pb-[63px]">
@@ -52,6 +56,7 @@ const CompleteStep = () => {
         <div className="flex w-full gap-[30px]">
           <Link
             to={ROUTER_PATH.KIOSK}
+            onClick={resetState}
             className="inline-flex justify-center items-center gap-3 w-[310px] rounded-full h-40 bg-white text-[50px] font-bold text-[#0033FF]"
           >
             종료
