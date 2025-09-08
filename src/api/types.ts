@@ -7,3 +7,8 @@ export interface FaceDetectResponse {
   seconds: number;
   trx_id: string;
 }
+
+export interface KioskResult {
+  imageUrl: string;
+  videoUrl: string;
+}
