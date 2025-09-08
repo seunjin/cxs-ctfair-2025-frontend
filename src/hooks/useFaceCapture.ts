@@ -16,18 +16,23 @@ const AKOOL_ERROR_MESSAGES: { [key: number]: string } = {
 const DEFAULT_ERROR_MESSAGE = '알 수 없는 오류가 발생했습니다.';
 
 // --- 가이드라인 및 정렬 설정 ---
+// 웹캠 영상 세로 길이 대비 가이드라인의 지름 비율
 const GUIDELINE_DIAMETER_RATIO = 0.4;
 const FACE_ALIGNMENT_CONFIG = {
+  // 가이드라인 대비 얼굴 크기의 최소 비율 (너무 작으면 인식 불가)
   MIN_FACE_SCALE: 0.6,
+  // 가이드라인 대비 얼굴 크기의 최대 비율 (너무 크면 인식 불가)
   MAX_FACE_SCALE: 1.0,
+  // 얼굴 중심이 가이드라인 중심에서 벗어날 수 있는 최대 허용치
   CENTER_OFFSET_THRESHOLD: 0.1,
 };
+// 가이드라인 타원의 스타일 설정
 const GUIDELINE_STYLE_CONFIG = {
-  radiusX: 270,
-  radiusY: 320,
-  lineWidth: 2,
-  alignedColor: '#fff',
-  unalignedColor: '#fff',
+  radiusX: 270, // 타원의 가로 반지름
+  radiusY: 320, // 타원의 세로 반지름
+  lineWidth: 2, // 선 굵기
+  alignedColor: '#fff', // 얼굴 정렬 시 색상
+  unalignedColor: '#fff', // 얼굴 미정렬 시 색상
 };
 
 export const useFaceCapture = () => {
@@ -43,18 +48,27 @@ export const useFaceCapture = () => {
   const [isCountingDown, setIsCountingDown] = useState(false);
   const [countdown, setCountdown] = useState(5);
   const {
+    capturedImage: globalCapturedImage, // [문제 2 해결] 전역 이미지 상태 구독
     setCapturedImage: setGlobalCapturedImage,
     setLandmarks,
     modelsLoaded, // 컨텍스트에서 모델 로딩 상태 가져오기
     faceLandmarker, // 컨텍스트에서 모델 인스턴스 가져오기
   } = useKiosk();
 
+  // [문제 2 해결] 전역 상태가 초기화되면 로컬 상태도 초기화
+  useEffect(() => {
+    if (globalCapturedImage === null) {
+      setCapturedImage(null);
+    }
+  }, [globalCapturedImage]);
+
   // --- 재시도 및 상태 초기화 함수 ---
   const resetCapture = useCallback(() => {
     setCapturedImage(null);
+    setGlobalCapturedImage(null); // 재촬영 시 전역 상태도 초기화
     setCountdown(5);
     setIsCountingDown(false);
-  }, []);
+  }, [setGlobalCapturedImage]);
 
   // --- React Query useMutation으로 API 호출 관리 ---
   const { mutate: runFaceDetect, isPending: isDetectingFace } = useMutation({
@@ -76,7 +90,8 @@ export const useFaceCapture = () => {
             `오류가 발생했습니다. (코드: ${errorCode})`;
         }
       } else {
-        alertMessage = '네트워크 오류가 발생했습니다. 잠시 후 다시 시도해주세요.';
+        alertMessage =
+          '네트워크 오류가 발생했습니다. 잠시 후 다시 시도해주세요.';
       }
 
       alert(alertMessage);
@@ -217,13 +232,14 @@ export const useFaceCapture = () => {
             ctx.drawImage(image, offsetX, 0, size, size, 0, 0, size, size);
             const croppedImageSrc = canvas.toDataURL('image/jpeg', 1.0);
             setCapturedImage(croppedImageSrc);
+            setGlobalCapturedImage(croppedImageSrc); // [문제 1 해결] 촬영 직후 전역 상태 업데이트
             runFaceDetect(croppedImageSrc);
           }
         };
         image.src = imageSrc;
       }
     }
-  }, [runFaceDetect]);
+  }, [runFaceDetect, setGlobalCapturedImage]);
 
   useEffect(() => {
     if (!isCountingDown) return;
@@ -249,10 +265,9 @@ export const useFaceCapture = () => {
     }
   };
 
+  // 이제 이 함수는 다음 단계로 넘어가는 역할만 함
   const handleUsePhoto = () => {
-    if (capturedImage) {
-      setGlobalCapturedImage(capturedImage);
-    }
+    // 전역 상태 설정은 triggerCapture에서 이미 처리됨
   };
 
   return {

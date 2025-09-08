@@ -27,6 +27,28 @@ export const KioskProvider = ({ children }: { children: ReactNode }) => {
   const faceLandmarker = useRef<FaceLandmarker | null>(null);
 
   useEffect(() => {
+    console.log({
+      id,
+      sexGroup,
+      ageGroup,
+      styleGroup,
+      moodGroup,
+      capturedImage,
+      landmarks,
+      modelsLoaded,
+    });
+  }, [
+    id,
+    sexGroup,
+    ageGroup,
+    styleGroup,
+    moodGroup,
+    capturedImage,
+    landmarks,
+    modelsLoaded,
+  ]);
+
+  useEffect(() => {
     const createFaceLandmarker = async () => {
       try {
         const vision = await FilesetResolver.forVisionTasks('/models');
