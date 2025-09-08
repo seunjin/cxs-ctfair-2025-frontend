@@ -2,7 +2,6 @@ import {
   useState,
   type ReactNode,
   useCallback,
-  useEffect,
   useRef,
 } from 'react';
 import { KioskContext } from './KioskContext';
@@ -23,7 +22,7 @@ export const KioskProvider = ({ children }: { children: ReactNode }) => {
   const [landmarks, setLandmarks] = useState<string | null>(null);
 
   // --- 모델 로딩 로직 비활성화 ---
-  const [modelsLoaded, setModelsLoaded] = useState(true);
+  const modelsLoaded = true; // 항상 true
   const faceLandmarker = useRef<null>(null); // 타입도 null로 변경
 
   // useEffect(() => {

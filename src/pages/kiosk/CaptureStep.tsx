@@ -13,11 +13,9 @@ import RefreshIcon from '../../assets/icons/refresh.svg?react';
 const CaptureStep = () => {
   const {
     webcamRef,
-    canvasRef,
     isFaceAligned,
     capturedImage,
     userMessage,
-    debugInfo,
     isCountingDown,
     countdown,
     isDetectingFace, // react-query가 제공하는 API 로딩 상태
@@ -64,9 +62,7 @@ const CaptureStep = () => {
         <div className="relative pb-10">
           <FaceCapture
             webcamRef={webcamRef}
-            canvasRef={canvasRef}
             userMessage={userMessage}
-            debugInfo={debugInfo}
             capturedImage={capturedImage}
             isDetectingFace={isDetectingFace}
             setIsWebcamReady={setIsWebcamReady}

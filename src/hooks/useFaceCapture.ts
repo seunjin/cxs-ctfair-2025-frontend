@@ -17,10 +17,9 @@ const DEFAULT_ERROR_MESSAGE = '알 수 없는 오류가 발생했습니다.';
 
 export const useFaceCapture = () => {
   const webcamRef = useRef<Webcam>(null);
-  const animationFrameId = useRef<number | null>(null);
 
   const [isWebcamReady, setIsWebcamReady] = useState(false);
-  const [isFaceAligned, setIsFaceAligned] = useState(true); // 항상 true로 설정
+  const isFaceAligned = true; // 항상 true로 설정
   const [capturedImage, setCapturedImage] = useState<string | null>(null);
   const [userMessage, setUserMessage] = useState('카메라를 준비하는 중...');
   const [isCountingDown, setIsCountingDown] = useState(false);
