@@ -15,62 +15,35 @@ const AKOOL_ERROR_MESSAGES: { [key: number]: string } = {
 };
 const DEFAULT_ERROR_MESSAGE = '알 수 없는 오류가 발생했습니다.';
 
-// --- 가이드라인 및 정렬 설정 ---
-// 웹캠 영상 세로 길이 대비 가이드라인의 지름 비율
-const GUIDELINE_DIAMETER_RATIO = 0.4;
-const FACE_ALIGNMENT_CONFIG = {
-  // 가이드라인 대비 얼굴 크기의 최소 비율 (너무 작으면 인식 불가)
-  MIN_FACE_SCALE: 0.6,
-  // 가이드라인 대비 얼굴 크기의 최대 비율 (너무 크면 인식 불가)
-  MAX_FACE_SCALE: 1.0,
-  // 얼굴 중심이 가이드라인 중심에서 벗어날 수 있는 최대 허용치
-  CENTER_OFFSET_THRESHOLD: 0.1,
-};
-// 가이드라인 타원의 스타일 설정
-const GUIDELINE_STYLE_CONFIG = {
-  radiusX: 270, // 타원의 가로 반지름
-  radiusY: 320, // 타원의 세로 반지름
-  lineWidth: 2, // 선 굵기
-  alignedColor: '#fff', // 얼굴 정렬 시 색상
-  unalignedColor: '#fff', // 얼굴 미정렬 시 색상
-};
-
 export const useFaceCapture = () => {
   const webcamRef = useRef<Webcam>(null);
-  const canvasRef = useRef<HTMLCanvasElement>(null);
-  const animationFrameId = useRef<number | null>(null);
 
   const [isWebcamReady, setIsWebcamReady] = useState(false);
-  const [debugInfo, setDebugInfo] = useState('');
-  const [isFaceAligned, setIsFaceAligned] = useState(false);
+  const isFaceAligned = true; // 항상 true로 설정
   const [capturedImage, setCapturedImage] = useState<string | null>(null);
   const [userMessage, setUserMessage] = useState('카메라를 준비하는 중...');
   const [isCountingDown, setIsCountingDown] = useState(false);
   const [countdown, setCountdown] = useState(5);
   const {
-    capturedImage: globalCapturedImage, // [문제 2 해결] 전역 이미지 상태 구독
+    capturedImage: globalCapturedImage,
     setCapturedImage: setGlobalCapturedImage,
     setLandmarks,
-    modelsLoaded, // 컨텍스트에서 모델 로딩 상태 가져오기
-    faceLandmarker, // 컨텍스트에서 모델 인스턴스 가져오기
+    modelsLoaded,
   } = useKiosk();
 
-  // [문제 2 해결] 전역 상태가 초기화되면 로컬 상태도 초기화
   useEffect(() => {
     if (globalCapturedImage === null) {
       setCapturedImage(null);
     }
   }, [globalCapturedImage]);
 
-  // --- 재시도 및 상태 초기화 함수 ---
   const resetCapture = useCallback(() => {
     setCapturedImage(null);
-    setGlobalCapturedImage(null); // 재촬영 시 전역 상태도 초기화
+    setGlobalCapturedImage(null);
     setCountdown(5);
     setIsCountingDown(false);
   }, [setGlobalCapturedImage]);
 
-  // --- React Query useMutation으로 API 호출 관리 ---
   const { mutate: runFaceDetect, isPending: isDetectingFace } = useMutation({
     mutationFn: detectFace,
     onSuccess: (data) => {
@@ -79,7 +52,6 @@ export const useFaceCapture = () => {
     },
     onError: (error) => {
       console.error('❌ Face Detect API 실패:', error);
-
       let alertMessage = DEFAULT_ERROR_MESSAGE;
       if (error instanceof Error && error.message.startsWith('API Error')) {
         const errorCodeMatch = error.message.match(/\((\d+)\)/);
@@ -93,7 +65,6 @@ export const useFaceCapture = () => {
         alertMessage =
           '네트워크 오류가 발생했습니다. 잠시 후 다시 시도해주세요.';
       }
-
       alert(alertMessage);
       resetCapture();
     },
@@ -103,115 +74,16 @@ export const useFaceCapture = () => {
     if (capturedImage) {
       setUserMessage('이 사진을 사용하시겠습니까?');
     } else if (!modelsLoaded) {
-      // 이 메시지는 이제 거의 표시되지 않음
       setUserMessage('얼굴 인식 모델을 불러오는 중...');
     } else if (!isWebcamReady) {
       setUserMessage('카메라를 준비하는 중...');
-    } else if (isFaceAligned) {
-      setUserMessage('OK');
     } else {
-      setUserMessage('얼굴이 프레임 중앙에 오도록 맞춰주세요!');
+      // isFaceAligned가 항상 true이므로 'OK' 메시지는 제거
+      setUserMessage('정면을 보고 촬영 버튼을 눌러주세요.');
     }
-  }, [modelsLoaded, isWebcamReady, capturedImage, isFaceAligned]);
+  }, [modelsLoaded, isWebcamReady, capturedImage]);
 
-  const predictWebcam = useCallback(() => {
-    if (
-      !webcamRef.current?.video ||
-      !canvasRef.current ||
-      !faceLandmarker.current ||
-      capturedImage
-    ) {
-      return;
-    }
-
-    const video = webcamRef.current.video;
-    const canvas = canvasRef.current;
-    if (video.readyState < 2 || video.videoWidth === 0) {
-      animationFrameId.current = requestAnimationFrame(predictWebcam);
-      return;
-    }
-
-    const results = faceLandmarker.current.detectForVideo(
-      video,
-      performance.now()
-    );
-    const ctx = canvas.getContext('2d');
-    const detectedFacesCount = results.faceLandmarks.length;
-    let faceAligned = false;
-
-    if (ctx) {
-      ctx.clearRect(0, 0, canvas.width, canvas.height);
-      const { videoWidth, videoHeight } = video;
-      const visibleSize = videoHeight;
-      const offsetX = (videoWidth - visibleSize) / 2;
-      const guidelineRadius = (visibleSize * GUIDELINE_DIAMETER_RATIO) / 2;
-      const centerX = videoWidth / 2;
-      const centerY = videoHeight / 2;
-
-      if (detectedFacesCount === 1) {
-        const landmarks = results.faceLandmarks[0];
-        const xs = landmarks.map((p) => p.x * videoWidth);
-        const ys = landmarks.map((p) => p.y * videoHeight);
-        const minX = Math.min(...xs);
-        const maxX = Math.max(...xs);
-        const minY = Math.min(...ys);
-        const maxY = Math.max(...ys);
-        const faceWidth = maxX - minX;
-        const faceHeight = maxY - minY;
-        const faceCenterX = minX + faceWidth / 2;
-        const faceCenterY = minY + faceHeight / 2;
-
-        if (faceCenterX > offsetX && faceCenterX < videoWidth - offsetX) {
-          const distance = Math.sqrt(
-            Math.pow(faceCenterX - centerX, 2) +
-              Math.pow(faceCenterY - centerY, 2)
-          );
-          const maxDistance =
-            visibleSize * FACE_ALIGNMENT_CONFIG.CENTER_OFFSET_THRESHOLD;
-          const faceScale =
-            (faceWidth + faceHeight) / 2 / (guidelineRadius * 2);
-
-          setDebugInfo(
-            `D: ${distance.toFixed(0)}/${maxDistance.toFixed(0)} | S: ${faceScale.toFixed(2)}`
-          );
-
-          if (
-            distance < maxDistance &&
-            faceScale > FACE_ALIGNMENT_CONFIG.MIN_FACE_SCALE &&
-            faceScale < FACE_ALIGNMENT_CONFIG.MAX_FACE_SCALE
-          ) {
-            faceAligned = true;
-          }
-        }
-      }
-      setIsFaceAligned(faceAligned);
-
-      ctx.save();
-      ctx.translate(videoWidth, 0);
-      ctx.scale(-1, 1);
-      ctx.beginPath();
-      ctx.strokeStyle = faceAligned
-        ? GUIDELINE_STYLE_CONFIG.alignedColor
-        : GUIDELINE_STYLE_CONFIG.unalignedColor;
-      ctx.lineWidth = GUIDELINE_STYLE_CONFIG.lineWidth;
-      const { radiusX, radiusY } = GUIDELINE_STYLE_CONFIG;
-      ctx.ellipse(centerX, centerY, radiusX, radiusY, 0, 0, 2 * Math.PI);
-      ctx.stroke();
-      ctx.restore();
-    }
-
-    animationFrameId.current = requestAnimationFrame(predictWebcam);
-  }, [capturedImage, faceLandmarker]);
-
-  useEffect(() => {
-    if (modelsLoaded && isWebcamReady && !capturedImage) {
-      animationFrameId.current = requestAnimationFrame(predictWebcam);
-    }
-    return () => {
-      if (animationFrameId.current)
-        cancelAnimationFrame(animationFrameId.current);
-    };
-  }, [modelsLoaded, isWebcamReady, capturedImage, predictWebcam]);
+  // 실시간 얼굴 인식 로직 (predictWebcam 및 관련 useEffect) 제거
 
   const triggerCapture = useCallback(() => {
     if (webcamRef.current) {
@@ -232,7 +104,7 @@ export const useFaceCapture = () => {
             ctx.drawImage(image, offsetX, 0, size, size, 0, 0, size, size);
             const croppedImageSrc = canvas.toDataURL('image/jpeg', 1.0);
             setCapturedImage(croppedImageSrc);
-            setGlobalCapturedImage(croppedImageSrc); // [문제 1 해결] 촬영 직후 전역 상태 업데이트
+            setGlobalCapturedImage(croppedImageSrc);
             runFaceDetect(croppedImageSrc);
           }
         };
@@ -243,10 +115,7 @@ export const useFaceCapture = () => {
 
   useEffect(() => {
     if (!isCountingDown) return;
-    if (!isFaceAligned) {
-      setIsCountingDown(false);
-      return;
-    }
+    // isFaceAligned 조건 제거
     if (countdown === 0) {
       triggerCapture();
       setIsCountingDown(false);
@@ -256,28 +125,26 @@ export const useFaceCapture = () => {
       setCountdown(countdown - 1);
     }, 1000);
     return () => clearTimeout(timerId);
-  }, [isCountingDown, countdown, isFaceAligned, triggerCapture]);
+  }, [isCountingDown, countdown, triggerCapture]);
 
   const handleCapture = () => {
-    if (isFaceAligned) {
-      setCountdown(5);
-      setIsCountingDown(true);
-    }
+    // isFaceAligned 조건 제거
+    setCountdown(5);
+    setIsCountingDown(true);
   };
 
-  // 이제 이 함수는 다음 단계로 넘어가는 역할만 함
   const handleUsePhoto = () => {
-    // 전역 상태 설정은 triggerCapture에서 이미 처리됨
+    // 동작 없음
   };
 
   return {
     webcamRef,
-    canvasRef,
+    canvasRef: null, // canvasRef 더 이상 사용 안함
     isWebcamReady,
     isFaceAligned,
     capturedImage,
     userMessage,
-    debugInfo,
+    debugInfo: '', // debugInfo 더 이상 사용 안함
     isCountingDown,
     countdown,
     isDetectingFace,

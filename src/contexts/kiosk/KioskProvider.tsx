@@ -2,11 +2,10 @@ import {
   useState,
   type ReactNode,
   useCallback,
-  useEffect,
   useRef,
 } from 'react';
 import { KioskContext } from './KioskContext';
-import { FaceLandmarker, FilesetResolver } from '@mediapipe/tasks-vision';
+// import { FaceLandmarker, FilesetResolver } from '@mediapipe/tasks-vision';
 
 const initialSex = '남성';
 const initialAge = '20대';
@@ -22,55 +21,31 @@ export const KioskProvider = ({ children }: { children: ReactNode }) => {
   const [capturedImage, setCapturedImage] = useState<string | null>(null);
   const [landmarks, setLandmarks] = useState<string | null>(null);
 
-  // --- 모델 로딩 로직 추가 ---
-  const [modelsLoaded, setModelsLoaded] = useState(false);
-  const faceLandmarker = useRef<FaceLandmarker | null>(null);
+  // --- 모델 로딩 로직 비활성화 ---
+  const modelsLoaded = true; // 항상 true
+  const faceLandmarker = useRef<null>(null); // 타입도 null로 변경
 
-  useEffect(() => {
-    console.log({
-      id,
-      sexGroup,
-      ageGroup,
-      styleGroup,
-      moodGroup,
-      capturedImage,
-      landmarks,
-      modelsLoaded,
-    });
-  }, [
-    id,
-    sexGroup,
-    ageGroup,
-    styleGroup,
-    moodGroup,
-    capturedImage,
-    landmarks,
-    modelsLoaded,
-  ]);
-
-  useEffect(() => {
-    const createFaceLandmarker = async () => {
-      try {
-        const vision = await FilesetResolver.forVisionTasks('/models');
-        const landmarker = await FaceLandmarker.createFromOptions(vision, {
-          baseOptions: {
-            modelAssetPath: '/models/face_landmarker.task',
-            delegate: 'GPU',
-          },
-          runningMode: 'VIDEO',
-          numFaces: 2,
-        });
-        faceLandmarker.current = landmarker;
-        setModelsLoaded(true);
-        console.log('✅ FaceLandmarker 모델 로딩 성공');
-      } catch (error) {
-        console.error('❌ FaceLandmarker 모델 로딩 실패:', error);
-      }
-    };
-    createFaceLandmarker();
-    // Provider가 언마운트될 때 모델을 정리하는 로직은 앱 구조에 따라 필요할 수 있습니다.
-    // return () => faceLandmarker.current?.close();
-  }, []);
+  // useEffect(() => {
+  //   const createFaceLandmarker = async () => {
+  //     try {
+  //       const vision = await FilesetResolver.forVisionTasks('/models');
+  //       const landmarker = await FaceLandmarker.createFromOptions(vision, {
+  //         baseOptions: {
+  //           modelAssetPath: '/models/face_landmarker.task',
+  //           delegate: 'GPU',
+  //         },
+  //         runningMode: 'VIDEO',
+  //         numFaces: 2,
+  //       });
+  //       faceLandmarker.current = landmarker;
+  //       setModelsLoaded(true);
+  //       console.log('✅ FaceLandmarker 모델 로딩 성공');
+  //     } catch (error) {
+  //       console.error('❌ FaceLandmarker 모델 로딩 실패:', error);
+  //     }
+  //   };
+  //   createFaceLandmarker();
+  // }, []);
   // --------------------------
 
   const resetState = useCallback(() => {

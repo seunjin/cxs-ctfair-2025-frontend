@@ -6,9 +6,7 @@ const COMPONENT_SIZE_CLASS = 'w-[920px]';
 
 type FaceCaptureProps = {
   webcamRef: React.Ref<Webcam>;
-  canvasRef: React.Ref<HTMLCanvasElement>;
   userMessage: string;
-  debugInfo: string;
   capturedImage: string | null;
   isDetectingFace: boolean;
   setIsWebcamReady: (isReady: boolean) => void;
@@ -16,9 +14,7 @@ type FaceCaptureProps = {
 
 const FaceCapture = ({
   webcamRef,
-  canvasRef,
   userMessage,
-  // debugInfo,
   capturedImage,
   isDetectingFace,
   setIsWebcamReady,
@@ -84,17 +80,6 @@ const FaceCapture = ({
               screenshotFormat="image/jpeg"
               screenshotQuality={1}
             />
-            <canvas
-              ref={canvasRef}
-              className="absolute left-1/2 top-1/2 z-20 h-full -translate-x-1/2 -translate-y-1/2"
-              style={{ width: `${(16 / 9) * 100}%` }}
-              width={1920}
-              height={1080}
-            />
-
-            {/* <div className="absolute bottom-2 left-2 z-30 rounded bg-black bg-opacity-50 p-2 font-mono text-xs text-white">
-              {debugInfo}
-            </div> */}
           </>
         )}
       </div>
