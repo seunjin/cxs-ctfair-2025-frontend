@@ -1,4 +1,4 @@
-import ky, { Options, HTTPError } from '@toss/ky';
+import ky from '@toss/ky';
 
 // 응답 형식에 대한 기본 인터페이스
 interface ApiResponse<T> {
@@ -7,7 +7,7 @@ interface ApiResponse<T> {
   success: boolean;
 }
 
-const kyOptions: Options = {
+const kyOptions = {
   // API 엔드포인트의 기본 URL을 환경 변수에서 가져옵니다.
   prefixUrl: import.meta.env.VITE_API_URL,
   timeout: 10000, // 10초 타임아웃
@@ -17,7 +17,7 @@ const kyOptions: Options = {
      * 주로 인증 토큰을 헤더에 추가하는 데 사용됩니다.
      */
     beforeRequest: [
-      (request) => {
+      (request: Request) => {
         // 브라우저 환경에서만 로컬 스토리지를 사용합니다.
         if (typeof window !== 'undefined') {
           const token = localStorage.getItem('accessToken');
@@ -33,7 +33,7 @@ const kyOptions: Options = {
      * 전역적인 에러 처리나 응답 데이터 가공에 사용될 수 있습니다.
      */
     afterResponse: [
-      async (_request, _options, response) => {
+      async (_request: Request, _options: any, response: Response) => {
         if (response.status === 401) {
           // 예: 토큰 만료 시 로그인 페이지로 리디렉션
           console.error('인증이 만료되었습니다. 다시 로그인해주세요.');
@@ -69,7 +69,7 @@ export const http = {
    * @param options 추가적인 ky 옵션
    * @returns Promise<T> - 제네릭으로 지정된 타입의 데이터
    */
-  get: async <T>(url: string, options?: Options): Promise<T> => {
+  get: async <T>(url: string, options?: any): Promise<T> => {
     try {
       const response = await api.get(url, options);
       const apiResponse = await response.json<ApiResponse<T>>();
@@ -77,9 +77,9 @@ export const http = {
         throw new Error(apiResponse.message || 'API 요청 처리 중 에러가 발생했습니다.');
       }
       return apiResponse.data;
-    } catch (error) {
+    } catch (error: any) {
       // HTTPError 타입인지 확인하여 더 구체적인 에러 메시지를 제공
-      if (error instanceof HTTPError) {
+      if (error.response) {
         const errorBody = await error.response.json();
         throw new Error(errorBody.message || `HTTP error! status: ${error.response.status}`);
       }
@@ -94,7 +94,7 @@ export const http = {
    * @param options 추가적인 ky 옵션
    * @returns Promise<T> - 제네릭으로 지정된 타입의 데이터
    */
-  post: async <T, R = T>(url: string, json?: R, options?: Options): Promise<T> => {
+  post: async <T, R = T>(url: string, json?: R, options?: any): Promise<T> => {
     try {
       const response = await api.post(url, { json, ...options });
       const apiResponse = await response.json<ApiResponse<T>>();
@@ -102,8 +102,8 @@ export const http = {
         throw new Error(apiResponse.message || 'API 요청 처리 중 에러가 발생했습니다.');
       }
       return apiResponse.data;
-    } catch (error) {
-      if (error instanceof HTTPError) {
+    } catch (error: any) {
+      if (error.response) {
         const errorBody = await error.response.json();
         throw new Error(errorBody.message || `HTTP error! status: ${error.response.status}`);
       }
@@ -118,7 +118,7 @@ export const http = {
    * @param options 추가적인 ky 옵션
    * @returns Promise<T> - 제네릭으로 지정된 타입의 데이터
    */
-  put: async <T, R = T>(url: string, json?: R, options?: Options): Promise<T> => {
+  put: async <T, R = T>(url: string, json?: R, options?: any): Promise<T> => {
     try {
       const response = await api.put(url, { json, ...options });
       const apiResponse = await response.json<ApiResponse<T>>();
@@ -126,8 +126,8 @@ export const http = {
         throw new Error(apiResponse.message || 'API 요청 처리 중 에러가 발생했습니다.');
       }
       return apiResponse.data;
-    } catch (error) {
-      if (error instanceof HTTPError) {
+    } catch (error: any) {
+      if (error.response) {
         const errorBody = await error.response.json();
         throw new Error(errorBody.message || `HTTP error! status: ${error.response.status}`);
       }
@@ -141,7 +141,7 @@ export const http = {
    * @param options 추가적인 ky 옵션
    * @returns Promise<T> - 제네릭으로 지정된 타입의 데이터
    */
-  delete: async <T>(url: string, options?: Options): Promise<T> => {
+  delete: async <T>(url: string, options?: any): Promise<T> => {
     try {
       const response = await api.delete(url, options);
       const apiResponse = await response.json<ApiResponse<T>>();
@@ -149,8 +149,8 @@ export const http = {
         throw new Error(apiResponse.message || 'API 요청 처리 중 에러가 발생했습니다.');
       }
       return apiResponse.data;
-    } catch (error) {
-      if (error instanceof HTTPError) {
+    } catch (error: any) {
+      if (error.response) {
         const errorBody = await error.response.json();
         throw new Error(errorBody.message || `HTTP error! status: ${error.response.status}`);
       }

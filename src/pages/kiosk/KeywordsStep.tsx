@@ -19,26 +19,13 @@ const KeywordsStep = () => {
   const kiosk = useKiosk();
   const rouer = useNavigate();
   const {
-    id,
-    sexGroup,
-    ageGroup,
     styleGroup,
     setStyleGroup,
     moodGroup,
     setMoodGroup,
-    landmarks,
-    capturedImage,
   } = kiosk;
 
-  const data = {
-    styleGroup,
-    moodGroup,
-    id,
-    sexGroup,
-    ageGroup,
-    landmarks,
-    capturedImage,
-  };
+  
 
   const handleNext = () => {
     rouer(ROUTER_PATH.KIOSK_COMPLETE);
