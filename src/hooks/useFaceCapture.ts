@@ -129,7 +129,7 @@ export const useFaceCapture = () => {
 
   const handleCapture = () => {
     // isFaceAligned 조건 제거
-    setCountdown(5);
+    setCountdown(3);
     setIsCountingDown(true);
   };
 

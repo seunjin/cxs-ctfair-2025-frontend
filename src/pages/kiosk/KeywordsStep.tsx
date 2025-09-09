@@ -18,20 +18,13 @@ const KeywardSectionLabel = ({ text }: { text: string }) => {
 const KeywordsStep = () => {
   const kiosk = useKiosk();
   const rouer = useNavigate();
-  const {
-    styleGroup,
-    setStyleGroup,
-    moodGroup,
-    setMoodGroup,
-  } = kiosk;
-
-  
+  const { styleGroup, setStyleGroup, moodGroup, setMoodGroup } = kiosk;
 
   const handleNext = () => {
     rouer(ROUTER_PATH.KIOSK_COMPLETE);
   };
   return (
-    <div className="flex h-full flex-col py-[130px] px-20">
+    <div className="flex h-full flex-col py-[40px_130px] px-20">
       <section className="pb-40">
         <h2 className="pb-15 text-center text-white text-5xl font-semibold leading-[70px]">
           원하는 의상 컨셉의
@@ -81,7 +74,7 @@ const KeywordsStep = () => {
             className="flex justify-center flex-wrap gap-5"
             labelClassName="text-[30px] tracking-[-0.01em]  h-[98px] px-[46px] rounded-[24px] outline outline-[3px] outline-offset-[-3px] " // 라벨에 적용할 클래스
             options={[
-              // { value: '랜덤', label: '랜덤' },
+              { value: '랜덤', label: '랜덤' },
               { value: '사이버펑크', label: '사이버펑크' },
               { value: '아방가르드', label: '아방가르드' },
               { value: '몽환적인', label: '몽환적인' },
