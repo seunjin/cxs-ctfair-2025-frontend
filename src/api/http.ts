@@ -1,12 +1,5 @@
 import ky from '@toss/ky';
 
-// 응답 형식에 대한 기본 인터페이스
-interface ApiResponse<T> {
-  data: T;
-  message?: string;
-  success: boolean;
-}
-
 const kyOptions = {
   // API 엔드포인트의 기본 URL을 환경 변수에서 가져옵니다.
   prefixUrl: import.meta.env.VITE_API_URL,
@@ -18,7 +11,7 @@ const kyOptions = {
      */
     beforeRequest: [
       (request: Request) => {
-        request.headers.set('Authorization', 'bearer 41f065b5-7c8f-4c29-8dad-68478c706778');
+        request.headers.set('Authorization', 'Bearer 41f065b5-7c8f-4c29-8dad-68478c706778');
         request.headers.set('Content-Type', 'application/json');
       },
     ],
@@ -66,11 +59,7 @@ export const http = {
   get: async <T>(url: string, options?: any): Promise<T> => {
     try {
       const response = await api.get(url, options);
-      const apiResponse = await response.json<ApiResponse<T>>();
-      if (!apiResponse.success) {
-        throw new Error(apiResponse.message || 'API 요청 처리 중 에러가 발생했습니다.');
-      }
-      return apiResponse.data;
+      return response.json<T>();
     } catch (error: any) {
       // HTTPError 타입인지 확인하여 더 구체적인 에러 메시지를 제공
       if (error.response) {
@@ -91,11 +80,7 @@ export const http = {
   post: async <T, R = T>(url: string, json?: R, options?: any): Promise<T> => {
     try {
       const response = await api.post(url, { json, ...options });
-      const apiResponse = await response.json<ApiResponse<T>>();
-      if (!apiResponse.success) {
-        throw new Error(apiResponse.message || 'API 요청 처리 중 에러가 발생했습니다.');
-      }
-      return apiResponse.data;
+      return response.json<T>();
     } catch (error: any) {
       if (error.response) {
         const errorBody = await error.response.json();
@@ -115,11 +100,7 @@ export const http = {
   put: async <T, R = T>(url: string, json?: R, options?: any): Promise<T> => {
     try {
       const response = await api.put(url, { json, ...options });
-      const apiResponse = await response.json<ApiResponse<T>>();
-      if (!apiResponse.success) {
-        throw new Error(apiResponse.message || 'API 요청 처리 중 에러가 발생했습니다.');
-      }
-      return apiResponse.data;
+      return response.json<T>();
     } catch (error: any) {
       if (error.response) {
         const errorBody = await error.response.json();
@@ -138,11 +119,7 @@ export const http = {
   delete: async <T>(url: string, options?: any): Promise<T> => {
     try {
       const response = await api.delete(url, options);
-      const apiResponse = await response.json<ApiResponse<T>>();
-      if (!apiResponse.success) {
-        throw new Error(apiResponse.message || 'API 요청 처리 중 에러가 발생했습니다.');
-      }
-      return apiResponse.data;
+      return response.json<T>();
     } catch (error: any) {
       if (error.response) {
         const errorBody = await error.response.json();

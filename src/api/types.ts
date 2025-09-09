@@ -12,3 +12,12 @@ export interface KioskResult {
   imageUrl: string;
   videoUrl: string;
 }
+
+export type KeywordType = 'COLOR_AND_STYLE' | 'ATMOSPHERE_AND_MOOD';
+
+export interface Keyword {
+  id: string;
+  type: KeywordType;
+  label: string;
+  value: string;
+}
