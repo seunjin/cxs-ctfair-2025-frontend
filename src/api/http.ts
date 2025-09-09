@@ -18,13 +18,7 @@ const kyOptions = {
      */
     beforeRequest: [
       (request: Request) => {
-        // 브라우저 환경에서만 로컬 스토리지를 사용합니다.
-        if (typeof window !== 'undefined') {
-          const token = localStorage.getItem('accessToken');
-          if (token) {
-            request.headers.set('Authorization', `Bearer ${token}`);
-          }
-        }
+        request.headers.set('Authorization', 'bearer 41f065b5-7c8f-4c29-8dad-68478c706778');
         request.headers.set('Content-Type', 'application/json');
       },
     ],
