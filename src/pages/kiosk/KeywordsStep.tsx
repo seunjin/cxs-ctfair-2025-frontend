@@ -41,7 +41,7 @@ const KeywordsStep = () => {
             selectedValue={styleGroup}
             onChange={setStyleGroup}
             className="flex justify-center flex-wrap gap-5"
-            labelClassName="text-[30px] tracking-[-0.01em]  h-[98px] px-[46px] rounded-[24px] outline outline-[3px] outline-offset-[-3px] " // 라벨에 적용할 클래스
+            labelClassName="text-[30px] tracking-[-0.01em]  h-[98px] px-[46px] rounded-[24px] outline outline-[3px]  outline-offset-[-3px] shadow-[0px_2px_10px_0px_rgba(0,0,0,0.25)]" // 라벨에 적용할 클래스
             options={[
               { value: '랜덤', label: '랜덤' },
               { value: '네온', label: '네온' },
@@ -72,7 +72,7 @@ const KeywordsStep = () => {
             selectedValue={moodGroup}
             onChange={setMoodGroup}
             className="flex justify-center flex-wrap gap-5"
-            labelClassName="text-[30px] tracking-[-0.01em]  h-[98px] px-[46px] rounded-[24px] outline outline-[3px] outline-offset-[-3px] " // 라벨에 적용할 클래스
+            labelClassName="text-[30px] tracking-[-0.01em]  h-[98px] px-[46px] rounded-[24px] outline outline-[3px] outline-offset-[-3px] shadow-[0px_2px_10px_0px_rgba(0,0,0,0.25)]" // 라벨에 적용할 클래스
             options={[
               { value: '랜덤', label: '랜덤' },
               { value: '사이버펑크', label: '사이버펑크' },
