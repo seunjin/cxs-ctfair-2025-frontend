@@ -4,6 +4,10 @@ import Checked from '../../assets/icons/checked.svg?react';
 import clsx from 'clsx';
 import { useNavigate } from 'react-router-dom';
 import { ROUTER_PATH } from '../../router';
+import { useKiosk } from '../../contexts/kiosk/useKiosk';
+import { useMutation } from '@tanstack/react-query';
+import { updateUserPhone } from '../../api/kioskApi';
+
 const PhoneNumberButton = ({
   number,
   onClick,
@@ -51,8 +55,21 @@ const PhoneRemoveButton = ({ onClick }: { onClick: VoidFunction }) => {
 
 const PhoneStep = () => {
   const router = useNavigate();
+  const { id } = useKiosk();
   const [phoneNumber, setPhoneNumber] = useState<string>('010');
   const [agree, setAgree] = useState<boolean>(false);
+
+  const { mutate, isPending } = useMutation({
+    mutationFn: updateUserPhone,
+    onSuccess: () => {
+      router(ROUTER_PATH.KIOSK_RESULT);
+    },
+    onError: (error) => {
+      console.error('전화번호 업데이트에 실패했습니다:', error);
+      alert(`전화번호 전송에 실패했습니다: ${error.message}`);
+    },
+  });
+
   const handleNumberClick = (number: string) => {
     // 현재 값에서 하이픈(-)을 제외하고 숫자만 남깁니다.
     const currentNumber = phoneNumber.replace(/-/g, '');
@@ -91,7 +108,10 @@ const PhoneStep = () => {
   };
 
   const handleSubmit = () => {
-    router(ROUTER_PATH.KIOSK);
+    mutate({
+      id,
+      phoneNumber: phoneNumber.replace(/-/g, ''), // 하이픈 제거 후 전송
+    });
   };
 
   return (
@@ -192,10 +212,10 @@ const PhoneStep = () => {
         <div className="flex w-full gap-[30px]">
           <button
             onClick={handleSubmit}
-            className="inline-flex justify-center items-center gap-3 flex-1 rounded-full h-40 bg-[#0033FF] text-[50px] font-bold text-white disabled:text-white/40"
-            disabled={phoneNumber.length !== 13 || !agree}
+            className="inline-flex justify-center items-center gap-3 flex-1 rounded-full h-40 bg-[#0033FF] text-[50px] font-bold text-white disabled:bg-gray-500 disabled:text-white/40"
+            disabled={phoneNumber.length !== 13 || !agree || isPending}
           >
-            입력 완료
+            {isPending ? '전송 중...' : '입력 완료'}
           </button>
         </div>
       </section>

@@ -1,5 +1,5 @@
 import { http } from './http';
-import type { KioskResult, Keyword, CreateJobPayload } from './types';
+import type { KioskResult, Keyword, CreateJobPayload, UpdateUserPhonePayload } from './types';
 
 /**
  * 키오스크 결과 데이터를 가져옵니다.
@@ -25,4 +25,13 @@ export const getKeywords = (): Promise<Keyword[]> => {
  */
 export const createJob = (payload: CreateJobPayload): Promise<unknown> => {
   return http.post('/api/jobs', payload);
+};
+
+/**
+ * 사용자의 전화번호를 업데이트합니다.
+ * @param payload 사용자 ID와 전화번호
+ * @returns Promise<unknown>
+ */
+export const updateUserPhone = (payload: UpdateUserPhonePayload): Promise<unknown> => {
+  return http.patch('/api/jobs/user-phone', payload);
 };

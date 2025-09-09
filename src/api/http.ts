@@ -111,6 +111,26 @@ export const http = {
   },
 
   /**
+   * HTTP PATCH 요청을 보냅니다.
+   * @param url 요청할 경로
+   * @param json 전송할 데이터
+   * @param options 추가적인 ky 옵션
+   * @returns Promise<T> - 제네릭으로 지정된 타입의 데이터
+   */
+  patch: async <T, R = T>(url: string, json?: R, options?: any): Promise<T> => {
+    try {
+      const response = await api.patch(url, { json, ...options });
+      return response.json<T>();
+    } catch (error: any) {
+      if (error.response) {
+        const errorBody = await error.response.json();
+        throw new Error(errorBody.message || `HTTP error! status: ${error.response.status}`);
+      }
+      throw error;
+    }
+  },
+
+  /**
    * HTTP DELETE 요청을 보냅니다.
    * @param url 요청할 경로
    * @param options 추가적인 ky 옵션

@@ -31,3 +31,8 @@ export interface CreateJobPayload {
   base64Image: string;
   landmarks: string;
 }
+
+export interface UpdateUserPhonePayload {
+  id: string;
+  phoneNumber: string;
+}
