@@ -8,7 +8,7 @@ import ArrowRighgt from '../../assets/icons/arrow-narrow-right.svg?react';
 const KeywardSectionLabel = ({ text }: { text: string }) => {
   return (
     <div className="px-7 py-3 bg-white/30 rounded-[99px] shadow-[0px_2px_10px_0px_rgba(0,0,0,0.25)]  outline-[3px] outline-offset-[-3px] outline-blue-700 backdrop-blur-[1px] inline-flex justify-center items-center gap-2">
-      <div className="text-center justify-start text-[#0033FF] text-3xl font-bold font-['Pretendard'] leading-10">
+      <div className="text-center justify-start text-[#0033FF] text-[30px] font-bold font-['Pretendard'] leading-10">
         {text}
       </div>
     </div>
@@ -25,8 +25,8 @@ const KeywordsStep = () => {
   };
   return (
     <div className="flex h-full flex-col py-[40px_130px] px-20">
-      <section className="pb-40">
-        <h2 className="pb-15 text-center text-white text-5xl font-semibold leading-[70px]">
+      <section className="">
+        <h2 className="pb-15 text-center text-white text-[50px] font-semibold leading-[70px]">
           원하는 의상 컨셉의
           <br />
           키워드를 골라주세요!
@@ -41,7 +41,7 @@ const KeywordsStep = () => {
             selectedValue={styleGroup}
             onChange={setStyleGroup}
             className="flex justify-center flex-wrap gap-5"
-            labelClassName="text-[30px] tracking-[-0.01em]  h-[98px] px-[46px] rounded-[24px] outline outline-[3px] outline-offset-[-3px] " // 라벨에 적용할 클래스
+            labelClassName="text-[30px] tracking-[-0.01em]  h-[98px] px-[46px] rounded-[24px] outline outline-[3px]  outline-offset-[-3px] shadow-[0px_2px_10px_0px_rgba(0,0,0,0.25)]" // 라벨에 적용할 클래스
             options={[
               { value: '랜덤', label: '랜덤' },
               { value: '네온', label: '네온' },
@@ -72,7 +72,7 @@ const KeywordsStep = () => {
             selectedValue={moodGroup}
             onChange={setMoodGroup}
             className="flex justify-center flex-wrap gap-5"
-            labelClassName="text-[30px] tracking-[-0.01em]  h-[98px] px-[46px] rounded-[24px] outline outline-[3px] outline-offset-[-3px] " // 라벨에 적용할 클래스
+            labelClassName="text-[30px] tracking-[-0.01em]  h-[98px] px-[46px] rounded-[24px] outline outline-[3px] outline-offset-[-3px] shadow-[0px_2px_10px_0px_rgba(0,0,0,0.25)]" // 라벨에 적용할 클래스
             options={[
               { value: '랜덤', label: '랜덤' },
               { value: '사이버펑크', label: '사이버펑크' },

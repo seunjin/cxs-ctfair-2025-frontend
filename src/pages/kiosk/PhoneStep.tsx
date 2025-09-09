@@ -51,7 +51,7 @@ const PhoneRemoveButton = ({ onClick }: { onClick: VoidFunction }) => {
 
 const PhoneStep = () => {
   const router = useNavigate();
-  const [phoneNumber, setPhoneNumber] = useState<string>('');
+  const [phoneNumber, setPhoneNumber] = useState<string>('010');
   const [agree, setAgree] = useState<boolean>(false);
   const handleNumberClick = (number: string) => {
     // 현재 값에서 하이픈(-)을 제외하고 숫자만 남깁니다.
@@ -97,7 +97,7 @@ const PhoneStep = () => {
   return (
     <div className="flex h-full flex-col py-[40px_130px] px-20">
       <section className="pb-[112px]">
-        <div className="text-center justify-start text-white text-5xl font-semibold leading-[70px] pb-[110px]">
+        <div className="text-center justify-start text-white text-[60px] font-semibold leading-[70px] pb-[110px]">
           휴대폰번호를 입력해주세요.
         </div>
 
