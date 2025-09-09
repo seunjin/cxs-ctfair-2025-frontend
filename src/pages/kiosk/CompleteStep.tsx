@@ -7,7 +7,7 @@ const CompleteStep = () => {
   const { resetState } = useKiosk();
 
   return (
-    <div className="flex h-full flex-col py-[130px] px-20">
+    <div className="flex h-full flex-col py-[40px_130px] px-20">
       <section className="pb-[63px]">
         <div className="self-stretch h-28 text-center justify-start text-[#0033FF] text-8xl font-extrabold leading-[110px] [text-shadow:_0px_0px_15px_rgb(208_82_153_/_1.00)]">
           FINISH !

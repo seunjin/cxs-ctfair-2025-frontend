@@ -95,7 +95,7 @@ const PhoneStep = () => {
   };
 
   return (
-    <div className="flex h-full flex-col py-[130px] px-20">
+    <div className="flex h-full flex-col py-[40px_130px] px-20">
       <section className="pb-[112px]">
         <div className="text-center justify-start text-white text-5xl font-semibold leading-[70px] pb-[110px]">
           휴대폰번호를 입력해주세요.

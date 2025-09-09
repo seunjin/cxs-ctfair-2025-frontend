@@ -9,7 +9,7 @@ const InfoStep = () => {
   const { sexGroup, setSexGroup, ageGroup, setAgeGroup } = useKiosk();
 
   return (
-    <div className="flex h-full flex-col py-[130px] px-20">
+    <div className="flex h-full flex-col py-[40px_130px] px-20">
       <section className="pb-40">
         <h2 className="pb-15 text-center text-white text-5xl font-semibold">
           1. 체험하실 성별을 선택해 주세요.

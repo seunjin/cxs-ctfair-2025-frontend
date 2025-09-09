@@ -33,14 +33,14 @@ const CaptureStep = () => {
   };
 
   return (
-    <div className="flex h-full flex-col px-20 py-[130px]">
+    <div className="flex h-full flex-col px-20 py-[40px_130px]">
       {/* 1. 상단 텍스트 영역 */}
       <section>
-        <div className="relative pb-[50px]">
+        <div className="relative pb-[60px]">
           {isCountingDown && <CaptureCountdown count={countdown} />}
           <h2
             className={clsx(
-              "flex h-[140px] items-center justify-center text-center text-5xl font-semibold text-white font-['Pretendard'] leading-[70px]",
+              "flex h-[140px] items-center justify-center text-center text-[50px] font-semibold text-white font-['Pretendard'] leading-[70px]",
               { 'opacity-0': isCountingDown || capturedImage }
             )}
           >
@@ -50,11 +50,12 @@ const CaptureStep = () => {
           </h2>
           <h2
             className={clsx(
-              'absolute inset-0 flex h-[140px] items-center justify-center text-center text-5xl font-semibold text-white font-["Pretendard"] leading-[70px] transition-opacity',
+              'absolute inset-0 flex h-[140px] items-center justify-center text-center text-[50px] font-semibold text-white font-["Pretendard"] leading-[70px] transition-opacity',
               { 'opacity-0': !capturedImage }
             )}
           >
-            이 사진으로 진행할까요?
+            이 사진으로 진행할까요? <br />
+            다시 촬영하려면 재촬영을 눌러주세요.
           </h2>
         </div>
 
@@ -70,12 +71,17 @@ const CaptureStep = () => {
         </div>
 
         {/* 3. 하단 주의사항 텍스트 영역 */}
-        <div className="text-center text-3xl font-bold leading-10 text-yellow-300">
-          {capturedImage
-            ? '* 촬영된 사진은 이미지 생성 후 즉시 파기됩니다.'
-            : isCountingDown
-              ? ''
-              : '* 선글라스, 모자, 마스크 등 얼굴을 가리는 소품은 착용하지 말아주세요.'}
+        <div className="text-center text-[40px] font-bold leading-[1.4] text-white">
+          {capturedImage ? (
+            '* 촬영된 사진은 이미지 생성 후 즉시 파기됩니다.'
+          ) : isCountingDown ? (
+            ''
+          ) : (
+            <>
+              * 선글라스, 모자, 마스크 등 얼굴을 가리는 소품은 <br />
+              착용하지 말아주세요.
+            </>
+          )}
         </div>
       </section>
 
