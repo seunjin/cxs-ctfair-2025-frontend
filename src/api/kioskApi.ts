@@ -1,5 +1,12 @@
 import { http } from './http';
-import type { KioskResult, Keyword, CreateJobPayload, UpdateUserPhonePayload } from './types';
+import type {
+  KioskResult,
+  Keyword,
+  CreateJobPayload,
+  UpdateUserPhonePayload,
+  Content,
+  ContentPresentedPayload,
+} from './types';
 
 /**
  * 키오스크 결과 데이터를 가져옵니다.
@@ -34,4 +41,21 @@ export const createJob = (payload: CreateJobPayload): Promise<unknown> => {
  */
 export const updateUserPhone = (payload: UpdateUserPhonePayload): Promise<unknown> => {
   return http.patch('/api/jobs/user-phone', payload);
+};
+
+/**
+ * @description 스크린에 표시될 초기 영상 재생 목록을 가져옵니다.
+ * @returns Promise<Content[]>
+ */
+export const getPlaylist = (): Promise<Content[]> => {
+  return http.get<Content[]>('/api/contents/playlist');
+};
+
+/**
+ * @description 영상 재생이 완료되었음을 서버에 알립니다.
+ * @param payload 재생 완료된 콘텐츠의 ID
+ * @returns Promise<unknown>
+ */
+export const reportContentPresented = (payload: ContentPresentedPayload): Promise<unknown> => {
+  return http.post('/api/contents/presented', payload);
 };
