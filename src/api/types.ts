@@ -21,3 +21,13 @@ export interface Keyword {
   label: string;
   value: string;
 }
+
+export interface CreateJobPayload {
+  id: string;
+  sexGroup: string;
+  ageGroup: number;
+  styleGroup: string;
+  moodGroup: string;
+  base64Image: string;
+  landmarks: string;
+}

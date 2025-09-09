@@ -5,9 +5,8 @@ import { ROUTER_PATH } from '../../router';
 import { useKiosk } from '../../contexts/kiosk/useKiosk';
 import Arrowleft from '../../assets/icons/arrow-narrow-left.svg?react';
 import ArrowRighgt from '../../assets/icons/arrow-narrow-right.svg?react';
-import { getKeywords } from '../../api/kioskApi';
-import type { Keyword } from '../../api/types';
-import { useQuery } from '@tanstack/react-query';
+import { createJob, getKeywords } from '../../api/kioskApi';
+import { useMutation, useQuery } from '@tanstack/react-query';
 
 const KeywardSectionLabel = ({ text }: { text: string }) => {
   return (
@@ -21,26 +20,67 @@ const KeywardSectionLabel = ({ text }: { text: string }) => {
 
 const KeywordsStep = () => {
   const kiosk = useKiosk();
-  const rouer = useNavigate();
-  const { styleGroup, setStyleGroup, moodGroup, setMoodGroup } = kiosk;
+  const router = useNavigate();
+  const {
+    id,
+    sexGroup,
+    ageGroup,
+    styleGroup,
+    moodGroup,
+    capturedImage,
+    landmarks,
+    setStyleGroup,
+    setMoodGroup,
+  } = kiosk;
 
   const { data } = useQuery({
     queryKey: ['keywords'],
     queryFn: getKeywords,
   });
 
+  const { mutate, isPending } = useMutation({
+    mutationFn: createJob,
+    onSuccess: () => {
+      router(ROUTER_PATH.KIOSK_COMPLETE);
+    },
+    onError: (error) => {
+      // TODO: 사용자에게 에러를 표시하는 UI (예: 토스트 메시지)
+      console.error('작업 생성에 실패했습니다:', error);
+      alert(`작업 생성에 실패했습니다: ${error.message}`);
+    },
+  });
+
   const handleNext = () => {
-    rouer(ROUTER_PATH.KIOSK_COMPLETE);
+    if (!capturedImage || !landmarks || !styleGroup || !moodGroup) {
+      alert('모든 필수 정보가 선택되지 않았습니다.');
+      // TODO: 더 나은 사용자 피드백 UI로 교체
+      return;
+    }
+
+    mutate({
+      id,
+      sexGroup,
+      ageGroup: Number(ageGroup), // string을 number로 변환
+      styleGroup,
+      moodGroup,
+      base64Image: capturedImage,
+      landmarks,
+    });
   };
 
   const styleKeywords = useMemo(
-    () => (data ?? []).filter((kw) => kw.type === 'COLOR_AND_STYLE').map((kw) => ({ value: kw.value, label: kw.label })),
-    [data],
+    () =>
+      (data ?? [])
+        .filter((kw) => kw.type === 'COLOR_AND_STYLE')
+        .map((kw) => ({ value: kw.value, label: kw.label })),
+    [data]
   );
   const moodKeywords = useMemo(
     () =>
-      (data ?? []).filter((kw) => kw.type === 'ATMOSPHERE_AND_MOOD').map((kw) => ({ value: kw.value, label: kw.label })),
-    [data],
+      (data ?? [])
+        .filter((kw) => kw.type === 'ATMOSPHERE_AND_MOOD')
+        .map((kw) => ({ value: kw.value, label: kw.label })),
+    [data]
   );
 
   return (
@@ -91,9 +131,10 @@ const KeywordsStep = () => {
           </Link>
           <button
             onClick={handleNext}
-            className="inline-flex justify-center items-center gap-3 flex-1 rounded-full h-40 bg-[#0033FF] text-[50px] font-bold text-white"
+            disabled={isPending}
+            className="inline-flex justify-center items-center gap-3 flex-1 rounded-full h-40 bg-[#0033FF] text-[50px] font-bold text-white disabled:bg-gray-500"
           >
-            다음 <ArrowRighgt />
+            {isPending ? '처리 중...' : '다음'} <ArrowRighgt />
           </button>
         </div>
       </section>

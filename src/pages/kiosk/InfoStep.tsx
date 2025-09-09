@@ -21,8 +21,8 @@ const InfoStep = () => {
           className="flex justify-center flex-wrap gap-6"
           labelClassName="text-5xl w-[246px] h-[150px] rounded-[32px] outline outline-[3px] outline-offset-[-3px] " // 라벨에 적용할 클래스
           options={[
-            { value: '남성', label: '남성' },
-            { value: '여성', label: '여성' },
+            { value: 'man', label: '남성' },
+            { value: 'woman', label: '여성' },
           ]} // API로 받아온 옵션 사용
         />
       </section>
@@ -38,11 +38,11 @@ const InfoStep = () => {
           className="flex justify-center flex-wrap gap-6 "
           labelClassName="text-5xl w-[246px] h-[150px] rounded-[32px] outline outline-[3px] outline-offset-[-3px] " // 라벨에 적용할 클래스
           options={[
-            { value: '20대', label: '20대' },
-            { value: '30대', label: '30대' },
-            { value: '40대', label: '40대' },
-            { value: '50대', label: '50대' },
-            { value: '60대', label: '60대' },
+            { value: '20', label: '20대' },
+            { value: '30', label: '30대' },
+            { value: '40', label: '40대' },
+            { value: '50', label: '50대' },
+            { value: '60', label: '60대' },
           ]} // API로 받아온 옵션 사용
         />
       </section>
