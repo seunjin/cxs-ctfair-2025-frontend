@@ -51,7 +51,7 @@ const api = ky.create(kyOptions);
  * - ky의 기본 기능을 사용하면서, 공통 로직과 타입 추론을 강화합니다.
  * - .json<T>() 호출을 내부적으로 처리하여 사용 편의성을 높입니다.
  */
-import { ApiResponse } from './types';
+import type { ApiResponse } from './types';
 
 export const http = {
   /**
