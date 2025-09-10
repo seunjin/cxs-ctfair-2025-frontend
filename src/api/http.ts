@@ -1,9 +1,10 @@
 import ky from '@toss/ky';
 
+// VITE_API_URL을 모듈 최상단에서 한 번만 읽어옵니다.
+const API_BASE_URL = import.meta.env.VITE_API_URL || '';
+
 const kyOptions = {
-  // API 엔드포인트의 기본 URL을 환경 변수에서 가져옵니다.
-  // 환경 변수가 없으면 빈 문자열을 기본값으로 사용하여 상대 경로 요청이 가능하도록 합니다. (주로 로컬 개발용)
-  prefixUrl: import.meta.env.VITE_API_URL || '',
+  // prefixUrl 옵션을 제거하여 초기화 시점의 의존성을 없앱니다.
   timeout: 10000, // 10초 타임아웃
   hooks: {
     /**
@@ -58,8 +59,12 @@ export const http = {
    * @returns Promise<T> - 제네릭으로 지정된 타입의 데이터
    */
   get: async <T>(url: string, options?: any): Promise<T> => {
+    // API 호출 시점에 전체 URL을 직접 조합합니다.
+    const fullUrl = `${API_BASE_URL}${url}`;
+    console.log(`[Request] GET ${fullUrl}`); // 최종 디버깅 로그
+
     try {
-      const response = await api.get(url, options);
+      const response = await api.get(fullUrl, options);
       return response.json<T>();
     } catch (error: any) {
       // HTTPError 타입인지 확인하여 더 구체적인 에러 메시지를 제공
@@ -79,8 +84,10 @@ export const http = {
    * @returns Promise<T> - 제네릭으로 지정된 타입의 데이터
    */
   post: async <T, R = T>(url: string, json?: R, options?: any): Promise<T> => {
+    const fullUrl = `${API_BASE_URL}${url}`;
+    console.log(`[Request] POST ${fullUrl}`);
     try {
-      const response = await api.post(url, { json, ...options });
+      const response = await api.post(fullUrl, { json, ...options });
       return response.json<T>();
     } catch (error: any) {
       if (error.response) {
@@ -99,8 +106,10 @@ export const http = {
    * @returns Promise<T> - 제네릭으로 지정된 타입의 데이터
    */
   put: async <T, R = T>(url: string, json?: R, options?: any): Promise<T> => {
+    const fullUrl = `${API_BASE_URL}${url}`;
+    console.log(`[Request] PUT ${fullUrl}`);
     try {
-      const response = await api.put(url, { json, ...options });
+      const response = await api.put(fullUrl, { json, ...options });
       return response.json<T>();
     } catch (error: any) {
       if (error.response) {
@@ -119,8 +128,10 @@ export const http = {
    * @returns Promise<T> - 제네릭으로 지정된 타입의 데이터
    */
   patch: async <T, R = T>(url: string, json?: R, options?: any): Promise<T> => {
+    const fullUrl = `${API_BASE_URL}${url}`;
+    console.log(`[Request] PATCH ${fullUrl}`);
     try {
-      const response = await api.patch(url, { json, ...options });
+      const response = await api.patch(fullUrl, { json, ...options });
       return response.json<T>();
     } catch (error: any) {
       if (error.response) {
@@ -138,8 +149,10 @@ export const http = {
    * @returns Promise<T> - 제네릭으로 지정된 타입의 데이터
    */
   delete: async <T>(url: string, options?: any): Promise<T> => {
+    const fullUrl = `${API_BASE_URL}${url}`;
+    console.log(`[Request] DELETE ${fullUrl}`);
     try {
-      const response = await api.delete(url, options);
+      const response = await api.delete(fullUrl, options);
       return response.json<T>();
     } catch (error: any) {
       if (error.response) {
