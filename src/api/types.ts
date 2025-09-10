@@ -8,9 +8,18 @@ export interface FaceDetectResponse {
   trx_id: string;
 }
 
+/**
+ * @description 서버에서 내려오는 모든 API 응답의 표준 형식입니다.
+ */
+export interface ApiResponse<T> {
+  code: number;
+  data: T;
+  message: string;
+}
+
 export interface KioskResult {
   imageUrl: string;
-  videoUrl: string;
+  videoUrl:string;
 }
 
 export type KeywordType = 'COLOR_AND_STYLE' | 'ATMOSPHERE_AND_MOOD';
