@@ -86,15 +86,13 @@ const KeywordsStep = () => {
   return (
     <div className="flex h-full flex-col py-[40px_130px] px-20">
       <section className="">
-        <h2 className="pb-15 text-center text-white text-[50px] font-semibold leading-[70px]">
-          원하는 의상 컨셉의
-          <br />
-          키워드를 골라주세요!
+        <h2 className="pb-15 text-center text-white text-[50px] font-semibold">
+          원하는 컨셉의 키워드를 골라주세요!
         </h2>
 
         <div className="mb-[75px]">
           <div className="flex justify-center mb-[30px]">
-            <KeywardSectionLabel text="색감&스타일" />
+            <KeywardSectionLabel text="STYLE" />
           </div>
           <RadioGroup
             name="colorStyle"
@@ -108,7 +106,7 @@ const KeywordsStep = () => {
 
         <div className="">
           <div className="flex justify-center mb-[30px]">
-            <KeywardSectionLabel text="분위기&무드" />
+            <KeywardSectionLabel text="MOOD" />
           </div>
           <RadioGroup
             name="moodGroup"
