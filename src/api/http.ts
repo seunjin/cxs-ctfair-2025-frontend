@@ -58,24 +58,9 @@ export const http = {
    */
   get: async <T>(url: string, options?: any): Promise<T> => {
     try {
-      // --- DEBUG START ---
-      const baseUrl = import.meta.env.VITE_API_URL;
-      console.log(`[DEBUG] VITE_API_URL: ${baseUrl}`);
-      if (baseUrl) {
-        const finalUrl = new URL(url, baseUrl).href;
-        console.log(`[DEBUG] Attempting to GET: ${finalUrl}`);
-      } else {
-        console.error('[DEBUG] VITE_API_URL is not set!');
-      }
-      // --- DEBUG END ---
-
       const response = await api.get(url, options);
       return response.json<T>();
     } catch (error: any) {
-      // --- DEBUG START ---
-      console.error(`[DEBUG] GET request failed for path: ${url}`, error);
-      // --- DEBUG END ---
-
       // HTTPError 타입인지 확인하여 더 구체적인 에러 메시지를 제공
       if (error.response) {
         const errorBody = await error.response.json();
