@@ -51,6 +51,8 @@ const api = ky.create(kyOptions);
  * - ky의 기본 기능을 사용하면서, 공통 로직과 타입 추론을 강화합니다.
  * - .json<T>() 호출을 내부적으로 처리하여 사용 편의성을 높입니다.
  */
+import { ApiResponse } from './types';
+
 export const http = {
   /**
    * HTTP GET 요청을 보냅니다.
@@ -64,8 +66,12 @@ export const http = {
     console.log(`[Request] GET ${fullUrl}`); // 최종 디버깅 로그
 
     try {
-      const response = await api.get(fullUrl, options);
-      return response.json<T>();
+      const response = await api.get(fullUrl, options).json<ApiResponse<T>>();
+      if (response.code === 200) {
+        return response.data;
+      } else {
+        throw new Error(response.message || 'API Error');
+      }
     } catch (error: any) {
       // HTTPError 타입인지 확인하여 더 구체적인 에러 메시지를 제공
       if (error.response) {
@@ -87,8 +93,12 @@ export const http = {
     const fullUrl = `${API_BASE_URL}${url}`;
     console.log(`[Request] POST ${fullUrl}`);
     try {
-      const response = await api.post(fullUrl, { json, ...options });
-      return response.json<T>();
+      const response = await api.post(fullUrl, { json, ...options }).json<ApiResponse<T>>();
+      if (response.code === 200) {
+        return response.data;
+      } else {
+        throw new Error(response.message || 'API Error');
+      }
     } catch (error: any) {
       if (error.response) {
         const errorBody = await error.response.json();
@@ -109,8 +119,12 @@ export const http = {
     const fullUrl = `${API_BASE_URL}${url}`;
     console.log(`[Request] PUT ${fullUrl}`);
     try {
-      const response = await api.put(fullUrl, { json, ...options });
-      return response.json<T>();
+      const response = await api.put(fullUrl, { json, ...options }).json<ApiResponse<T>>();
+      if (response.code === 200) {
+        return response.data;
+      } else {
+        throw new Error(response.message || 'API Error');
+      }
     } catch (error: any) {
       if (error.response) {
         const errorBody = await error.response.json();
@@ -131,8 +145,12 @@ export const http = {
     const fullUrl = `${API_BASE_URL}${url}`;
     console.log(`[Request] PATCH ${fullUrl}`);
     try {
-      const response = await api.patch(fullUrl, { json, ...options });
-      return response.json<T>();
+      const response = await api.patch(fullUrl, { json, ...options }).json<ApiResponse<T>>();
+      if (response.code === 200) {
+        return response.data;
+      } else {
+        throw new Error(response.message || 'API Error');
+      }
     } catch (error: any) {
       if (error.response) {
         const errorBody = await error.response.json();
@@ -152,8 +170,12 @@ export const http = {
     const fullUrl = `${API_BASE_URL}${url}`;
     console.log(`[Request] DELETE ${fullUrl}`);
     try {
-      const response = await api.delete(fullUrl, options);
-      return response.json<T>();
+      const response = await api.delete(fullUrl, options).json<ApiResponse<T>>();
+      if (response.code === 200) {
+        return response.data;
+      } else {
+        throw new Error(response.message || 'API Error');
+      }
     } catch (error: any) {
       if (error.response) {
         const errorBody = await error.response.json();
