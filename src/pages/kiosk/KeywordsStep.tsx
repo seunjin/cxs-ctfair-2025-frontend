@@ -36,8 +36,6 @@ const KeywordsStep = () => {
   const { data } = useQuery({
     queryKey: ['keywords'],
     queryFn: getKeywords,
-    refetchOnWindowFocus: false,
-    gcTime: 0,
   });
 
   const { mutate, isPending } = useMutation({
