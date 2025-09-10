@@ -60,7 +60,7 @@ const CaptureStep = () => {
         </div>
 
         {/* 2. 웹캠 / 캡처 이미지 표시 영역 */}
-        <div className="relative pb-10">
+        <div className="relative pb-20">
           <FaceCapture
             webcamRef={webcamRef}
             userMessage={userMessage}

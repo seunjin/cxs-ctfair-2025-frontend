@@ -37,8 +37,10 @@ const FaceCapture = ({
             {/* API 로딩 상태에 따라 블러 효과를 동적으로 적용하고 트랜지션 효과를 추가합니다. */}
             <div
               className={clsx(
-                'absolute inset-0 z-10 flex flex-col items-center justify-center  duration-500',
-                isDetectingFace ? 'backdrop-blur-[100px]' : 'backdrop-blur-none'
+                'absolute inset-0 z-10 flex flex-col items-center justify-center  ',
+                isDetectingFace
+                  ? 'backdrop-blur-[100px]'
+                  : 'backdrop-blur-none duration-500'
               )}
               style={{ transitionProperty: 'backdrop-filter' }}
             >
@@ -46,7 +48,7 @@ const FaceCapture = ({
                 <>
                   <div className="mb-8 h-16 w-16 animate-spin rounded-full border-8 border-t-[#0033FF] border-white"></div>
                   <p className="text-4xl font-bold text-white">
-                    Face Detecting...
+                    얼굴을 확인 중입니다.
                   </p>
                 </>
               )}

@@ -1,14 +1,9 @@
-import {
-  useState,
-  type ReactNode,
-  useCallback,
-  useRef,
-} from 'react';
+import { useState, type ReactNode, useCallback, useRef } from 'react';
 import { KioskContext } from './KioskContext';
 // import { FaceLandmarker, FilesetResolver } from '@mediapipe/tasks-vision';
 
-const initialSex = '남성';
-const initialAge = '20대';
+const initialSex = '';
+const initialAge = '';
 const initialStyle = '랜덤';
 const initialMood = '랜덤';
 

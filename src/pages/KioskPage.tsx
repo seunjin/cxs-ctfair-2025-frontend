@@ -19,7 +19,7 @@ const KioskPage = () => {
         "bg-[url('/src/assets/images/kiosk/kiosk-bg.png')] bg-contain bg-no-repeat bg-center min-h-[100dvh] flex items-center justify-center"
       )}
     >
-      <div className="grid w-[1080px] h-[1920px] mx-auto border-l border-r border-gray-300">
+      <div className="grid w-[1080px] h-[1920px] mx-auto border-gray-300">
         <KioskProvider>
           <div
             style={{ display: isCapturePage ? 'none' : 'block' }}
