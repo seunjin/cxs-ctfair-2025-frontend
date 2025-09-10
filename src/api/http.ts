@@ -2,7 +2,8 @@ import ky from '@toss/ky';
 
 const kyOptions = {
   // API 엔드포인트의 기본 URL을 환경 변수에서 가져옵니다.
-  prefixUrl: import.meta.env.VITE_API_URL,
+  // 환경 변수가 없으면 빈 문자열을 기본값으로 사용하여 상대 경로 요청이 가능하도록 합니다. (주로 로컬 개발용)
+  prefixUrl: import.meta.env.VITE_API_URL || '',
   timeout: 10000, // 10초 타임아웃
   hooks: {
     /**

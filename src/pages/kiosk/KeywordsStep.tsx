@@ -33,6 +33,15 @@ const KeywordsStep = () => {
     setMoodGroup,
   } = kiosk;
 
+  console.log({
+    id,
+    sexGroup,
+    ageGroup,
+    styleGroup,
+    moodGroup,
+    capturedImage,
+    landmarks,
+  });
   const { data } = useQuery({
     queryKey: ['keywords'],
     queryFn: getKeywords,
@@ -41,6 +50,7 @@ const KeywordsStep = () => {
   const { mutate, isPending } = useMutation({
     mutationFn: createJob,
     onSuccess: () => {
+      console.log('SUCCESS : createJob ');
       router(ROUTER_PATH.KIOSK_COMPLETE);
     },
     onError: (error) => {
