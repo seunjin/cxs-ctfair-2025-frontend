@@ -62,7 +62,7 @@ const FaceCapture = ({
         ) : (
           <>
             {(!capturedImage || !isDetectingFace) && (
-              <div className="absolute top-10 left-1/2  -translate-x-1/2 z-100 flex flex-col justify-center">
+              <div className="absolute top-6 left-1/2  -translate-x-1/2 z-100 flex flex-col justify-center">
                 <div className="flex justify-center ">
                   <div
                     className={clsx(
