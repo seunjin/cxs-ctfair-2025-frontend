@@ -7,7 +7,7 @@ import { ROUTER_PATH } from '../../router';
 import { useKiosk } from '../../contexts/kiosk/useKiosk';
 import { useMutation } from '@tanstack/react-query';
 import { updateUserPhone } from '../../api/kioskApi';
-
+import LoaderIcon from '../../assets/icons/loader.svg?react';
 const PhoneNumberButton = ({
   number,
   onClick,
@@ -215,7 +215,11 @@ const PhoneStep = () => {
             className="inline-flex justify-center items-center gap-3 flex-1 rounded-full h-40 bg-[#0033FF] text-[50px] font-bold text-white disabled:text-white/40"
             disabled={phoneNumber.length !== 13 || !agree || isPending}
           >
-            {isPending ? '전송 중...' : '입력 완료'}
+            {isPending ? (
+              <LoaderIcon className="w-13 h-13 animate-spin opacity-40" />
+            ) : (
+              <>입력 완료</>
+            )}
           </button>
         </div>
       </section>

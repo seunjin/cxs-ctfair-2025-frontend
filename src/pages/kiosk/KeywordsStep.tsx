@@ -7,6 +7,7 @@ import Arrowleft from '../../assets/icons/arrow-narrow-left.svg?react';
 import ArrowRighgt from '../../assets/icons/arrow-narrow-right.svg?react';
 import { createJob, getKeywords } from '../../api/kioskApi';
 import { useMutation, useQuery } from '@tanstack/react-query';
+import LoaderIcon from '../../assets/icons/loader.svg?react';
 
 const KeywardSectionLabel = ({ text }: { text: string }) => {
   return (
@@ -109,19 +110,7 @@ const KeywordsStep = () => {
             selectedValue={styleGroup}
             onChange={setStyleGroup}
             className="flex justify-center flex-wrap gap-5"
-            labelClassName="text-[30px] tracking-[-0.01em]  h-[98px] px-[46px] rounded-[24px] outline outline-[3px]  outline-offset-[-3px] shadow-[0px_2px_10px_0px_rgba(0,0,0,0.25)]" // 라벨에 적용할 클래스
             options={styleKeywords}
-            // options={[
-            //   { value: '', label: '랜덤' },
-            //   { value: '', label: '네온' },
-            //   { value: '', label: '메탈' },
-            //   { value: '', label: '비대칭' },
-            //   { value: '', label: '모노톤' },
-            //   { value: '', label: '데님' },
-            //   { value: '', label: '럭셔리' },
-            //   { value: '', label: '스트릿' },
-            //   { value: '', label: '테크웨어' },
-            // ]}
           />
         </div>
 
@@ -134,20 +123,7 @@ const KeywordsStep = () => {
             selectedValue={moodGroup}
             onChange={setMoodGroup}
             className="flex justify-center flex-wrap gap-5"
-            labelClassName="text-[30px] tracking-[-0.01em]  h-[98px] px-[46px] rounded-[24px] outline outline-[3px] outline-offset-[-3px] shadow-[0px_2px_10px_0px_rgba(0,0,0,0.25)]" // 라벨에 적용할 클래스
             options={moodKeywords}
-            // options={[
-            //   { value: '', label: '랜덤' },
-            //   { value: '', label: '몽환적인' },
-            //   { value: '', label: '미래적인' },
-            //   { value: '', label: '초현실주의' },
-            //   { value: '', label: '다크' },
-            //   { value: '', label: '팝아트' },
-            //   { value: '', label: '고딕' },
-            //   { value: '', label: '해체주의' },
-            //   { value: '', label: '실험적인' },
-            //   { value: '', label: '사이버펑크' },
-            // ]}
           />
         </div>
       </section>
@@ -165,7 +141,13 @@ const KeywordsStep = () => {
             disabled={isPending}
             className="inline-flex justify-center items-center gap-3 flex-1 rounded-full h-40 bg-[#0033FF] text-[50px] font-bold text-white disabled:bg-gray-500"
           >
-            {isPending ? '처리 중...' : '다음'} <ArrowRighgt />
+            {isPending ? (
+              <LoaderIcon className="w-13 h-13 animate-spin opacity-40" />
+            ) : (
+              <>
+                다음 <ArrowRighgt />
+              </>
+            )}
           </button>
         </div>
       </section>
