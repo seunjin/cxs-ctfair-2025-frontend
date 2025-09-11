@@ -66,7 +66,7 @@ const InfoStep = () => {
             className="inline-flex justify-center items-center gap-3 flex-1 rounded-full h-40 bg-[#0033FF] text-[50px] font-bold text-white disabled:text-white/40"
             disabled={!sexGroup || !ageGroup}
           >
-            다음{' '}
+            다음
             <ArrowRighgt
               className={clsx((!sexGroup || !ageGroup) && 'opacity-40')}
             />
