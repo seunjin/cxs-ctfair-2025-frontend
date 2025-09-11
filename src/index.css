@@ -23,11 +23,19 @@ body {
     'Segoe UI Emoji',
     'Segoe UI Symbol',
     sans-serif;
+}
+
+/* KioskPage 내에서만 스크롤바 숨기기 */
+#kiosk-container {
   -ms-overflow-style: none; /* IE and Edge */
   scrollbar-width: none; /* Firefox */
 }
 
-/* Webkit 브라우저 스크롤바 숨기기 */
-::-webkit-scrollbar {
+#kiosk-container::-webkit-scrollbar {
   display: none;
+}
+
+/* react-layered-dialog 스크롤 잠금 */
+body:has([data-scroll-lock='true']) {
+  overflow: hidden;
 }

@@ -2,21 +2,21 @@ import { Link, useLocation } from 'react-router-dom';
 import { ROUTER_PATH } from '../../router';
 import clsx from 'clsx';
 
-type CreditLabelProps = {
-  type: 'NEW' | 'AKL' | 'REP';
-};
-const CreditLabel = ({ type }: CreditLabelProps) => {
-  return (
-    <div className="h-7 px-3.5 py-1.5 bg-neutral-100 rounded-md outline outline-1 outline-offset-[-1px] outline-slate-200 inline-flex justify-start items-center gap-0.5">
-      <div className="justify-start text-neutral-600 text-xs font-medium font-['Pretendard'] leading-3">
-        {type}
-      </div>
-      <div className="justify-start text-blue-700 text-xs font-bold font-['Pretendard'] leading-3">
-        342
-      </div>
-    </div>
-  );
-};
+// type CreditLabelProps = {
+//   type: 'NEW' | 'AKL' | 'REP';
+// };
+// const CreditLabel = ({ type }: CreditLabelProps) => {
+//   return (
+//     <div className="h-7 px-3.5 py-1.5 bg-neutral-100 rounded-md outline outline-1 outline-offset-[-1px] outline-slate-200 inline-flex justify-start items-center gap-0.5">
+//       <div className="justify-start text-neutral-600 text-xs font-medium font-['Pretendard'] leading-3">
+//         {type}
+//       </div>
+//       <div className="justify-start text-blue-700 text-xs font-bold font-['Pretendard'] leading-3">
+//         342
+//       </div>
+//     </div>
+//   );
+// };
 
 const AdminHeader = () => {
   const location = useLocation();
@@ -53,11 +53,11 @@ const AdminHeader = () => {
           </Link>
         </div>
       </div>
-      <div className="flex gap-1">
+      {/* <div className="flex gap-1">
         <CreditLabel type="NEW" />
         <CreditLabel type="AKL" />
         <CreditLabel type="REP" />
-      </div>
+      </div> */}
     </header>
   );
 };

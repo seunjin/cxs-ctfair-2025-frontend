@@ -4,12 +4,12 @@ import type { ButtonHTMLAttributes } from 'react';
 type AdminButton = {
   variants?: 'primary' | 'secondary' | 'outline';
   size?: 36 | 48 | 50;
-  clssName?: string;
+  className?: string;
 } & ButtonHTMLAttributes<HTMLButtonElement>;
 const AdminButton = ({
   variants = 'primary',
   size = 36,
-  clssName,
+  className,
   ...rest
 }: AdminButton) => {
   const variantsPalette = () => {
@@ -32,11 +32,12 @@ const AdminButton = ({
   return (
     <button
       className={clsx(
-        'rounded-[8px] px-5 cursor-pointer disabled:cursor-not-allowed',
+        'rounded-[8px] px-5 cursor-pointer ',
+        'disabled:cursor-not-allowed disabled:bg-[#E4E7E9] disabled:text-white',
 
         variantsPalette(),
         Size(),
-        clssName
+        className
       )}
       {...rest}
     />

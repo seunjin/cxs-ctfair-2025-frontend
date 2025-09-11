@@ -13,11 +13,11 @@ export const Modal = (props: ModalProps) => {
     dimmed = true,
     closeOnOverlayClick = true,
     dismissable = true,
+    scrollLock = true,
   } = props;
 
   const { dialogs, closeDialog } = useDialogs();
   const panelRef = useRef<HTMLDivElement>(null);
-  const closeButtonRef = useRef<HTMLButtonElement>(null);
 
   const handleClose = useCallback(() => {
     closeDialog(id);
@@ -29,7 +29,6 @@ export const Modal = (props: ModalProps) => {
     closeOnEscape: dismissable,
     onEscape: handleClose,
     autoFocus: true,
-    focusRef: closeButtonRef,
     closeOnOutsideClick: closeOnOverlayClick,
     onOutsideClick: handleClose,
     outsideClickRef: panelRef,
@@ -41,6 +40,7 @@ export const Modal = (props: ModalProps) => {
       style={{ zIndex }}
       role="dialog"
       aria-modal="true"
+      data-scroll-lock={scrollLock}
     >
       <motion.div
         className={`absolute inset-0 ${dimmed ? 'bg-black/20' : 'bg-transparent'}`}
@@ -51,17 +51,12 @@ export const Modal = (props: ModalProps) => {
       />
       <motion.div
         ref={panelRef}
-        className="relative rounded-lg bg-white p-6 shadow-lg min-w-[400px]"
+        className="relative rounded-[20px] bg-white p-[30px] min-w-[400px] max-h-[80dvh] overflow-auto"
         initial={{ scale: 0.95, opacity: 0 }}
         animate={{ scale: 1, opacity: 1 }}
         exit={{ scale: 0.95, opacity: 0 }}
         transition={{ duration: 0.2, ease: 'easeInOut' }}
       >
-        <div className="absolute top-2 right-2">
-          <button ref={closeButtonRef} onClick={handleClose}>
-            X{/* <X className="h-4 w-4" /> */}
-          </button>
-        </div>
         <div>{children}</div>
       </motion.div>
     </div>

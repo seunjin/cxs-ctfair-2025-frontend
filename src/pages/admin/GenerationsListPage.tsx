@@ -4,8 +4,11 @@ import AdminButton from '../../components/ui/AdminButton';
 import adminApi from '../../api/adminApi';
 import { Fragment, useRef, useCallback } from 'react';
 import type { GenerationsResponse } from '../../api/types';
+import { useDialogs } from '../../lib/dialogs';
+import KeywordManagerModal from '../../templates/modal/KeywordManagerModal';
 
 const GenerationsListPage = () => {
+  const { openDialog } = useDialogs();
   const {
     data,
     error,
@@ -71,7 +74,13 @@ const GenerationsListPage = () => {
           <span>총 생성 수</span>
           <span className="text-cxs-primary ml-0.5">({totalCount})</span>
         </div>
-        <AdminButton>키워드 변경하기</AdminButton>
+        <AdminButton
+          onClick={() =>
+            openDialog('modal', { children: <KeywordManagerModal /> })
+          }
+        >
+          키워드 변경하기
+        </AdminButton>
       </div>
 
       {allGenerations.length > 0 ? (
