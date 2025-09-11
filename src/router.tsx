@@ -12,6 +12,9 @@ import PhoneStep from './pages/kiosk/PhoneStep';
 import ResultPage from './pages/kiosk/ResultPage';
 import { queryClient } from './queryClient';
 import { getKeywords } from './api/kioskApi';
+import GenerationsListPage from './pages/admin/GenerationsListPage';
+import GenerationDetailPage from './pages/admin/GenerationDetailPage';
+import VideoManagementPage from './pages/admin/VideoManagementPage';
 
 // 키워드 데이터를 미리 로드하는 loader 함수
 const keywordsLoader = async () => {
@@ -35,6 +38,9 @@ export const ROUTER_PATH = {
   KIOSK_COMPLETE: '/kiosk/complete',
   KIOSK_PHONE: '/kiosk/phone',
   KIOSK_RESULT: '/kiosk/result/:id',
+  ADMIN_GENERATIONS: '/admin/generations',
+  ADMIN_GENERATION_DETAIL: '/admin/generations/:id',
+  ADMIN_VIDEOS: '/admin/videos',
 };
 const router = createBrowserRouter([
   {
@@ -83,6 +89,24 @@ const router = createBrowserRouter([
       {
         path: ROUTER_PATH.ADMIN,
         element: <AdminPage />,
+        children: [
+          {
+            index: true,
+            element: <GenerationsListPage />,
+          },
+          {
+            path: ROUTER_PATH.ADMIN_GENERATIONS,
+            element: <GenerationsListPage />,
+          },
+          {
+            path: ROUTER_PATH.ADMIN_GENERATION_DETAIL,
+            element: <GenerationDetailPage />,
+          },
+          {
+            path: ROUTER_PATH.ADMIN_VIDEOS,
+            element: <VideoManagementPage />,
+          },
+        ],
       },
       {
         path: ROUTER_PATH.DISPLAY,
