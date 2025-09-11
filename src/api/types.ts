@@ -19,7 +19,7 @@ export interface ApiResponse<T> {
 
 export interface KioskResult {
   imageUrl: string;
-  videoUrl:string;
+  videoUrl: string;
 }
 
 export type KeywordType = 'COLOR_AND_STYLE' | 'ATMOSPHERE_AND_MOOD';
@@ -59,4 +59,27 @@ export interface Content {
  */
 export interface ContentPresentedPayload {
   contentId: number;
+}
+
+export type SmsStatus = 'SENT' | 'FAILED' | 'PENDING' | 'NOT_FOUND';
+
+export type AdminContentStatus = 'PROCESSING' | 'COMPLETE' | 'FAILED';
+
+/**
+ * @description GET /api/admin/contents API의 응답 배열에 포함될 콘텐츠 객체의 타입입니다.
+ */
+export interface Generation {
+  contentId: number;
+  imageUrl?: string;
+  smsStatus: SmsStatus;
+  status: AdminContentStatus;
+  createdAt: string; // JSON으로 직렬화된 날짜는 string으로 받는 것이 안전합니다.
+}
+
+/**
+ * @description GET /api/admin/contents API의 응답 데이터 타입입니다. (무한 스크롤용)
+ */
+export interface GenerationsResponse {
+  list: Generation[];
+  count?: number; // 전체 항목 개수
 }

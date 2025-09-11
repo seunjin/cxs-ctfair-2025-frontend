@@ -12,10 +12,6 @@ export default defineConfig({
         target: 'https://api.cxsctfair.com',
         changeOrigin: true,
       },
-      '/admin': {
-        target: 'https://api.cxsctfair.com',
-        changeOrigin: true,
-      },
     },
   },
 });
