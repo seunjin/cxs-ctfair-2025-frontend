@@ -10,6 +10,18 @@ import KeywordsStep from './pages/kiosk/KeywordsStep';
 import CompleteStep from './pages/kiosk/CompleteStep';
 import PhoneStep from './pages/kiosk/PhoneStep';
 import ResultPage from './pages/kiosk/ResultPage';
+import { queryClient } from './queryClient';
+import { getKeywords } from './api/kioskApi';
+
+// 키워드 데이터를 미리 로드하는 loader 함수
+const keywordsLoader = async () => {
+  const query = {
+    queryKey: ['keywords'],
+    queryFn: getKeywords,
+  };
+  // 캐시된 데이터가 없으면 API를 호출하고, 있으면 캐시된 데이터를 반환합니다.
+  return await queryClient.ensureQueryData(query);
+};
 
 export const ROUTER_PATH = {
   HOME: '/',
@@ -36,6 +48,7 @@ const router = createBrowserRouter([
       {
         path: ROUTER_PATH.KIOSK,
         element: <KioskPage />,
+        loader: keywordsLoader, // KioskPage에 loader 연결
         children: [
           {
             index: true, // /kiosk 경로의 기본 페이지
