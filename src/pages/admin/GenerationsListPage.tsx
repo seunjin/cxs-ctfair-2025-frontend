@@ -4,8 +4,11 @@ import AdminButton from '../../components/ui/AdminButton';
 import adminApi from '../../api/adminApi';
 import { Fragment, useRef, useCallback } from 'react';
 import type { GenerationsResponse } from '../../api/types';
+import { useDialogs } from '../../lib/dialogs';
+import KeywordManagerModal from '../../templates/modal/KeywordManagerModal';
 
 const GenerationsListPage = () => {
+  const { openDialog } = useDialogs();
   const {
     data,
     error,
@@ -69,9 +72,15 @@ const GenerationsListPage = () => {
       <div className="flex justify-between pb-6">
         <div className="text-[20px] font-semibold">
           <span>총 생성 수</span>
-          <span className="text-cxs-primary">({totalCount})</span>
+          <span className="text-cxs-primary ml-0.5">({totalCount})</span>
         </div>
-        <AdminButton>키워드 변경하기</AdminButton>
+        <AdminButton
+          onClick={() =>
+            openDialog('modal', { children: <KeywordManagerModal /> })
+          }
+        >
+          키워드 변경하기
+        </AdminButton>
       </div>
 
       {allGenerations.length > 0 ? (
@@ -81,6 +90,7 @@ const GenerationsListPage = () => {
               {page.list.map((item) => (
                 <GenerationsListItem
                   key={item.contentId}
+                  contentId={item.contentId}
                   status={item.status}
                   smsStatus={item.smsStatus}
                   imageUrl={item.imageUrl}
@@ -100,10 +110,6 @@ const GenerationsListPage = () => {
       {/* 다음 페이지 로딩 중 인디케이터 */}
       {isFetchingNextPage && (
         <p className="text-center py-4">다음 목록을 불러오는 중...</p>
-      )}
-
-      {!hasNextPage && allGenerations.length > 0 && (
-        <p className="text-center py-4 text-gray-500">마지막 페이지입니다.</p>
       )}
     </div>
   );

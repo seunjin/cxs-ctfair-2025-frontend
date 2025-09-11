@@ -1,5 +1,5 @@
 import { http } from './http';
-import type { GenerationsResponse } from './types';
+import type { GenerationsResponse, KeywordsResponse, UpdateKeywordsPayload } from './types';
 
 interface GetGenerationsParams {
   lastId?: number;
@@ -23,10 +23,23 @@ const adminApi = {
       searchParams.append('status', status);
     }
 
-    // http.ts에서 '/api'를 붙여주므로 '/admin/contents'가 맞습니다.
-    return http.get<GenerationsResponse>(
-      `/api/admin/contents?${searchParams.toString()}`
-    );
+    // http.ts에서 '/api'를 붙여주지 않으므로 전체 경로를 명시해야 합니다.
+    return http.get<GenerationsResponse>(`/api/admin/contents?${searchParams.toString()}`);
+  },
+
+  /**
+   * @description 키워드 목록을 가져옵니다.
+   */
+  getKeywords: () => {
+    return http.get<KeywordsResponse>('/api/admin/keywords');
+  },
+
+  /**
+   * @description 키워드 목록을 업데이트합니다.
+   */
+  updateKeywords: (keywords: UpdateKeywordsPayload) => {
+    // http.put의 두 번째 인자로 payload를 직접 전달합니다.
+    return http.put('/api/admin/keywords', keywords);
   },
 };
 

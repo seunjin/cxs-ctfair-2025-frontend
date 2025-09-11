@@ -12,6 +12,7 @@ const KioskPage = () => {
 
   return (
     <main
+      id="kiosk-container"
       className={clsx(
         isMainPage
           ? `bg-[url('/src/assets/images/kiosk/kiosk-bg.png')]`

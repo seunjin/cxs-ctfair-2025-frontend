@@ -13,7 +13,10 @@ const kyOptions = {
      */
     beforeRequest: [
       (request: Request) => {
-        request.headers.set('Authorization', 'Bearer 41f065b5-7c8f-4c29-8dad-68478c706778');
+        request.headers.set(
+          'Authorization',
+          'Bearer 41f065b5-7c8f-4c29-8dad-68478c706778'
+        );
         request.headers.set('Content-Type', 'application/json');
       },
     ],
@@ -63,7 +66,6 @@ export const http = {
   get: async <T>(url: string, options?: any): Promise<T> => {
     // API 호출 시점에 전체 URL을 직접 조합합니다.
     const fullUrl = `${API_BASE_URL}${url}`;
-    console.log(`[Request] GET ${fullUrl}`); // 최종 디버깅 로그
 
     try {
       const response = await api.get(fullUrl, options).json<ApiResponse<T>>();
@@ -76,7 +78,9 @@ export const http = {
       // HTTPError 타입인지 확인하여 더 구체적인 에러 메시지를 제공
       if (error.response) {
         const errorBody = await error.response.json();
-        throw new Error(errorBody.message || `HTTP error! status: ${error.response.status}`);
+        throw new Error(
+          errorBody.message || `HTTP error! status: ${error.response.status}`
+        );
       }
       throw error;
     }
@@ -93,7 +97,9 @@ export const http = {
     const fullUrl = `${API_BASE_URL}${url}`;
     console.log(`[Request] POST ${fullUrl}`);
     try {
-      const response = await api.post(fullUrl, { json, ...options }).json<ApiResponse<T>>();
+      const response = await api
+        .post(fullUrl, { json, ...options })
+        .json<ApiResponse<T>>();
       if (response.code === 200) {
         return response.data;
       } else {
@@ -102,7 +108,9 @@ export const http = {
     } catch (error: any) {
       if (error.response) {
         const errorBody = await error.response.json();
-        throw new Error(errorBody.message || `HTTP error! status: ${error.response.status}`);
+        throw new Error(
+          errorBody.message || `HTTP error! status: ${error.response.status}`
+        );
       }
       throw error;
     }
@@ -119,7 +127,9 @@ export const http = {
     const fullUrl = `${API_BASE_URL}${url}`;
     console.log(`[Request] PUT ${fullUrl}`);
     try {
-      const response = await api.put(fullUrl, { json, ...options }).json<ApiResponse<T>>();
+      const response = await api
+        .put(fullUrl, { json, ...options })
+        .json<ApiResponse<T>>();
       if (response.code === 200) {
         return response.data;
       } else {
@@ -128,7 +138,9 @@ export const http = {
     } catch (error: any) {
       if (error.response) {
         const errorBody = await error.response.json();
-        throw new Error(errorBody.message || `HTTP error! status: ${error.response.status}`);
+        throw new Error(
+          errorBody.message || `HTTP error! status: ${error.response.status}`
+        );
       }
       throw error;
     }
@@ -145,7 +157,9 @@ export const http = {
     const fullUrl = `${API_BASE_URL}${url}`;
     console.log(`[Request] PATCH ${fullUrl}`);
     try {
-      const response = await api.patch(fullUrl, { json, ...options }).json<ApiResponse<T>>();
+      const response = await api
+        .patch(fullUrl, { json, ...options })
+        .json<ApiResponse<T>>();
       if (response.code === 200) {
         return response.data;
       } else {
@@ -154,7 +168,9 @@ export const http = {
     } catch (error: any) {
       if (error.response) {
         const errorBody = await error.response.json();
-        throw new Error(errorBody.message || `HTTP error! status: ${error.response.status}`);
+        throw new Error(
+          errorBody.message || `HTTP error! status: ${error.response.status}`
+        );
       }
       throw error;
     }
@@ -170,7 +186,9 @@ export const http = {
     const fullUrl = `${API_BASE_URL}${url}`;
     console.log(`[Request] DELETE ${fullUrl}`);
     try {
-      const response = await api.delete(fullUrl, options).json<ApiResponse<T>>();
+      const response = await api
+        .delete(fullUrl, options)
+        .json<ApiResponse<T>>();
       if (response.code === 200) {
         return response.data;
       } else {
@@ -179,7 +197,9 @@ export const http = {
     } catch (error: any) {
       if (error.response) {
         const errorBody = await error.response.json();
-        throw new Error(errorBody.message || `HTTP error! status: ${error.response.status}`);
+        throw new Error(
+          errorBody.message || `HTTP error! status: ${error.response.status}`
+        );
       }
       throw error;
     }

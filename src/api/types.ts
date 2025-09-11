@@ -83,3 +83,23 @@ export interface GenerationsResponse {
   list: Generation[];
   count?: number; // 전체 항목 개수
 }
+
+export interface StyleMoodKeyword {
+  value: string; // 영어
+  label: string; // 한글
+}
+
+export interface KeywordsResponse {
+  fixedKeywords: string[];
+  styleKeywords: StyleMoodKeyword[];
+  moodKeywords: StyleMoodKeyword[];
+}
+
+/**
+ * @description PUT /api/admin/keywords API에 전송할 데이터의 타입입니다.
+ */
+export interface UpdateKeywordsPayload {
+  fixedKeyword: string[];
+  styleKeyword: StyleMoodKeyword[];
+  moodKeyword: StyleMoodKeyword[];
+}
