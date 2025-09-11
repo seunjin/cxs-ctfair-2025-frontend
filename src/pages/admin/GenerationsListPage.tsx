@@ -68,50 +68,52 @@ const GenerationsListPage = () => {
   const totalCount = data.pages[0]?.count ?? allGenerations.length;
 
   return (
-    <div className="w-[min(calc(100%-100px),1200px)] h-full mx-auto">
-      <div className="flex justify-between pb-6">
-        <div className="text-[20px] font-semibold">
-          <span>총 생성 수</span>
-          <span className="text-cxs-primary ml-0.5">({totalCount})</span>
+    <main className="py-[40px_120px]">
+      <div className="w-[min(calc(100%-100px),1200px)] h-full mx-auto">
+        <div className="flex justify-between pb-6">
+          <div className="text-[20px] font-semibold">
+            <span>총 생성 수</span>
+            <span className="text-cxs-primary ml-0.5">({totalCount})</span>
+          </div>
+          <AdminButton
+            onClick={() =>
+              openDialog('modal', { children: <KeywordManagerModal /> })
+            }
+          >
+            키워드 변경하기
+          </AdminButton>
         </div>
-        <AdminButton
-          onClick={() =>
-            openDialog('modal', { children: <KeywordManagerModal /> })
-          }
-        >
-          키워드 변경하기
-        </AdminButton>
+
+        {allGenerations.length > 0 ? (
+          <div className="grid grid-cols-4 gap-[50px_20px]">
+            {data.pages.map((page, i) => (
+              <Fragment key={i}>
+                {page.list.map((item) => (
+                  <GenerationsListItem
+                    key={item.contentId}
+                    contentId={item.contentId}
+                    status={item.status}
+                    smsStatus={item.smsStatus}
+                    imageUrl={item.imageUrl}
+                    createdAt={new Date(item.createdAt)}
+                  />
+                ))}
+              </Fragment>
+            ))}
+          </div>
+        ) : (
+          <p className="text-center py-10">생성된 콘텐츠가 없습니다.</p>
+        )}
+
+        {/* 감시 대상 요소: 이 요소가 보이면 다음 페이지를 불러옵니다. */}
+        <div ref={observerRef} style={{ height: '1px' }} />
+
+        {/* 다음 페이지 로딩 중 인디케이터 */}
+        {isFetchingNextPage && (
+          <p className="text-center py-4">다음 목록을 불러오는 중...</p>
+        )}
       </div>
-
-      {allGenerations.length > 0 ? (
-        <div className="grid grid-cols-4 gap-[50px_20px]">
-          {data.pages.map((page, i) => (
-            <Fragment key={i}>
-              {page.list.map((item) => (
-                <GenerationsListItem
-                  key={item.contentId}
-                  contentId={item.contentId}
-                  status={item.status}
-                  smsStatus={item.smsStatus}
-                  imageUrl={item.imageUrl}
-                  createdAt={new Date(item.createdAt)}
-                />
-              ))}
-            </Fragment>
-          ))}
-        </div>
-      ) : (
-        <p className="text-center py-10">생성된 콘텐츠가 없습니다.</p>
-      )}
-
-      {/* 감시 대상 요소: 이 요소가 보이면 다음 페이지를 불러옵니다. */}
-      <div ref={observerRef} style={{ height: '1px' }} />
-
-      {/* 다음 페이지 로딩 중 인디케이터 */}
-      {isFetchingNextPage && (
-        <p className="text-center py-4">다음 목록을 불러오는 중...</p>
-      )}
-    </div>
+    </main>
   );
 };
 

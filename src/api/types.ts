@@ -103,3 +103,19 @@ export interface UpdateKeywordsPayload {
   styleKeyword: StyleMoodKeyword[];
   moodKeyword: StyleMoodKeyword[];
 }
+
+export type SexGroup = 'man' | 'woman';
+
+/**
+ * @description GET /api/admin/contents/{contentId} API의 응답 타입입니다.
+ */
+export interface GenerationDetail {
+  keyword: string;
+  sexGroup: SexGroup;
+  ageGroup: number;
+  status: AdminContentStatus;
+  smsStatus: SmsStatus;
+  imageUrl: string;
+  videoUrl: string;
+  createdAt: Date;
+}
