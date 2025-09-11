@@ -10,6 +10,8 @@ import utc from 'dayjs/plugin/utc';
 import timezone from 'dayjs/plugin/timezone';
 import { useNavigate } from 'react-router-dom';
 import { ROUTER_PATH } from '../../router';
+import clsx from 'clsx';
+import { Icon } from '../ui/Icon';
 export type SmsStatus = 'SENT' | 'FAILED' | 'PENDING' | 'NOT_FOUND';
 
 export type AdminContentStatus = 'PROCESSING' | 'COMPLETE' | 'FAILED';
@@ -37,15 +39,36 @@ const GenerationsListItem = ({
     .tz('Asia/Seoul')
     .format('YYYY.MM.DD HH:mm:ss');
 
+  const handleMoveDetailPage = () => {
+    if (status == 'COMPLETE')
+      router(`${ROUTER_PATH.ADMIN_GENERATIONS}/${String(contentId)}`);
+  };
+  const handleRetry = (e: React.MouseEvent<HTMLButtonElement, MouseEvent>) => {
+    e.stopPropagation();
+    console.log('target');
+  };
   return (
     <div
-      className="cursor-pointer"
-      onClick={() =>
-        router(`${ROUTER_PATH.ADMIN_GENERATIONS}/${String(contentId)}`)
-      }
+      role="button"
+      className={clsx(status == 'COMPLETE' && 'cursor-pointer')}
+      onClick={handleMoveDetailPage}
     >
-      <div className="aspect-square rounded-[12px] bg-[#DCE2E6] border-1 border-[#E9E9E9] mb-3 overflow-hidden">
-        <img src={imageUrl} alt="" />
+      <div className="relative aspect-square rounded-[12px] bg-[#DCE2E6] border-1 border-[#E9E9E9] mb-3 overflow-hidden">
+        {/* FAILED */}
+        {status === 'FAILED' && (
+          <button
+            className="inline-flex items-center gap-[5px] absolute top-1/2 left-1/2 -translate-1/2 bg-white border-1 border-[#D3DBE1] rounded-full h-[38px] px-5 text-[#4C5862] text-[14px] font-medium whitespace-pre-wrap"
+            onClick={handleRetry}
+          >
+            <Icon.RotateCcw className="size-[12px]" /> 생성 재시도
+          </button>
+        )}
+        {/* PROCESSING */}
+        {status === 'PROCESSING' && (
+          <Icon.LoaderCircle className="absolute top-1/2 left-1/2 -translate-1/2 size-[27px] stroke-white animate-spin" />
+        )}
+        {/* COMPLETE */}
+        {status === 'COMPLETE' && <img src={imageUrl} alt="" />}
       </div>
       <div className="flex justify-between items-center">
         <div className="flex gap-1">

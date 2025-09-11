@@ -69,7 +69,7 @@ const GenerationsListPage = () => {
       <div className="flex justify-between pb-6">
         <div className="text-[20px] font-semibold">
           <span>총 생성 수</span>
-          <span className="text-cxs-primary">({totalCount})</span>
+          <span className="text-cxs-primary ml-0.5">({totalCount})</span>
         </div>
         <AdminButton>키워드 변경하기</AdminButton>
       </div>
