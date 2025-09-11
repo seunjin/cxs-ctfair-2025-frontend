@@ -95,65 +95,66 @@ const KeywordsStep = () => {
   );
 
   return (
-    <div className="flex h-full flex-col py-[40px_130px] px-20">
-      <section className="">
-        <h2 className="pb-15 text-center text-white text-[50px] font-semibold">
-          원하는 컨셉의 키워드를 골라주세요!
-        </h2>
+    <>
+      <div className="flex h-full flex-col py-[40px_130px] px-20">
+        <section className="">
+          <h2 className="pb-15 text-center text-white text-[50px] font-semibold">
+            원하는 컨셉의 키워드를 골라주세요!
+          </h2>
 
-        <div className="mb-[75px]">
-          <div className="flex justify-center mb-[30px]">
-            <KeywardSectionLabel text="STYLE" />
+          <div className="mb-[75px]">
+            <div className="flex justify-center mb-[30px]">
+              <KeywardSectionLabel text="STYLE" />
+            </div>
+            <RadioGroup
+              name="colorStyle"
+              selectedValue={styleGroup}
+              onChange={setStyleGroup}
+              className="flex justify-center flex-wrap gap-5"
+              labelClassName="text-[30px] tracking-[-0.01em]  h-[98px] px-[46px] rounded-[24px] outline outline-[3px]  outline-offset-[-3px] shadow-[0px_2px_10px_0px_rgba(0,0,0,0.25)]" // 라벨에 적용할 클래스
+              options={styleKeywords}
+            />
           </div>
-          <RadioGroup
-            name="colorStyle"
-            selectedValue={styleGroup}
-            onChange={setStyleGroup}
-            className="flex justify-center flex-wrap gap-5"
-            labelClassName="text-[30px] tracking-[-0.01em]  h-[98px] px-[46px] rounded-[24px] outline outline-[3px]  outline-offset-[-3px] shadow-[0px_2px_10px_0px_rgba(0,0,0,0.25)]" // 라벨에 적용할 클래스
-            options={styleKeywords}
-          />
-        </div>
 
-        <div className="">
-          <div className="flex justify-center mb-[30px]">
-            <KeywardSectionLabel text="MOOD" />
+          <div className="">
+            <div className="flex justify-center mb-[30px]">
+              <KeywardSectionLabel text="MOOD" />
+            </div>
+            <RadioGroup
+              name="moodGroup"
+              selectedValue={moodGroup}
+              onChange={setMoodGroup}
+              className="flex justify-center flex-wrap gap-5"
+              labelClassName="text-[30px] tracking-[-0.01em]  h-[98px] px-[46px] rounded-[24px] outline outline-[3px]  outline-offset-[-3px] shadow-[0px_2px_10px_0px_rgba(0,0,0,0.25)]" // 라벨에 적용할 클래스
+              options={moodKeywords}
+            />
           </div>
-          <RadioGroup
-            name="moodGroup"
-            selectedValue={moodGroup}
-            onChange={setMoodGroup}
-            className="flex justify-center flex-wrap gap-5"
-            labelClassName="text-[30px] tracking-[-0.01em]  h-[98px] px-[46px] rounded-[24px] outline outline-[3px]  outline-offset-[-3px] shadow-[0px_2px_10px_0px_rgba(0,0,0,0.25)]" // 라벨에 적용할 클래스
-            options={moodKeywords}
-          />
-        </div>
-      </section>
+        </section>
 
-      <section className="flex-1 flex items-end">
-        <div className="flex w-full gap-[30px]">
-          <Link
-            to={ROUTER_PATH.KIOSK_CAPTURE}
-            className="inline-flex justify-center items-center gap-3 flex-1 rounded-full h-40 bg-white text-[50px] font-bold text-[#0033FF]"
-          >
-            <Arrowleft /> 이전
-          </Link>
-          <button
-            onClick={handleNext}
-            disabled={isPending}
-            className="inline-flex justify-center items-center gap-3 flex-1 rounded-full h-40 bg-[#0033FF] text-[50px] font-bold text-white disabled:bg-gray-500"
-          >
-            {isPending ? (
-              <LoaderIcon className="w-13 h-13 animate-spin opacity-40" />
-            ) : (
-              <>
-                다음 <ArrowRighgt />
-              </>
-            )}
-          </button>
+        <section className="flex-1 flex items-end">
+          <div className="flex w-full gap-[30px]">
+            <Link
+              to={ROUTER_PATH.KIOSK_CAPTURE}
+              className="inline-flex justify-center items-center gap-3 flex-1 rounded-full h-40 bg-white text-[50px] font-bold text-[#0033FF]"
+            >
+              <Arrowleft /> 이전
+            </Link>
+            <button
+              onClick={handleNext}
+              disabled={isPending}
+              className="inline-flex justify-center items-center gap-3 flex-1 rounded-full h-40 bg-[#0033FF] text-[50px] font-bold text-white disabled:bg-gray-500"
+            >
+              다음 <ArrowRighgt />
+            </button>
+          </div>
+        </section>
+      </div>
+      {isPending && (
+        <div className="fixed inset-0 z-100 bg-black/70 flex items-center justify-center ">
+          <LoaderIcon className="w-13 h-13 animate-spin opacity-100" />
         </div>
-      </section>
-    </div>
+      )}
+    </>
   );
 };
 
