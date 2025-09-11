@@ -81,6 +81,7 @@ const GenerationsListPage = () => {
               {page.list.map((item) => (
                 <GenerationsListItem
                   key={item.contentId}
+                  contentId={item.contentId}
                   status={item.status}
                   smsStatus={item.smsStatus}
                   imageUrl={item.imageUrl}
@@ -100,10 +101,6 @@ const GenerationsListPage = () => {
       {/* 다음 페이지 로딩 중 인디케이터 */}
       {isFetchingNextPage && (
         <p className="text-center py-4">다음 목록을 불러오는 중...</p>
-      )}
-
-      {!hasNextPage && allGenerations.length > 0 && (
-        <p className="text-center py-4 text-gray-500">마지막 페이지입니다.</p>
       )}
     </div>
   );

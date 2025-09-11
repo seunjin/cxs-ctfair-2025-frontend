@@ -35,7 +35,7 @@ const SMS_LABELS: Record<SmsStatus, string> = {
   SENT: '발송완료',
   FAILED: '발송실패',
   PENDING: '발송대기',
-  NOT_FOUND: '대상없음',
+  NOT_FOUND: '없음',
 };
 
 const CONTENT_LABELS: Record<AdminContentStatus, string> = {

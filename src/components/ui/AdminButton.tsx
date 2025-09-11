@@ -32,7 +32,8 @@ const AdminButton = ({
   return (
     <button
       className={clsx(
-        'rounded-[8px] px-5',
+        'rounded-[8px] px-5 cursor-pointer disabled:cursor-not-allowed',
+
         variantsPalette(),
         Size(),
         clssName

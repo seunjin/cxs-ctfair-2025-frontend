@@ -8,10 +8,10 @@ export type AdminStatusLabelUiVariant =
   | 'warning';
 
 const UI_STYLES: Record<AdminStatusLabelUiVariant, string> = {
-  success: 'bg-[#F1FFF3] border border-[#D2F5D9] text-[#1E7A46]',
+  success: 'bg-[#F4F6F7] border border-[#E9EDF0] text-[#4C5154]',
   pending: 'bg-[#F4F6F7] border border-[#E9EDF0] text-[#7A8893]',
-  failed: 'bg-[#FFF6F6] border border-[#FFE7E7] text-[#FF0E12]',
-  warning: 'bg-[#FFFBEA] border border-[#FFE8A3] text-[#8A6D1D]',
+  failed: 'bg-[#FFF6F6] border border-[#FFE7E7] text-red-600',
+  warning: 'bg-[#F4F6F7] border border-[#E9EDF0] text-[#BDC9D3]',
 };
 
 export interface AdminStatusLabelProps
