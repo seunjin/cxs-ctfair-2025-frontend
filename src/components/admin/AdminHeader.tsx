@@ -20,8 +20,8 @@ import clsx from 'clsx';
 
 const AdminHeader = () => {
   const location = useLocation();
-  const activeStyle = (router: string) => {
-    if (router === location.pathname || location.pathname.includes(router)) {
+  const activeStyle = (condition: boolean) => {
+    if (condition) {
       return 'text-black';
     }
     return 'text-[#c3c9ce]';
@@ -34,10 +34,13 @@ const AdminHeader = () => {
         </span>
         <div className="inline-flex gap-5">
           <Link
-            to={ROUTER_PATH.ADMIN_GENERATIONS}
+            to={ROUTER_PATH.ADMIN}
             className={clsx(
               'text-[18px] font-semibold',
-              activeStyle(ROUTER_PATH.ADMIN_GENERATIONS)
+              activeStyle(
+                location.pathname === ROUTER_PATH.ADMIN ||
+                  location.pathname.includes(ROUTER_PATH.ADMIN_GENERATIONS)
+              )
             )}
           >
             AI 생성
@@ -46,7 +49,7 @@ const AdminHeader = () => {
             to={ROUTER_PATH.ADMIN_VIDEOS}
             className={clsx(
               'text-[18px] font-semibold',
-              activeStyle(ROUTER_PATH.ADMIN_VIDEOS)
+              activeStyle(location.pathname === ROUTER_PATH.ADMIN_VIDEOS)
             )}
           >
             영상 관리

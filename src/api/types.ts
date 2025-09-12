@@ -99,9 +99,9 @@ export interface KeywordsResponse {
  * @description PUT /api/admin/keywords API에 전송할 데이터의 타입입니다.
  */
 export interface UpdateKeywordsPayload {
-  fixedKeyword: string[];
-  styleKeyword: StyleMoodKeyword[];
-  moodKeyword: StyleMoodKeyword[];
+  fixedKeywords: string[];
+  styleKeywords: StyleMoodKeyword[];
+  moodKeywords: StyleMoodKeyword[];
 }
 
 export type SexGroup = 'man' | 'woman';

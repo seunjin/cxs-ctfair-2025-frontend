@@ -81,9 +81,9 @@ const KeywordManagerModal = () => {
 
   const handleSave = () => {
     const payload: UpdateKeywordsPayload = {
-      fixedKeyword: fixedKeywords, // 단수형으로 변경
-      styleKeyword: styleKeywords.map((k) => ({ label: k.ko, value: k.en })), // 단수형으로 변경
-      moodKeyword: moodKeywords.map((k) => ({ label: k.ko, value: k.en })), // 단수형으로 변경
+      fixedKeywords: fixedKeywords, // 단수형으로 변경
+      styleKeywords: styleKeywords.map((k) => ({ label: k.ko, value: k.en })), // 단수형으로 변경
+      moodKeywords: moodKeywords.map((k) => ({ label: k.ko, value: k.en })), // 단수형으로 변경
     };
     updateKeywords(payload);
   };

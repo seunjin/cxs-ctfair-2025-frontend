@@ -29,7 +29,9 @@ const adminApi = {
     }
 
     // http.ts에서 '/api'를 붙여주지 않으므로 전체 경로를 명시해야 합니다.
-    return http.get<GenerationsResponse>(`/api/admin/contents?${searchParams.toString()}`);
+    return http.get<GenerationsResponse>(
+      `/api/admin/contents?${searchParams.toString()}`
+    );
   },
 
   /**
