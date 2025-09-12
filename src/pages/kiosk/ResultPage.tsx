@@ -1,29 +1,26 @@
 // import { useParams } from 'react-router-dom';
 import DownloadIcon from '../../assets/icons/download.svg?react';
-// import { useQuery } from '@tanstack/react-query';
-// import { getKioskResult } from '../../api/kioskApi';
+import { useQuery } from '@tanstack/react-query';
+import { getKioskResult } from '../../api/kioskApi';
+import { useParams } from 'react-router-dom';
 
 function ResultPage() {
-  // const { id } = useParams<{ id: string }>();
+  const { id } = useParams<{ id: string }>();
 
-  // const { data, isLoading, isError, error } = useQuery({
-  //   queryKey: ['kioskResult', id],
-  //   queryFn: () => {
-  //     if (!id) {
-  //       throw new Error('ID가 제공되지 않았습니다.');
-  //     }
-  //     return getKioskResult(id);
-  //   },
-  //   enabled: !!id, // id가 있을 때만 쿼리 실행
-  // });
+  const { data, isError, error } = useQuery({
+    queryKey: ['kioskResult', id],
+    queryFn: () => {
+      if (!id) {
+        throw new Error('ID가 제공되지 않았습니다.');
+      }
+      return getKioskResult(id);
+    },
+    enabled: !!id, // id가 있을 때만 쿼리 실행
+  });
 
-  // if (isLoading) {
-  //   return <div>결과를 불러오는 중입니다...</div>;
-  // }
-
-  // if (isError) {
-  //   return <div>오류가 발생했습니다: {error.message}</div>;
-  // }
+  if (isError) {
+    return <div>오류가 발생했습니다: {error.message}</div>;
+  }
 
   return (
     <div className="bg-[url('/src/assets/images/kiosk/kiosk-simple-bg.png')] bg-cover  bg-center min-h-[100dvh] grid ">
@@ -55,19 +52,15 @@ function ResultPage() {
         </div>
         <section className="flex flex-col items-center  w-full gap-3 ">
           <div className="aspect-square w-[min(340px,100%)] bg-gray-300">
-            {/* <img
-              src={data.imageUrl}
+            <img
+              src={data?.imageUrl}
               alt="합성된 이미지"
               style={{ maxWidth: '100%' }}
-            /> */}
+            />
           </div>
           <div className="aspect-square w-[min(340px,100%)] bg-gray-300">
             {/* <h2>합성된 비디오</h2> */}
-            {/* <video
-              controls
-              //  src={data.videoUrl}
-              style={{ maxWidth: '100%' }}
-            /> */}
+            <video controls src={data?.videoUrl} style={{ maxWidth: '100%' }} />
           </div>
         </section>
       </div>

@@ -15,7 +15,7 @@ interface KeywordLabelProps {
 const KeywordLabel = ({ children, onDelete }: KeywordLabelProps) => {
   return (
     <div className="inline-flex items-center gap-2 border-1 border-[#e9edf0] bg-[#f4f4f4] rounded-full px-2 h-[34px]">
-      <span>{children}</span>
+      <span className="text-[#4C5154] text-[14px]">{children}</span>
       <button
         onClick={onDelete}
         className="inline-flex justify-center items-center size-[18px] bg-[#8E9AA4] rounded-full"
