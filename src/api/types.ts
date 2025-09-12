@@ -99,7 +99,23 @@ export interface KeywordsResponse {
  * @description PUT /api/admin/keywords API에 전송할 데이터의 타입입니다.
  */
 export interface UpdateKeywordsPayload {
-  fixedKeyword: string[];
-  styleKeyword: StyleMoodKeyword[];
-  moodKeyword: StyleMoodKeyword[];
+  fixedKeywords: string[];
+  styleKeywords: StyleMoodKeyword[];
+  moodKeywords: StyleMoodKeyword[];
+}
+
+export type SexGroup = 'man' | 'woman';
+
+/**
+ * @description GET /api/admin/contents/{contentId} API의 응답 타입입니다.
+ */
+export interface GenerationDetail {
+  keyword: string;
+  sexGroup: SexGroup;
+  ageGroup: number;
+  status: AdminContentStatus;
+  smsStatus: SmsStatus;
+  imageUrl: string;
+  videoUrl: string;
+  createdAt: Date;
 }

@@ -1,5 +1,10 @@
 import { http } from './http';
-import type { GenerationsResponse, KeywordsResponse, UpdateKeywordsPayload } from './types';
+import type {
+  GenerationsResponse,
+  KeywordsResponse,
+  UpdateKeywordsPayload,
+  GenerationDetail,
+} from './types';
 
 interface GetGenerationsParams {
   lastId?: number;
@@ -24,7 +29,9 @@ const adminApi = {
     }
 
     // http.ts에서 '/api'를 붙여주지 않으므로 전체 경로를 명시해야 합니다.
-    return http.get<GenerationsResponse>(`/api/admin/contents?${searchParams.toString()}`);
+    return http.get<GenerationsResponse>(
+      `/api/admin/contents?${searchParams.toString()}`
+    );
   },
 
   /**
@@ -40,6 +47,13 @@ const adminApi = {
   updateKeywords: (keywords: UpdateKeywordsPayload) => {
     // http.put의 두 번째 인자로 payload를 직접 전달합니다.
     return http.put('/api/admin/keywords', keywords);
+  },
+
+  /**
+   * @description contentId로 생성 상세 정보를 가져옵니다.
+   */
+  getGenerationDetail: (contentId: string) => {
+    return http.get<GenerationDetail>(`/api/admin/contents/${contentId}`);
   },
 };
 
