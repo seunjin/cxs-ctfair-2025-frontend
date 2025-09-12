@@ -4,6 +4,7 @@ import type {
   KeywordsResponse,
   UpdateKeywordsPayload,
   GenerationDetail,
+  AddFixedContentPayload,
 } from './types';
 
 interface GetGenerationsParams {
@@ -54,6 +55,20 @@ const adminApi = {
    */
   getGenerationDetail: (contentId: string) => {
     return http.get<GenerationDetail>(`/api/admin/contents/${contentId}`);
+  },
+
+  /**
+   * @description fixedContentId로 고정 영상을 삭제합니다.
+   */
+  deleteFixedContent: (fixedContentId: number) => {
+    return http.delete(`/api/admin/fixed-contents/${fixedContentId}`);
+  },
+
+  /**
+   * @description 새로운 고정 영상을 추가합니다.
+   */
+  addFixedContent: (payload: AddFixedContentPayload) => {
+    return http.post('/api/admin/fixed-content', payload);
   },
 };
 

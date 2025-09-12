@@ -5,6 +5,7 @@ import {
   X,
   Play,
   Pause,
+  Trash2,
 } from 'lucide-react';
 
 export const Icon = {
@@ -14,4 +15,5 @@ export const Icon = {
   X,
   Play,
   Pause,
+  Trash2,
 };

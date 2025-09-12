@@ -119,3 +119,10 @@ export interface GenerationDetail {
   videoUrl: string;
   createdAt: Date;
 }
+
+/**
+ * @description POST /api/admin/fixed-content API에 전송할 데이터의 타입입니다.
+ */
+export interface AddFixedContentPayload {
+  imageUrl: string;
+}
