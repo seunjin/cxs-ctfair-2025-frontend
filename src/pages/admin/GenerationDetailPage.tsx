@@ -55,7 +55,7 @@ const GenerationDetailPage = () => {
         <div className="grid grid-cols-[1fr_400px] items-start gap-5">
           {/* Video */}
           {data.videoUrl && <AdminVideo videoUrl={data.videoUrl} />}
-          
+
           {/* Info */}
           <div className="bg-white px-5 py-6 rounded-[16px] border-1 border-[#f0f0f0]">
             <header className="flex items-center justify-between pb-[30px]">
@@ -77,10 +77,10 @@ const GenerationDetailPage = () => {
                 </div>
               </article>
               <article>
-                <h3 className="texxt-[14px] font-medium text-[#5a646c] pb-3">
+                <h3 className="texxt-[14px] font-medium text-[#5a646c] pb-3 break-keep">
                   의상 키워드
                 </h3>
-                <p className="text-[#8E9AA4] text-[12px] font-medium leading-[1.2]">
+                <p className="text-[#8E9AA4] text-[14px] leading-[1.2]">
                   {data.keyword}
                 </p>
               </article>
@@ -99,7 +99,7 @@ const GenerationDetailPage = () => {
                 <img
                   src={data.imageUrl}
                   alt="Generated"
-                  className="w-[255px] object-cover rounded-[12px]"
+                  className="w-[255px] object-cover rounded-[12px] border-1 border-[#e9e9e9]"
                 />
               </article>
             </section>

@@ -14,7 +14,7 @@ import type {
  * @returns Promise<KioskResult>
  */
 export const getKioskResult = (id: string): Promise<KioskResult> => {
-  return http.get<KioskResult>(`/kiosk/results/${id}`);
+  return http.get<KioskResult>(`/api/contents/${id}`);
 };
 
 /**
@@ -39,7 +39,9 @@ export const createJob = (payload: CreateJobPayload): Promise<unknown> => {
  * @param payload 사용자 ID와 전화번호
  * @returns Promise<unknown>
  */
-export const updateUserPhone = (payload: UpdateUserPhonePayload): Promise<unknown> => {
+export const updateUserPhone = (
+  payload: UpdateUserPhonePayload
+): Promise<unknown> => {
   return http.patch('/api/jobs/user-phone', payload);
 };
 
@@ -56,6 +58,8 @@ export const getPlaylist = (): Promise<Content[]> => {
  * @param payload 재생 완료된 콘텐츠의 ID
  * @returns Promise<unknown>
  */
-export const reportContentPresented = (payload: ContentPresentedPayload): Promise<unknown> => {
+export const reportContentPresented = (
+  payload: ContentPresentedPayload
+): Promise<unknown> => {
   return http.post('/api/contents/presented', payload);
 };
