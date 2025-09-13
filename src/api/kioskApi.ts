@@ -63,3 +63,11 @@ export const reportContentPresented = (
 ): Promise<unknown> => {
   return http.post('/api/contents/presented', payload);
 };
+
+/**
+ * @description 관리자가 설정한 고정 영상 재생 목록을 가져옵니다.
+ * @returns Promise<string[]>
+ */
+export const getFixedPlaylist = (): Promise<string[]> => {
+  return http.get<string[]>('/api/contents/fixed');
+};
