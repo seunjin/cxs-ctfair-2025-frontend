@@ -11,7 +11,8 @@ import { Modal } from '../components/dialogs/Modal';
 // 1. 다이얼로그 상태 타입 정의
 export interface AlertState extends BaseLayerProps {
   type: 'alert';
-  title: string;
+  form?: 'kiosk' | 'admin';
+  title?: string;
   message: string;
   onOk?: () => void;
 }

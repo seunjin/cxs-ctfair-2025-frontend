@@ -3,7 +3,7 @@ import { useNavigate } from 'react-router-dom';
 import { KioskContext, type DocentTeam } from './KioskContext';
 import { useIdleTimer } from '../../hooks/useIdleTimer';
 
-const IDLE_TIMEOUT = 60000; // 1분
+const IDLE_TIMEOUT = 120000; // 2분
 
 const initialSex = '';
 const initialAge = '';
@@ -44,7 +44,6 @@ export const KioskProvider = ({ children }: { children: ReactNode }) => {
   }, [navigate, resetState]);
 
   useIdleTimer(handleIdle, IDLE_TIMEOUT);
-
 
   return (
     <KioskContext.Provider

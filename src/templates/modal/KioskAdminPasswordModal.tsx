@@ -61,7 +61,7 @@ const PhoneRemoveButton = ({ onClick }: { onClick: VoidFunction }) => {
 const KioskAdminPasswordModal = () => {
   const [password, setPassword] = useState<string>('');
   const { setDocentTeam } = useKiosk();
-  const { closeDialog } = useDialogs();
+  const { openDialog, closeDialog } = useDialogs();
   const navigate = useNavigate();
 
   const handleNumberClick = (number: string) => {
@@ -87,8 +87,11 @@ const KioskAdminPasswordModal = () => {
         closeDialog();
       } else {
         // TODO: 비밀번호 오류 처리 (예: 흔들리는 애니메이션)
-        alert('비밀번호가 올바르지 않습니다.');
-        setPassword('');
+        openDialog('alert', {
+          form: 'kiosk',
+          message: '비밀번호가 올바르지 않습니다.',
+          onOk: () => setPassword(''),
+        });
       }
     }
   }, [password, setDocentTeam, navigate, closeDialog]);
