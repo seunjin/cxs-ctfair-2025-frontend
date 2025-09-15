@@ -4,8 +4,8 @@ import { KioskContext } from './KioskContext';
 
 const initialSex = '';
 const initialAge = '';
-const initialStyle = '랜덤';
-const initialMood = '랜덤';
+const initialStyle = '';
+const initialMood = '';
 
 export const KioskProvider = ({ children }: { children: ReactNode }) => {
   const [id, setId] = useState(() => crypto.randomUUID());
