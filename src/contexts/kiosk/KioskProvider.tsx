@@ -1,6 +1,9 @@
 import { useState, type ReactNode, useCallback, useRef } from 'react';
+import { useNavigate } from 'react-router-dom';
 import { KioskContext } from './KioskContext';
-// import { FaceLandmarker, FilesetResolver } from '@mediapipe/tasks-vision';
+import { useIdleTimer } from '../../hooks/useIdleTimer';
+
+const IDLE_TIMEOUT = 60000; // 1분
 
 const initialSex = '';
 const initialAge = '';
@@ -8,6 +11,7 @@ const initialStyle = '';
 const initialMood = '';
 
 export const KioskProvider = ({ children }: { children: ReactNode }) => {
+  const navigate = useNavigate();
   const [id, setId] = useState(() => crypto.randomUUID());
   const [sexGroup, setSexGroup] = useState(initialSex);
   const [ageGroup, setAgeGroup] = useState(initialAge);
@@ -20,29 +24,6 @@ export const KioskProvider = ({ children }: { children: ReactNode }) => {
   const modelsLoaded = true; // 항상 true
   const faceLandmarker = useRef<null>(null); // 타입도 null로 변경
 
-  // useEffect(() => {
-  //   const createFaceLandmarker = async () => {
-  //     try {
-  //       const vision = await FilesetResolver.forVisionTasks('/models');
-  //       const landmarker = await FaceLandmarker.createFromOptions(vision, {
-  //         baseOptions: {
-  //           modelAssetPath: '/models/face_landmarker.task',
-  //           delegate: 'GPU',
-  //         },
-  //         runningMode: 'VIDEO',
-  //         numFaces: 2,
-  //       });
-  //       faceLandmarker.current = landmarker;
-  //       setModelsLoaded(true);
-  //       console.log('✅ FaceLandmarker 모델 로딩 성공');
-  //     } catch (error) {
-  //       console.error('❌ FaceLandmarker 모델 로딩 실패:', error);
-  //     }
-  //   };
-  //   createFaceLandmarker();
-  // }, []);
-  // --------------------------
-
   const resetState = useCallback(() => {
     setId(crypto.randomUUID()); // 새 세션을 위해 ID를 새로 생성
     setSexGroup(initialSex);
@@ -52,6 +33,15 @@ export const KioskProvider = ({ children }: { children: ReactNode }) => {
     setCapturedImage(null);
     setLandmarks(null);
   }, []);
+
+  const handleIdle = useCallback(() => {
+    console.log('유휴 상태 감지. 상태를 초기화하고 메인으로 이동합니다.');
+    resetState();
+    navigate('/kiosk');
+  }, [navigate, resetState]);
+
+  useIdleTimer(handleIdle, IDLE_TIMEOUT);
+
 
   return (
     <KioskContext.Provider
