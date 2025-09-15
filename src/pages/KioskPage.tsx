@@ -1,14 +1,22 @@
 import { Outlet, useLocation } from 'react-router-dom';
 import { ROUTER_PATH } from '../router';
 import KioskHeader from '../components/kiosk/KioskHeader';
-import { KioskProvider } from '../contexts/kiosk/KioskProvider';
-import CaptureStep from './kiosk/CaptureStep'; // CaptureStep을 직접 임포트
+import KioskCaptureStep from './kiosk/CaptureStep'; // 이름 변경
+import DocentCaptureStep from './docent/CaptureStep'; // 도슨트 스텝 추가
 import clsx from 'clsx';
 
 const KioskPage = () => {
   const location = useLocation();
-  const isCapturePage = location.pathname === ROUTER_PATH.KIOSK_CAPTURE;
-  const isMainPage = location.pathname === ROUTER_PATH.KIOSK_MAIN;
+  const isCapturePage = [
+    ROUTER_PATH.KIOSK_CAPTURE,
+    ROUTER_PATH.DOCENT_CAPTURE,
+  ].includes(location.pathname);
+  const isMainPage = [
+    ROUTER_PATH.KIOSK_MAIN,
+    ROUTER_PATH.DOCENT_MAIN,
+  ].includes(location.pathname);
+
+  const isDocentMode = location.pathname.startsWith('/docent');
 
   return (
     <main
@@ -21,34 +29,32 @@ const KioskPage = () => {
       )}
     >
       <div className="grid w-[1080px] h-[1920px] mx-auto border-gray-300">
-        <KioskProvider>
-          <div
-            style={{ display: isCapturePage ? 'none' : 'block' }}
-            className="h-full"
-          >
-            {isMainPage ? (
-              <Outlet />
-            ) : (
-              <div className="h-full">
-                <KioskHeader />
-                <div className="h-[calc(100%-136px)]">
-                  <Outlet />
-                </div>
+        <div
+          style={{ display: isCapturePage ? 'none' : 'block' }}
+          className="h-full"
+        >
+          {isMainPage ? (
+            <Outlet />
+          ) : (
+            <div className="h-full">
+              <KioskHeader />
+              <div className="h-[calc(100%-136px)]">
+                <Outlet />
               </div>
-            )}
-          </div>
-
-          {/* CaptureStep은 항상 렌더링하되, 경로가 일치할 때만 보여줍니다. */}
-          <div
-            style={{ display: isCapturePage ? 'block' : 'none' }}
-            className="h-full"
-          >
-            <KioskHeader />
-            <div className="h-[calc(100%-136px)]">
-              <CaptureStep />
             </div>
+          )}
+        </div>
+
+        {/* CaptureStep은 항상 렌더링하되, 경로가 일치할 때만 보여줍니다. */}
+        <div
+          style={{ display: isCapturePage ? 'block' : 'none' }}
+          className="h-full"
+        >
+          <KioskHeader />
+          <div className="h-[calc(100%-136px)]">
+            {isDocentMode ? <DocentCaptureStep /> : <KioskCaptureStep />}
           </div>
-        </KioskProvider>
+        </div>
       </div>
     </main>
   );

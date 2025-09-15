@@ -1,5 +1,5 @@
 
-import { useState, useEffect, useRef } from 'react';
+import { useEffect, useRef } from 'react';
 
 /**
  * 지정된 시간 동안 사용자 활동이 없으면 콜백을 실행하는 훅

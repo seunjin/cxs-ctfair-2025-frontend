@@ -1,6 +1,6 @@
 import { useState, type ReactNode, useCallback, useRef } from 'react';
 import { useNavigate } from 'react-router-dom';
-import { KioskContext } from './KioskContext';
+import { KioskContext, type DocentTeam } from './KioskContext';
 import { useIdleTimer } from '../../hooks/useIdleTimer';
 
 const IDLE_TIMEOUT = 60000; // 1분
@@ -9,6 +9,7 @@ const initialSex = '';
 const initialAge = '';
 const initialStyle = '';
 const initialMood = '';
+const initialDocentTeam: DocentTeam = null;
 
 export const KioskProvider = ({ children }: { children: ReactNode }) => {
   const navigate = useNavigate();
@@ -19,6 +20,7 @@ export const KioskProvider = ({ children }: { children: ReactNode }) => {
   const [moodGroup, setMoodGroup] = useState(initialMood);
   const [capturedImage, setCapturedImage] = useState<string | null>(null);
   const [landmarks, setLandmarks] = useState<string | null>(null);
+  const [docentTeam, setDocentTeam] = useState<DocentTeam>(initialDocentTeam);
 
   // --- 모델 로딩 로직 비활성화 ---
   const modelsLoaded = true; // 항상 true
@@ -32,6 +34,7 @@ export const KioskProvider = ({ children }: { children: ReactNode }) => {
     setMoodGroup(initialMood);
     setCapturedImage(null);
     setLandmarks(null);
+    setDocentTeam(initialDocentTeam);
   }, []);
 
   const handleIdle = useCallback(() => {
@@ -62,6 +65,8 @@ export const KioskProvider = ({ children }: { children: ReactNode }) => {
         resetState,
         modelsLoaded,
         faceLandmarker,
+        docentTeam,
+        setDocentTeam,
       }}
     >
       {children}

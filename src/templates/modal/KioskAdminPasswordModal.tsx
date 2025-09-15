@@ -1,11 +1,16 @@
-import { useState } from 'react';
+import { useEffect, useState } from 'react';
+import { useNavigate } from 'react-router-dom';
 import ArrowRight from '../../assets/icons/arrow-narrow-right.svg?react';
+import { useKiosk } from '../../contexts/kiosk';
+import { type DocentTeam } from '../../contexts/kiosk/KioskContext';
+import { useDialogs } from '../../lib/dialogs';
+import { ROUTER_PATH } from '../../router';
 
-const 도슨트_관리자_비밀번호 = {
-  가: '1111',
-  나: '2222',
-  다: '3333',
-  라: '4444',
+const DOCENT_PASSWORDS: Record<string, DocentTeam> = {
+  '1111': 'a', // 가
+  '2222': 'b', // 나
+  '3333': 'c', // 다
+  '4444': 'd', // 라
 };
 
 const PhoneNumberButton = ({
@@ -17,7 +22,7 @@ const PhoneNumberButton = ({
 }) => {
   return (
     <div
-      className="size-24 bg-[#111] rounded-full shadow-[0px_2px_10px_0px_rgba(0,0,0,0.25)] flex justify-center items-center gap-3 outline-[3px] outline-offset-[-3px] outline-white active:scale-95 duration-100"
+      className="size-24 bg-[#111] rounded-full shadow-[0px_2px_10px_0px_rgba(0,0,0,0.25)] flex justify-center items-center gap-3 outline-[3px] outline-offset-[-3px] outline-white active-scale-95 duration-100"
       onClick={onClick}
     >
       <div className="text-center justify-start text-white text-3xl font-semibold leading-[60px]">
@@ -30,7 +35,7 @@ const PhoneNumberButton = ({
 const PhoneClearButton = ({ onClick }: { onClick: VoidFunction }) => {
   return (
     <div
-      className="size-24  bg-[#111]/5 rounded-full shadow-[0px_2px_10px_0px_rgba(0,0,0,0.25)]  outline-[3px] outline-offset-[-3px] outline-white backdrop-blur-sm flex justify-center items-center gap-2.5 active:scale-95 duration-100"
+      className="size-24  bg-[#111]/5 rounded-full shadow-[0px_2px_10px_0px_rgba(0,0,0,0.25)]  outline-[3px] outline-offset-[-3px] outline-white backdrop-blur-sm flex justify-center items-center gap-2.5 active-scale-95 duration-100"
       onClick={onClick}
     >
       <div className="text-center justify-start text-black text-xl font-semibold ">
@@ -43,7 +48,7 @@ const PhoneClearButton = ({ onClick }: { onClick: VoidFunction }) => {
 const PhoneRemoveButton = ({ onClick }: { onClick: VoidFunction }) => {
   return (
     <div
-      className="size-24  bg-[#111]/5 rounded-full shadow-[0px_2px_10px_0px_rgba(0,0,0,0.25)]  outline-[3px] outline-offset-[-3px] outline-white backdrop-blur-sm flex justify-center items-center gap-2.5 active:scale-95 duration-100"
+      className="size-24  bg-[#111]/5 rounded-full shadow-[0px_2px_10px_0px_rgba(0,0,0,0.25)]  outline-[3px] outline-offset-[-3px] outline-white backdrop-blur-sm flex justify-center items-center gap-2.5 active-scale-95 duration-100"
       onClick={onClick}
     >
       <div className="text-center justify-start">
@@ -54,42 +59,40 @@ const PhoneRemoveButton = ({ onClick }: { onClick: VoidFunction }) => {
 };
 
 const KioskAdminPasswordModal = () => {
-  const [phoneNumber, setPhoneNumber] = useState<string>('');
+  const [password, setPassword] = useState<string>('');
+  const { setDocentTeam } = useKiosk();
+  const { closeDialog } = useDialogs();
+  const navigate = useNavigate();
+
   const handleNumberClick = (number: string) => {
-    // 새로 입력된 숫자를 추가합니다.
-    const newNumber = phoneNumber + number;
-
-    // 11자리를 초과하지 않도록 합니다.
-    if (newNumber.length > 4) {
-      return;
+    if (password.length < 4) {
+      setPassword(password + number);
     }
-
-    setPhoneNumber(newNumber);
   };
 
   const handleClear = () => {
-    setPhoneNumber('');
+    setPassword('');
   };
 
   const handleRemove = () => {
-    // 현재 값에서 마지막 문자(숫자 또는 하이픈)를 제거한 후 다시 포맷팅합니다.
-    const currentNumber = phoneNumber.replace(/-/g, '');
-    const newNumber = currentNumber.slice(0, -1);
-
-    setPhoneNumber(newNumber);
+    setPassword((prev) => prev.slice(0, -1));
   };
 
-  const handleChange = (e: React.ChangeEvent<HTMLInputElement>) => {
-    const value = e.target.value;
-    if (
-      value === 도슨트_관리자_비밀번호.가 ||
-      value === 도슨트_관리자_비밀번호.나 ||
-      value === 도슨트_관리자_비밀번호.다 ||
-      value === 도슨트_관리자_비밀번호.라
-    ) {
-      //도슨트용라우트로 이동
+  useEffect(() => {
+    if (password.length === 4) {
+      const team = DOCENT_PASSWORDS[password];
+      if (team) {
+        setDocentTeam(team);
+        navigate(ROUTER_PATH.DOCENT_INFO);
+        closeDialog();
+      } else {
+        // TODO: 비밀번호 오류 처리 (예: 흔들리는 애니메이션)
+        alert('비밀번호가 올바르지 않습니다.');
+        setPassword('');
+      }
     }
-  };
+  }, [password, setDocentTeam, navigate, closeDialog]);
+
   return (
     <div className="w-[400px]">
       <div className="flex flex-col items-center justify-center">
@@ -99,9 +102,8 @@ const KioskAdminPasswordModal = () => {
             <div className="flex justify-center  ">
               <div className="w-[320px] rounded-full bg-black">
                 <input
-                  type="password" // type을 'tel'로 변경하여 시맨틱을 개선합니다.
-                  value={phoneNumber}
-                  onChange={handleChange}
+                  type="password"
+                  value={password}
                   readOnly
                   placeholder="비밀번호를 입력해주세요."
                   className="appearance-none w-full text-2xl leading-[50px] font-semibold  focus:outline-none text-white text-center tracking-widest placeholder:text-gray-100/50 placeholder:text-xl"
