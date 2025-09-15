@@ -2,6 +2,7 @@ import { useEffect } from 'react';
 import { Outlet } from 'react-router-dom';
 import { useDialogs } from './lib/dialogs';
 import { DialogRenderer } from './components/dialogs/DialogRenderer';
+import { KioskProvider } from './contexts/kiosk/KioskProvider';
 
 function App() {
   const { dialogs } = useDialogs();
@@ -18,10 +19,10 @@ function App() {
   }, []);
 
   return (
-    <>
+    <KioskProvider>
       <Outlet />
       <DialogRenderer dialogs={dialogs} />
-    </>
+    </KioskProvider>
   );
 }
 

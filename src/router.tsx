@@ -26,6 +26,13 @@ const keywordsLoader = async () => {
   return await queryClient.ensureQueryData(query);
 };
 
+import DocentMainStep from './pages/docent/MainStep';
+import DocentInfoStep from './pages/docent/InfoStep';
+import DocentKeywordsStep from './pages/docent/KeywordsStep';
+import DocentCompleteStep from './pages/docent/CompleteStep';
+import DocentPhoneStep from './pages/docent/PhoneStep';
+import DocentResultPage from './pages/docent/ResultPage';
+
 export const ROUTER_PATH = {
   HOME: '/',
   KIOSK: '/kiosk',
@@ -38,6 +45,14 @@ export const ROUTER_PATH = {
   KIOSK_COMPLETE: '/kiosk/complete',
   KIOSK_PHONE: '/kiosk/phone',
   KIOSK_RESULT: '/kiosk/result/:id',
+  DOCENT: '/docent',
+  DOCENT_MAIN: '/docent',
+  DOCENT_INFO: '/docent/info',
+  DOCENT_CAPTURE: '/docent/capture',
+  DOCENT_KEYWORDS: '/docent/keywords',
+  DOCENT_COMPLETE: '/docent/complete',
+  DOCENT_PHONE: '/docent/phone',
+  DOCENT_RESULT: '/docent/result/:id',
   ADMIN_GENERATIONS: '/admin/generations',
   ADMIN_GENERATION_DETAIL: '/admin/generations/:id',
   ADMIN_VIDEOS: '/admin/videos',
@@ -83,8 +98,43 @@ const router = createBrowserRouter([
         ],
       },
       {
+        path: ROUTER_PATH.DOCENT,
+        element: <KioskPage />, // 동일한 레이아웃 사용
+        loader: keywordsLoader,
+        children: [
+          {
+            index: true,
+            element: <DocentMainStep />,
+          },
+          {
+            path: ROUTER_PATH.DOCENT_INFO,
+            element: <DocentInfoStep />,
+          },
+          {
+            path: ROUTER_PATH.DOCENT_CAPTURE,
+            element: <></>,
+          },
+          {
+            path: ROUTER_PATH.DOCENT_KEYWORDS,
+            element: <DocentKeywordsStep />,
+          },
+          {
+            path: ROUTER_PATH.DOCENT_COMPLETE,
+            element: <DocentCompleteStep />,
+          },
+          {
+            path: ROUTER_PATH.DOCENT_PHONE,
+            element: <DocentPhoneStep />,
+          },
+        ],
+      },
+      {
         path: ROUTER_PATH.KIOSK_RESULT,
         element: <ResultPage />,
+      },
+      {
+        path: ROUTER_PATH.DOCENT_RESULT,
+        element: <DocentResultPage />,
       },
       {
         path: ROUTER_PATH.ADMIN,

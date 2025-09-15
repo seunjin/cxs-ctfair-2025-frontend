@@ -1,6 +1,8 @@
 import { createContext, type RefObject } from 'react';
 import { FaceLandmarker } from '@mediapipe/tasks-vision';
 
+export type DocentTeam = 'a' | 'b' | 'c' | 'd' | null;
+
 type KioskContextType = {
   id: string; // 세션 ID
   sexGroup: string;
@@ -18,6 +20,8 @@ type KioskContextType = {
   resetState: () => void; // 모든 상태를 초기화하는 함수
   modelsLoaded: boolean; // 모델 로딩 완료 여부
   faceLandmarker: RefObject<FaceLandmarker | null>; // 로드된 모델 인스턴스
+  docentTeam: DocentTeam;
+  setDocentTeam: (team: DocentTeam) => void;
 };
 
 export const KioskContext = createContext<KioskContextType | undefined>(

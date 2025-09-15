@@ -27,6 +27,7 @@ export interface ConfirmState extends BaseLayerProps {
 }
 export interface ModalState extends BaseLayerProps {
   type: 'modal';
+  form?: 'kiosk' | 'admin';
   children: React.ReactNode;
 }
 

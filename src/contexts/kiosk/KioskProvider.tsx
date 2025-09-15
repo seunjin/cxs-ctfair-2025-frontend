@@ -1,13 +1,18 @@
 import { useState, type ReactNode, useCallback, useRef } from 'react';
-import { KioskContext } from './KioskContext';
-// import { FaceLandmarker, FilesetResolver } from '@mediapipe/tasks-vision';
+import { useNavigate } from 'react-router-dom';
+import { KioskContext, type DocentTeam } from './KioskContext';
+import { useIdleTimer } from '../../hooks/useIdleTimer';
+
+const IDLE_TIMEOUT = 60000; // 1분
 
 const initialSex = '';
 const initialAge = '';
 const initialStyle = '';
 const initialMood = '';
+const initialDocentTeam: DocentTeam = null;
 
 export const KioskProvider = ({ children }: { children: ReactNode }) => {
+  const navigate = useNavigate();
   const [id, setId] = useState(() => crypto.randomUUID());
   const [sexGroup, setSexGroup] = useState(initialSex);
   const [ageGroup, setAgeGroup] = useState(initialAge);
@@ -15,33 +20,11 @@ export const KioskProvider = ({ children }: { children: ReactNode }) => {
   const [moodGroup, setMoodGroup] = useState(initialMood);
   const [capturedImage, setCapturedImage] = useState<string | null>(null);
   const [landmarks, setLandmarks] = useState<string | null>(null);
+  const [docentTeam, setDocentTeam] = useState<DocentTeam>(initialDocentTeam);
 
   // --- 모델 로딩 로직 비활성화 ---
   const modelsLoaded = true; // 항상 true
   const faceLandmarker = useRef<null>(null); // 타입도 null로 변경
-
-  // useEffect(() => {
-  //   const createFaceLandmarker = async () => {
-  //     try {
-  //       const vision = await FilesetResolver.forVisionTasks('/models');
-  //       const landmarker = await FaceLandmarker.createFromOptions(vision, {
-  //         baseOptions: {
-  //           modelAssetPath: '/models/face_landmarker.task',
-  //           delegate: 'GPU',
-  //         },
-  //         runningMode: 'VIDEO',
-  //         numFaces: 2,
-  //       });
-  //       faceLandmarker.current = landmarker;
-  //       setModelsLoaded(true);
-  //       console.log('✅ FaceLandmarker 모델 로딩 성공');
-  //     } catch (error) {
-  //       console.error('❌ FaceLandmarker 모델 로딩 실패:', error);
-  //     }
-  //   };
-  //   createFaceLandmarker();
-  // }, []);
-  // --------------------------
 
   const resetState = useCallback(() => {
     setId(crypto.randomUUID()); // 새 세션을 위해 ID를 새로 생성
@@ -51,7 +34,17 @@ export const KioskProvider = ({ children }: { children: ReactNode }) => {
     setMoodGroup(initialMood);
     setCapturedImage(null);
     setLandmarks(null);
+    setDocentTeam(initialDocentTeam);
   }, []);
+
+  const handleIdle = useCallback(() => {
+    console.log('유휴 상태 감지. 상태를 초기화하고 메인으로 이동합니다.');
+    resetState();
+    navigate('/kiosk');
+  }, [navigate, resetState]);
+
+  useIdleTimer(handleIdle, IDLE_TIMEOUT);
+
 
   return (
     <KioskContext.Provider
@@ -72,6 +65,8 @@ export const KioskProvider = ({ children }: { children: ReactNode }) => {
         resetState,
         modelsLoaded,
         faceLandmarker,
+        docentTeam,
+        setDocentTeam,
       }}
     >
       {children}
