@@ -30,7 +30,7 @@ const KioskFormConfirmContent = (props: ModalContentProps) => {
   return (
     <motion.div
       ref={panelRef}
-      className="relative rounded-[32px] bg-white/80 px-[30px] py-[70px_30px] shadow-[0px_2px_10px_0px_rgba(0,0,0,0.25)] outline-[3px] outline-offset-[-3px] outline-white backdrop-blur-[7px] min-w-[400px] max-h-[80dvh] overflow-auto"
+      className="relative rounded-[20px] bg-white/80 px-[30px] py-[30px] shadow-[0px_2px_10px_0px_rgba(0,0,0,0.25)] outline-[3px] outline-offset-[-3px] outline-white backdrop-blur-[7px] max-h-[80dvh] overflow-auto"
       initial={{ scale: 0.95, opacity: 0 }}
       animate={{ scale: 1, opacity: 1 }}
       exit={{ scale: 0.95, opacity: 0 }}

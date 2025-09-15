@@ -4,9 +4,19 @@ import { ROUTER_PATH } from '../../router';
 import { useKiosk } from '../../contexts/kiosk';
 import { useEffect } from 'react';
 import clsx from 'clsx';
+import { useDialogs } from '../../lib/dialogs';
+import KioskAdminPasswordModal from '../../templates/modal/KioskAdminPasswordModal';
 
 const MainStep = () => {
+  const { openDialog } = useDialogs();
   const { resetState, modelsLoaded } = useKiosk();
+
+  const handleAdminModal = () => {
+    openDialog('modal', {
+      form: 'kiosk',
+      children: <KioskAdminPasswordModal />,
+    });
+  };
 
   // MainStep이 렌더링될 때마다 상태를 초기화합니다.
   useEffect(() => {
@@ -49,15 +59,15 @@ const MainStep = () => {
       </section>
 
       <section className=" flex flex-1 items-end justify-center ">
-        <Link
-          to={ROUTER_PATH.ADMIN}
+        <button
+          onClick={handleAdminModal}
           className="inline-flex items-center gap-2 cursor-pointer"
         >
           <SettingIcon className="w-7 h-7" />{' '}
           <span className="text-center justify-start text-zinc-100/90 text-3xl font-semibold ">
             관리자
           </span>
-        </Link>
+        </button>
       </section>
     </div>
   );
