@@ -14,12 +14,12 @@ import type { AdminStatusLabelUiVariant } from '../../components/ui/AdminStatusL
 const SMS_TO_UI = {
   SENT: 'success',
   FAILED: 'failed',
-  PENDING: 'pending',
+  PENDING: 'failed',
   NOT_FOUND: 'warning',
 } as const satisfies Record<SmsStatus, AdminStatusLabelUiVariant>;
 
 const CONTENT_TO_UI = {
-  PROCESSING: 'pending',
+  PROCESSING: 'failed',
   COMPLETE: 'success',
   FAILED: 'failed',
 } as const satisfies Record<AdminContentStatus, AdminStatusLabelUiVariant>;

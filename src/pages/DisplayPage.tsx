@@ -9,7 +9,7 @@ interface PlaylistItem {
   isUserContent: boolean;
 }
 
-const TRANSITION_DURATION_MS = 1000; // CSS 트랜지션 시간과 일치
+const TRANSITION_DURATION_MS = 300; // CSS 트랜지션 시간과 일치
 
 const DisplayPage = () => {
   const [playlist, setPlaylist] = useState<PlaylistItem[]>([]);

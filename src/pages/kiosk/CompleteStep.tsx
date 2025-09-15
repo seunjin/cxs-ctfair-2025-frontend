@@ -2,7 +2,7 @@ import { Link } from 'react-router-dom';
 import { ROUTER_PATH } from '../../router';
 import ArrowRighgt from '../../assets/icons/arrow-narrow-right.svg?react';
 import { useKiosk } from '../../contexts/kiosk';
-
+import ComlpleteImg from '../../assets/images/kiosk/complete-img.jpg';
 const CompleteStep = () => {
   const { resetState } = useKiosk();
 
@@ -31,7 +31,7 @@ const CompleteStep = () => {
         <div className="w-[806px] p-2.5 bg-blue-700 rounded-[50px] shadow-[0px_0px_15px_0px_rgba(208,82,153,1.00)] shadow-[0px_0px_5px_0px_rgba(208,82,153,1.00)] inline-flex flex-col justify-start items-center gap-10">
           <img
             className="w-[785px] h-[523px] rounded-[50px]"
-            src="https://placehold.co/785x523"
+            src={ComlpleteImg}
             alt="kiosk-complete-img"
           />
         </div>
