@@ -28,7 +28,7 @@ const KioskHeader = () => {
             confirmButtonText: '처음으로',
           });
         }}
-        className="text-white text-3xl font-bold border-[2px] border-white leading-10 px-6 py-3 rounded-[99px]  outline-2 outline-offset-[-2px] outline-white/80 inline-flex justify-center items-center gap-2.5
+        className="text-white text-3xl font-bold border-[2px] border-white leading-10 px-6 py-3 rounded-[99px]  outline-2 outline-offset-[-2px] outline-white/80 inline-flex justify-center items-center gap-2.5 active:scale-95 duration-100
 "
       >
         처음으로

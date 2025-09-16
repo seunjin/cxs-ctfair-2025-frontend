@@ -47,7 +47,7 @@ const MainStep = () => {
           <Link
             to={modelsLoaded ? ROUTER_PATH.KIOSK_INFO : '#'}
             className={clsx(
-              "w-[920px] px-2.5 py-12 rounded-[32px] mx-auto shadow-[0px_0px_15px_0px_rgba(208,82,153,1.00)] text-center text-white text-5xl font-bold font-['Pretendard'] leading-[75px]",
+              "w-[920px] px-2.5 py-12 rounded-[32px] mx-auto shadow-[0px_0px_15px_0px_rgba(208,82,153,1.00)] text-center text-white text-5xl font-bold font-['Pretendard'] leading-[75px] active:scale-95 duration-100",
               modelsLoaded
                 ? 'bg-blue-700 cursor-pointer'
                 : 'bg-gray-500 cursor-not-allowed'
@@ -61,7 +61,7 @@ const MainStep = () => {
       <section className=" flex flex-1 items-end justify-center ">
         <button
           onClick={handleAdminModal}
-          className="inline-flex items-center gap-2 cursor-pointer"
+          className="inline-flex items-center gap-2 cursor-pointer active:scale-95 duration-100"
         >
           <SettingIcon className="w-7 h-7" />{' '}
           <span className="text-center justify-start text-zinc-100/90 text-3xl font-semibold ">

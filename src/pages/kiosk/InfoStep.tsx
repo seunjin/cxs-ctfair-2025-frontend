@@ -57,13 +57,13 @@ const InfoStep = () => {
         <div className="flex w-full gap-[30px]">
           <Link
             to={ROUTER_PATH.KIOSK}
-            className="inline-flex justify-center items-center gap-3 flex-1 rounded-full h-40 bg-white text-[50px] font-bold text-[#0033FF]"
+            className="inline-flex justify-center items-center gap-3 flex-1 rounded-full h-40 bg-white text-[50px] font-bold text-[#0033FF] active:scale-95 duration-100"
           >
             <Arrowleft className="w-13 h-13" /> 이전
           </Link>
           <button
             onClick={handleNext}
-            className="inline-flex justify-center items-center gap-3 flex-1 rounded-full h-40 bg-[#0033FF] text-[50px] font-bold text-white disabled:text-white/40"
+            className="inline-flex justify-center items-center gap-3 flex-1 rounded-full h-40 bg-[#0033FF] text-[50px] font-bold text-white disabled:text-white/40 not-disabled:active:scale-95 duration-100"
             disabled={!sexGroup || !ageGroup}
           >
             다음
