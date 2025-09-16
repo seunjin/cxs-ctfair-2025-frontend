@@ -43,6 +43,8 @@ const DisplayPage = () => {
       }));
       setPlaylist(initialPlaylist);
 
+      console.log(`[Playlist] Initial playlist set. Total fixed videos: ${initialPlaylist.length}`, initialPlaylist);
+
       const firstPlayer = videoRefs[0].current;
       if (firstPlayer) {
         firstPlayer.src = initialPlaylist[0].videoUrl;
@@ -60,27 +62,47 @@ const DisplayPage = () => {
         : '';
     fetchEventSource(`${API_BASE_URL}/api/contents/subscribe`, {
       headers: { Authorization: 'Bearer 41f065b5-7c8f-4c29-8dad-68478c706778' },
+      onopen: async (response) => {
+        if (response.ok) {
+          console.log('[SSE] Connection established');
+        } else {
+          console.error(`[SSE] Connection failed: ${response.status} ${response.statusText}`);
+        }
+      },
       onmessage(event) {
         if (!event.data) return;
         try {
           const payload = JSON.parse(event.data)?.data;
-          if (payload?.heartbeat === 'ok') return;
+          if (payload?.heartbeat === 'ok') {
+            console.log('[SSE] Heartbeat received');
+            return;
+          }
+          console.log('[SSE] New data received:', payload);
           if (payload?.contentId && payload?.videoUrl) {
             const userVideo: PlaylistItem = { ...payload, isUserContent: true };
             setPlaylist((current) => {
               const nextIdx = (currentIndex + 1) % (current.length + 1);
-              return [
+              const newPlaylist = [
                 ...current.slice(0, nextIdx),
                 userVideo,
                 ...current.slice(nextIdx),
               ];
+              console.log('[Playlist] New video added. Updated playlist:', newPlaylist);
+              return newPlaylist;
             });
           }
         } catch (error) {
-          console.error('SSE 메시지 파싱 실패:', error);
+          console.error('[SSE] Message parsing failed:', error);
         }
       },
-      onerror: (err) => console.error('EventSource 에러:', err),
+      onclose: () => {
+        console.log('[SSE] Connection closed by server.');
+      },
+      onerror: (err) => {
+        console.error('[SSE] EventSource error:', err);
+        // Note: fetchEventSource will automatically try to reconnect on network errors.
+        // If the error is fatal (e.g. 401 Unauthorized), it will not reconnect.
+      },
       signal: ctrl.signal,
     });
     return () => ctrl.abort();
@@ -96,19 +118,25 @@ const DisplayPage = () => {
         reportPresented({ contentId: finishedContent.contentId });
       const newPlaylist = playlist.filter((_, i) => i !== finishedIndex);
       setPlaylist(newPlaylist);
-      if (newPlaylist.length > 0)
-        setCurrentIndex(finishedIndex % newPlaylist.length);
+      if (newPlaylist.length > 0) {
+        const nextIndex = finishedIndex % newPlaylist.length;
+        console.log(`[Playback] User video finished. Advancing to index: ${nextIndex}`);
+        setCurrentIndex(nextIndex);
+      }
     } else {
       if (playlist.length === 1) {
         const currentPlayer = videoRefs[activePlayerIndex].current;
         if (currentPlayer) {
+          console.log('[Playback] Single fixed video looping.');
           currentPlayer.currentTime = 0;
           currentPlayer
             .play()
             .catch((e) => console.error('반복 재생 실패:', e));
         }
       } else {
-        setCurrentIndex((prev) => (prev + 1) % playlist.length);
+        const nextIndex = (currentIndex + 1) % playlist.length;
+        console.log(`[Playback] Fixed video finished. Advancing from index ${currentIndex} to ${nextIndex}`);
+        setCurrentIndex(nextIndex);
       }
     }
   };
