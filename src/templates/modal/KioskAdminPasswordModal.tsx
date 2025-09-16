@@ -7,10 +7,10 @@ import { useDialogs } from '../../lib/dialogs';
 import { ROUTER_PATH } from '../../router';
 
 const DOCENT_PASSWORDS: Record<string, DocentTeam> = {
-  '1111': 'a', // 가
-  '2222': 'b', // 나
-  '3333': 'c', // 다
-  '4444': 'd', // 라
+  '5441': 'a', // 대표님
+  '2329': 'b', // 은실이사님
+  '0224': 'c', // 선혜실장님
+  '3469': 'd', // 하경차장님
 };
 
 const PhoneNumberButton = ({
