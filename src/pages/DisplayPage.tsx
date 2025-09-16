@@ -174,7 +174,7 @@ const DisplayPage = () => {
     const activeVideoIndex = playlist.findIndex((item) =>
       activePlayer.src.endsWith(item.videoUrl)
     );
-    if (activeVideoIndex === currentIndex || activeVideoIndex === -1) return;
+    if (activeVideoIndex === currentIndex) return;
 
     const standbyPlayerIndex = 1 - activePlayerIndex;
     const standbyPlayer = videoRefs[standbyPlayerIndex].current;
