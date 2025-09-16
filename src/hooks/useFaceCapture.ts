@@ -18,7 +18,6 @@ const DEFAULT_ERROR_MESSAGE = '알 수 없는 오류가 발생했습니다.';
 
 export const useFaceCapture = () => {
   const webcamRef = useRef<Webcam>(null);
-  const videoTrackRef = useRef<MediaStreamTrack | null>(null);
 
   const [isWebcamReady, setIsWebcamReady] = useState(false);
   const isFaceAligned = true; // 항상 true로 설정
@@ -32,60 +31,6 @@ export const useFaceCapture = () => {
     setLandmarks,
     modelsLoaded,
   } = useKiosk();
-
-  const [zoomCapabilities, setZoomCapabilities] = useState<{
-    min: number;
-    max: number;
-    step: number;
-  } | null>(null);
-  const [currentZoom, setCurrentZoom] = useState<number>(1);
-
-  useEffect(() => {
-    if (isWebcamReady && webcamRef.current?.stream) {
-      const stream = webcamRef.current.stream;
-      if (!stream) return;
-
-      const track = stream.getVideoTracks()[0];
-      if (!track) return;
-
-      videoTrackRef.current = track;
-
-      if (typeof track.getCapabilities === 'function') {
-        const capabilities = track.getCapabilities() as any;
-        console.log('Camera capabilities:', capabilities); // 디버깅용 로그
-
-        if (capabilities && capabilities.zoom) {
-          setZoomCapabilities({
-            min: capabilities.zoom.min,
-            max: capabilities.zoom.max,
-            step: capabilities.zoom.step,
-          });
-
-          if (typeof track.getSettings === 'function') {
-            const settings = track.getSettings() as any;
-            if (settings && typeof settings.zoom !== 'undefined') {
-              setCurrentZoom(settings.zoom);
-            }
-          }
-        } else {
-          console.log('Zoom capability not supported by this device.');
-        }
-      }
-    }
-  }, [isWebcamReady]);
-
-  const handleZoomChange = useCallback((zoomValue: number) => {
-    if (videoTrackRef.current) {
-      try {
-        videoTrackRef.current.applyConstraints({
-          advanced: [{ zoom: zoomValue }],
-        });
-        setCurrentZoom(zoomValue);
-      } catch (error) {
-        console.error('Failed to apply zoom constraints:', error);
-      }
-    }
-  }, []);
 
   useEffect(() => {
     if (globalCapturedImage === null) {
@@ -217,8 +162,5 @@ export const useFaceCapture = () => {
     handleCapture,
     resetCapture,
     handleUsePhoto,
-    zoomCapabilities,
-    currentZoom,
-    handleZoomChange,
   };
 };
