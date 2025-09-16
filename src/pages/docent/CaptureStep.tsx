@@ -23,9 +23,6 @@ const CaptureStep = () => {
     handleCapture,
     resetCapture,
     handleUsePhoto,
-    zoomCapabilities,
-    currentZoom,
-    handleZoomChange,
   } = useFaceCapture();
 
   const navigate = useNavigate();
@@ -70,9 +67,6 @@ const CaptureStep = () => {
             capturedImage={capturedImage}
             isDetectingFace={isDetectingFace}
             setIsWebcamReady={setIsWebcamReady}
-            zoomCapabilities={zoomCapabilities}
-            currentZoom={currentZoom}
-            handleZoomChange={handleZoomChange}
           />
         </div>
 
