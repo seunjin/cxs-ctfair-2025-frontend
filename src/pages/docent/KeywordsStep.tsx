@@ -10,6 +10,7 @@ import { getKeywords } from '../../api/kioskApi';
 import { useMutation, useQuery } from '@tanstack/react-query';
 import LoaderIcon from '../../assets/icons/loader.svg?react';
 import clsx from 'clsx';
+import adminApi from '../../api/adminApi';
 
 const KeywardSectionLabel = ({ text }: { text: string }) => {
   return (
@@ -25,9 +26,6 @@ const KeywordsStep = () => {
   const kiosk = useKiosk();
   const router = useNavigate();
   const {
-    id,
-    sexGroup,
-    ageGroup,
     styleGroup,
     moodGroup,
     // capturedImage,
@@ -44,13 +42,8 @@ const KeywordsStep = () => {
 
   // 도슨트 모드에서는 API 호출을 주석 처리합니다.
   // 로딩 상태(isPending)는 버튼 비활성화 등을 위해 유지합니다.
-  const { isPending } = useMutation({
-    // mutationFn: createDocentJob, // 도슨트용 API 함수 (가상)
-    mutationFn: async (data: any) => {
-      // 가짜 비동기 처리로 로딩 상태를 시뮬레이션 할 수 있습니다.
-      console.log('도슨트 모드 데이터:', data);
-      await new Promise((resolve) => setTimeout(resolve, 1000));
-    },
+  const { mutate, isPending } = useMutation({
+    mutationFn: adminApi.createDocentJob, // 도슨트용 API 함수 (가상)
     onSuccess: () => {
       console.log('SUCCESS : createDocentJob (Simulated)');
       // 도슨트 모드의 다음 경로로 이동합니다.
@@ -69,25 +62,12 @@ const KeywordsStep = () => {
       return;
     }
 
-    // mutate({
-    //   id,
-    //   sexGroup,
-    //   ageGroup: Number(ageGroup),
-    //   styleGroup,
-    //   moodGroup,
-    //   team: docentTeam, // '조' 정보 추가
-    //   // base64Image, landmarks 등은 보내지 않음
-    // });
+    mutate({ docent: docentTeam! });
 
     // 우선 API 호출 없이 다음 단계로 바로 이동하도록 처리
     // 위 mutate 로직은 나중에 실제 API가 준비되면 활성화합니다.
     console.log('도슨트 모드 다음 단계로 이동. 전송될 데이터:', {
-      id,
-      sexGroup,
-      ageGroup: Number(ageGroup),
-      styleGroup,
-      moodGroup,
-      team: docentTeam,
+      docent: docentTeam,
     });
     router(ROUTER_PATH.DOCENT_COMPLETE);
   };

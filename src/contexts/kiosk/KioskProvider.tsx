@@ -1,9 +1,5 @@
 import { useState, type ReactNode, useCallback, useRef } from 'react';
-import { useNavigate } from 'react-router-dom';
 import { KioskContext, type DocentTeam } from './KioskContext';
-import { useIdleTimer } from '../../hooks/useIdleTimer';
-
-const IDLE_TIMEOUT = 120000; // 2분
 
 const initialSex = '';
 const initialAge = '';
@@ -12,7 +8,6 @@ const initialMood = '';
 const initialDocentTeam: DocentTeam = null;
 
 export const KioskProvider = ({ children }: { children: ReactNode }) => {
-  const navigate = useNavigate();
   const [id, setId] = useState(() => crypto.randomUUID());
   const [sexGroup, setSexGroup] = useState(initialSex);
   const [ageGroup, setAgeGroup] = useState(initialAge);
@@ -36,14 +31,6 @@ export const KioskProvider = ({ children }: { children: ReactNode }) => {
     setLandmarks(null);
     setDocentTeam(initialDocentTeam);
   }, []);
-
-  const handleIdle = useCallback(() => {
-    console.log('유휴 상태 감지. 상태를 초기화하고 메인으로 이동합니다.');
-    resetState();
-    navigate('/kiosk');
-  }, [navigate, resetState]);
-
-  useIdleTimer(handleIdle, IDLE_TIMEOUT);
 
   return (
     <KioskContext.Provider

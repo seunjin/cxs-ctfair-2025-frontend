@@ -70,6 +70,14 @@ const adminApi = {
   addFixedContent: (payload: AddFixedContentPayload) => {
     return http.post('/api/admin/fixed-content', payload);
   },
+
+  /**
+   * @description 도슨트 타입을 전달합니다.
+   *
+   */
+  createDocentJob: (payload: { docent: string }) => {
+    return http.post('/api/admin/docent', payload);
+  },
 };
 
 export default adminApi;
