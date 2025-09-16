@@ -23,7 +23,7 @@ const CaptureStep = () => {
     handleCapture,
     resetCapture,
     handleUsePhoto,
-  } = useFaceCapture();
+  } = useFaceCapture({ shouldDetectFace: true });
 
   const navigate = useNavigate();
 
