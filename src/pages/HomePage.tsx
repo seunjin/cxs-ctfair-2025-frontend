@@ -2,13 +2,6 @@ import { Link } from 'react-router-dom';
 import { ROUTER_PATH } from '../router';
 
 export default function HomePage() {
-  const envVars = {
-    VITE_API_URL: import.meta.env.VITE_API_URL,
-    VITE_AKOOL_API_URL: import.meta.env.VITE_AKOOL_API_URL,
-    VITE_AKOOL_CLIENT_ID: import.meta.env.VITE_AKOOL_CLIENT_ID,
-    VITE_AKOOL_CLIENT_SECRET: import.meta.env.VITE_AKOOL_CLIENT_SECRET,
-  };
-
   return (
     <div className="p-4">
       <h1 className="text-3xl font-bold mb-4">홈페이지</h1>
