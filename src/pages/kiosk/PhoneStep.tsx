@@ -16,40 +16,40 @@ const PhoneNumberButton = ({
   onClick: VoidFunction;
 }) => {
   return (
-    <div
-      className="w-36 h-36 bg-white rounded-full shadow-[0px_2px_10px_0px_rgba(0,0,0,0.25)] flex justify-center items-center gap-3"
+    <button
+      className="w-36 h-36 bg-white rounded-full shadow-[0px_2px_10px_0px_rgba(0,0,0,0.25)] flex justify-center items-center gap-3 active:scale-95 duration-100"
       onClick={onClick}
     >
       <div className="text-center justify-start text-[#0033FF] text-6xl font-semibold leading-[60px]">
         {number}
       </div>
-    </div>
+    </button>
   );
 };
 
 const PhoneClearButton = ({ onClick }: { onClick: VoidFunction }) => {
   return (
-    <div
-      className="w-36 h-36  bg-white/5 rounded-full shadow-[0px_2px_10px_0px_rgba(0,0,0,0.25)]  outline-[3px] outline-offset-[-3px] outline-white backdrop-blur-sm flex justify-center items-center gap-2.5"
+    <button
+      className="w-36 h-36  bg-white/5 rounded-full shadow-[0px_2px_10px_0px_rgba(0,0,0,0.25)]  outline-[3px] outline-offset-[-3px] outline-white backdrop-blur-sm flex justify-center items-center gap-2.5 active:scale-95 duration-100"
       onClick={onClick}
     >
       <div className="text-center justify-start text-white text-4xl font-semibold leading-9">
         Clear
       </div>
-    </div>
+    </button>
   );
 };
 
 const PhoneRemoveButton = ({ onClick }: { onClick: VoidFunction }) => {
   return (
-    <div
-      className="w-36 h-36  bg-white/5 rounded-full shadow-[0px_2px_10px_0px_rgba(0,0,0,0.25)]  outline-[3px] outline-offset-[-3px] outline-white backdrop-blur-sm flex justify-center items-center gap-2.5"
+    <button
+      className="w-36 h-36  bg-white/5 rounded-full shadow-[0px_2px_10px_0px_rgba(0,0,0,0.25)]  outline-[3px] outline-offset-[-3px] outline-white backdrop-blur-sm flex justify-center items-center gap-2.5 active:scale-95 duration-100"
       onClick={onClick}
     >
       <div className="text-center justify-start text-white text-4xl font-semibold leading-9">
         <ArrowRight className="rotate-180" />
       </div>
-    </div>
+    </button>
   );
 };
 
@@ -191,7 +191,7 @@ const PhoneStep = () => {
             <button
               onClick={() => setAgree(!agree)}
               className={clsx(
-                'w-20 h-20  rounded-[99px] shadow-[0px_2px_10px_0px_rgba(0,0,0,0.25)]  outline-[3px] outline-offset-[-3px]  backdrop-blur-sm flex justify-center items-center gap-2.5',
+                'w-20 h-20  rounded-[99px] shadow-[0px_2px_10px_0px_rgba(0,0,0,0.25)]  outline-[3px] outline-offset-[-3px]  backdrop-blur-sm flex justify-center items-center gap-2.5 active:scale-95 duration-100',
                 agree
                   ? 'bg-[#0033FF] outline-[#0033FF]'
                   : 'bg-white/5 outline-white'
@@ -213,7 +213,7 @@ const PhoneStep = () => {
           <div className="flex w-full gap-[30px]">
             <button
               onClick={handleSubmit}
-              className="inline-flex justify-center items-center gap-3 flex-1 rounded-full h-40 bg-[#0033FF] text-[50px] font-bold text-white disabled:text-white/40"
+              className="inline-flex justify-center items-center gap-3 flex-1 rounded-full h-40 bg-[#0033FF] text-[50px] font-bold text-white disabled:text-white/40 not-disabled:active:scale-95 duration-100"
               disabled={phoneNumber.length !== 13 || !agree || isPending}
             >
               입력 완료

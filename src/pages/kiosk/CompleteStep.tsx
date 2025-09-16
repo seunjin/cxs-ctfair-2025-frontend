@@ -57,13 +57,13 @@ const CompleteStep = () => {
           <Link
             to={ROUTER_PATH.KIOSK}
             onClick={resetState}
-            className="inline-flex justify-center items-center gap-3 w-[310px] rounded-full h-40 bg-white text-[50px] font-bold text-[#0033FF]"
+            className="inline-flex justify-center items-center gap-3 w-[310px] rounded-full h-40 bg-white text-[50px] font-bold text-[#0033FF] active:scale-95 duration-100"
           >
             종료
           </Link>
           <Link
             to={ROUTER_PATH.KIOSK_PHONE}
-            className="inline-flex justify-center items-center gap-3 flex-1 rounded-full h-40 bg-[#0033FF] text-[50px] font-bold text-white"
+            className="inline-flex justify-center items-center gap-3 flex-1 rounded-full h-40 bg-[#0033FF] text-[50px] font-bold text-white active:scale-95 duration-100"
           >
             휴대폰번호 입력 <ArrowRighgt />
           </Link>

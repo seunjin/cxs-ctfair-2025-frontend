@@ -98,7 +98,7 @@ export const Radio = ({
       />
       <label
         htmlFor={finalId}
-        className={`font-semibold inline-flex items-center justify-center text-white text-center outline-white backdrop-blur-[7px] shadow-[0px_2px_20px_0px_rgba(0,0,0,0.15)] peer-checked:bg-[#0033FF] peer-checked:outline-[#355EFF] ${labelClassName}`}
+        className={`font-semibold inline-flex items-center justify-center text-white text-center outline-white backdrop-blur-[7px] shadow-[0px_2px_20px_0px_rgba(0,0,0,0.15)] peer-checked:bg-[#0033FF] peer-checked:outline-[#355EFF] active:scale-95 duration-100 ${labelClassName}`}
       >
         <span>{label}</span>
       </label>

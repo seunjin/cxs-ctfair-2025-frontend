@@ -56,7 +56,7 @@ const CompleteStep = () => {
           <Link
             to={ROUTER_PATH.KIOSK}
             onClick={resetState}
-            className="flex flex-1 justify-center items-center gap-3  rounded-full h-40 bg-white text-[50px] font-bold text-[#0033FF]"
+            className="flex flex-1 justify-center items-center gap-3  rounded-full h-40 bg-white text-[50px] font-bold text-[#0033FF] active:scale-95 duration-100"
           >
             종료
           </Link>

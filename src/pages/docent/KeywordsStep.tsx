@@ -129,14 +129,14 @@ const KeywordsStep = () => {
           <div className="flex w-full gap-[30px]">
             <Link
               to={ROUTER_PATH.DOCENT_CAPTURE}
-              className="inline-flex justify-center items-center gap-3 flex-1 rounded-full h-40 bg-white text-[50px] font-bold text-[#0033FF]"
+              className="inline-flex justify-center items-center gap-3 flex-1 rounded-full h-40 bg-white text-[50px] font-bold text-[#0033FF] not-disabled:active:scale-95 duration-100"
             >
               <Arrowleft /> 이전
             </Link>
             <button
               onClick={handleNext}
               disabled={isPending || !styleGroup || !moodGroup}
-              className="peer inline-flex justify-center items-center gap-3 flex-1 rounded-full h-40 bg-[#0033FF] text-[50px] font-bold text-white disabled:text-white/40"
+              className="peer inline-flex justify-center items-center gap-3 flex-1 rounded-full h-40 bg-[#0033FF] text-[50px] font-bold text-white disabled:text-white/40 not-disabled:active:scale-95 duration-100"
             >
               다음{' '}
               <ArrowRighgt

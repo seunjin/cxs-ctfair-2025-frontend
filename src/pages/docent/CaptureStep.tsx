@@ -92,13 +92,13 @@ const CaptureStep = () => {
           <div className="mt-6 flex w-full justify-center gap-[30px]">
             <button
               onClick={resetCapture}
-              className="inline-flex flex-1 items-center justify-center gap-3 rounded-full bg-white h-40 text-[50px] font-bold text-[#0033FF]"
+              className="inline-flex flex-1 items-center justify-center gap-3 rounded-full bg-white h-40 text-[50px] font-bold text-[#0033FF] active:scale-95 duration-100"
             >
               <RefreshIcon /> 재촬영
             </button>
             <button
               onClick={handleConfirmPhoto}
-              className="flex flex-1 items-center justify-center gap-3 rounded-full bg-[#0033FF] h-40 text-[50px] font-bold text-white disabled:cursor-not-allowed disabled:text-white/40"
+              className="flex flex-1 items-center justify-center gap-3 rounded-full bg-[#0033FF] h-40 text-[50px] font-bold text-white disabled:cursor-not-allowed disabled:text-white/40 not-disabled:active:scale-95 duration-100"
               disabled={isDetectingFace} // API 로딩 중에는 '다음' 버튼 비활성화
             >
               다음{' '}
@@ -114,13 +114,13 @@ const CaptureStep = () => {
           >
             <Link
               to={ROUTER_PATH.DOCENT_INFO}
-              className="inline-flex w-[310px] items-center justify-center gap-3 rounded-full bg-white h-40 text-[50px] font-bold text-[#0033FF]"
+              className="inline-flex w-[310px] items-center justify-center gap-3 rounded-full bg-white h-40 text-[50px] font-bold text-[#0033FF] active:scale-95 duration-100"
             >
               <Arrowleft className="h-13 w-13" /> 이전
             </Link>
             <button
               onClick={handleCapture}
-              className="flex flex-1 items-center justify-center gap-3 rounded-full bg-[#0033FF] h-40 text-[50px] font-bold text-white disabled:cursor-not-allowed  disabled:text-white/40 "
+              className="flex flex-1 items-center justify-center gap-3 rounded-full bg-[#0033FF] h-40 text-[50px] font-bold text-white disabled:cursor-not-allowed  disabled:text-white/40 not-disabled:active:scale-95 duration-100"
               disabled={!isFaceAligned}
             >
               <CameraIcon className={clsx(!isFaceAligned && 'opacity-40')} />{' '}
