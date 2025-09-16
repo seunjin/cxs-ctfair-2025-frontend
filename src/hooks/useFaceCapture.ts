@@ -16,7 +16,12 @@ const AKOOL_ERROR_MESSAGES: { [key: number]: string } = {
 };
 const DEFAULT_ERROR_MESSAGE = '알 수 없는 오류가 발생했습니다.';
 
-export const useFaceCapture = () => {
+interface FaceCaptureOptions {
+  shouldDetectFace?: boolean;
+}
+
+export const useFaceCapture = (options: FaceCaptureOptions = {}) => {
+  const { shouldDetectFace = true } = options;
   const webcamRef = useRef<Webcam>(null);
 
   const [isWebcamReady, setIsWebcamReady] = useState(false);
@@ -115,13 +120,15 @@ export const useFaceCapture = () => {
             const croppedImageSrc = canvas.toDataURL('image/jpeg', 1.0);
             setCapturedImage(croppedImageSrc);
             setGlobalCapturedImage(croppedImageSrc);
-            runFaceDetect(croppedImageSrc);
+            if (shouldDetectFace) {
+              runFaceDetect(croppedImageSrc);
+            }
           }
         };
         image.src = imageSrc;
       }
     }
-  }, [runFaceDetect, setGlobalCapturedImage]);
+  }, [runFaceDetect, setGlobalCapturedImage, shouldDetectFace]);
 
   useEffect(() => {
     if (!isCountingDown) return;

@@ -2,7 +2,7 @@ import { Link, useNavigate } from 'react-router-dom';
 import clsx from 'clsx';
 import { useFaceCapture } from '../../hooks/useFaceCapture';
 import { ROUTER_PATH } from '../../router';
-
+import CautionIcon from '../../assets/icons/caution.svg?react';
 import FaceCapture from '../../components/kiosk/FaceCapture';
 import CaptureCountdown from '../../components/ui/CaptureCountdown';
 import Arrowleft from '../../assets/icons/arrow-narrow-left.svg?react';
@@ -23,7 +23,7 @@ const CaptureStep = () => {
     handleCapture,
     resetCapture,
     handleUsePhoto,
-  } = useFaceCapture();
+  } = useFaceCapture({ shouldDetectFace: true });
 
   const navigate = useNavigate();
 
@@ -36,11 +36,11 @@ const CaptureStep = () => {
     <div className="flex h-full flex-col px-20 py-[40px_130px]">
       {/* 1. 상단 텍스트 영역 */}
       <section>
-        <div className="relative pb-[60px]">
+        <div className="relative pb-[80px]">
           {isCountingDown && <CaptureCountdown count={countdown} />}
           <h2
             className={clsx(
-              "flex h-[140px] items-center justify-center text-center text-[50px] font-semibold text-white font-['Pretendard'] leading-[70px]",
+              "flex h-[140px] items-center justify-center text-center text-[50px] font-semibold text-white font-['Pretendard'] leading-[70px] pb-15",
               { 'opacity-0': isCountingDown || capturedImage }
             )}
           >
@@ -48,6 +48,29 @@ const CaptureStep = () => {
             <br />
             정면을 바라본 상태에서 촬영해주세요!
           </h2>
+          {
+            <div className=" flex flex-col justify-center">
+              <div className="flex justify-center ">
+                <div
+                  className={clsx(
+                    'px-7 py-3  bg-rose-600 rounded-[99px] inline-flex justify-center items-center gap-2',
+                    userMessage === 'OK' ||
+                      capturedImage ||
+                      isDetectingFace ||
+                      isCountingDown
+                      ? 'opacity-0'
+                      : ''
+                  )}
+                >
+                  <CautionIcon />
+                  <div className="text-center whitespace-nowrap justify-start text-white text-3xl font-bold leading-10">
+                    {/* {userMessage} */}
+                    얼굴이 프레임 중앙에 오도록 맞춰주세요!
+                  </div>
+                </div>
+              </div>
+            </div>
+          }
           <h2
             className={clsx(
               'absolute inset-0 flex h-[140px] items-center justify-center text-center text-[50px] font-semibold text-white font-["Pretendard"] leading-[70px] transition-opacity',
@@ -63,7 +86,6 @@ const CaptureStep = () => {
         <div className="relative pb-20">
           <FaceCapture
             webcamRef={webcamRef}
-            userMessage={userMessage}
             capturedImage={capturedImage}
             isDetectingFace={isDetectingFace}
             setIsWebcamReady={setIsWebcamReady}

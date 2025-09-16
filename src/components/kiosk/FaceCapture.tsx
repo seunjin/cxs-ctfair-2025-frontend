@@ -1,13 +1,12 @@
 import React from 'react';
 import Webcam from 'react-webcam';
-import CautionIcon from '../../assets/icons/caution.svg?react';
+
 import FaceFrameGuide from '../../assets/images/kiosk/face-frame-guide.png';
 import clsx from 'clsx';
-const COMPONENT_SIZE_CLASS = 'w-[920px]';
+const COMPONENT_SIZE_CLASS = 'w-[70%]';
 
 type FaceCaptureProps = {
   webcamRef: React.Ref<Webcam>;
-  userMessage: string;
   capturedImage: string | null;
   isDetectingFace: boolean;
   setIsWebcamReady: (isReady: boolean) => void;
@@ -15,13 +14,12 @@ type FaceCaptureProps = {
 
 const FaceCapture = ({
   webcamRef,
-  userMessage,
   capturedImage,
   isDetectingFace,
   setIsWebcamReady,
 }: FaceCaptureProps) => {
   return (
-    <div className={`${COMPONENT_SIZE_CLASS} `}>
+    <div className={`${COMPONENT_SIZE_CLASS} mx-auto`}>
       <div
         className={clsx(
           'relative w-full overflow-hidden bg-[#333333]',
@@ -61,26 +59,8 @@ const FaceCapture = ({
           </>
         ) : (
           <>
-            {(!capturedImage || !isDetectingFace) && (
-              <div className="absolute top-6 left-1/2  -translate-x-1/2 z-100 flex flex-col justify-center">
-                <div className="flex justify-center ">
-                  <div
-                    className={clsx(
-                      'px-7 py-3  bg-rose-600 rounded-[99px] inline-flex justify-center items-center gap-2',
-                      userMessage === 'OK' || capturedImage ? 'opacity-0' : ''
-                    )}
-                  >
-                    <CautionIcon />
-                    <div className="text-center whitespace-nowrap justify-start text-white text-3xl font-bold leading-10">
-                      {/* {userMessage} */}
-                      얼굴이 프레임 중앙에 오도록 맞춰주세요!
-                    </div>
-                  </div>
-                </div>
-              </div>
-            )}
             {!capturedImage && (
-              <div className="absolute top-1/2 left-1/2  -translate-1/2 z-100 w-[540px] h-[640px]">
+              <div className="absolute top-1/2 left-1/2  -translate-1/2 z-100 w-[300px] h-[355px]">
                 <img src={FaceFrameGuide} alt="face-frame-guide" />
               </div>
             )}
