@@ -43,5 +43,5 @@ const componentMap = { alert: Alert, confirm: Confirm, modal: Modal };
 
 // 5. 앱 전체에서 사용할 훅과 함수 생성 및 내보내기
 export const useDialogs = createUseDialogs(manager, componentMap);
-// export const openDialog = manager.openDialog;
+export const openDialog = manager.openDialog;
 export const closeDialog = manager.closeDialog;
