@@ -69,7 +69,6 @@ const KeywordsStep = () => {
     console.log('도슨트 모드 다음 단계로 이동. 전송될 데이터:', {
       docent: docentTeam,
     });
-    router(ROUTER_PATH.DOCENT_COMPLETE);
   };
 
   const styleKeywords = useMemo(

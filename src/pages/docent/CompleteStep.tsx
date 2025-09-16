@@ -2,7 +2,7 @@ import { Link } from 'react-router-dom';
 import { ROUTER_PATH } from '../../router';
 import { useKiosk } from '../../contexts/kiosk';
 import ComlpleteImg from '../../assets/images/kiosk/complete-img.jpg';
-import ArrowRighgt from '../../assets/icons/arrow-narrow-right.svg';
+import ArrowRighgt from '../../assets/icons/arrow-narrow-right.svg?react';
 const CompleteStep = () => {
   const { resetState } = useKiosk();
 
@@ -62,7 +62,7 @@ const CompleteStep = () => {
             종료
           </Link>
           <Link
-            to={ROUTER_PATH.KIOSK}
+            to={ROUTER_PATH.DOCENT_PHONE}
             className="inline-flex justify-center items-center gap-3 flex-1 rounded-full h-40 bg-[#0033FF] text-[50px] font-bold text-white"
           >
             휴대폰번호 입력 <ArrowRighgt />
