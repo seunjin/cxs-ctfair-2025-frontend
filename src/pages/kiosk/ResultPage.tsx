@@ -18,6 +18,22 @@ function ResultPage() {
     enabled: !!id, // id가 있을 때만 쿼리 실행
   });
 
+  const handleDownload = async (url: string, filename: string) => {
+    if (!url) return;
+    try {
+      const response = await fetch(url);
+      const blob = await response.blob();
+      const link = document.createElement('a');
+      link.href = URL.createObjectURL(blob);
+      link.download = filename;
+      document.body.appendChild(link);
+      link.click();
+      document.body.removeChild(link);
+    } catch (error) {
+      console.error('다운로드 중 오류 발생:', error);
+    }
+  };
+
   if (isError) {
     return <div>오류가 발생했습니다: {error.message}</div>;
   }
@@ -40,22 +56,25 @@ function ResultPage() {
           <div className="flex items-center gap-3 max-w-[340px] mx-auto">
             <a
               href={data?.imageUrl}
-              download="generated-image.jpg"
+              target="_blank"
+              rel="noopener noreferrer"
               className="flex-1 h-13 bg-white/5 rounded-xl shadow-[0px_2px_10px_0px_rgba(0,0,0,0.25)] outline-1 outline-offset-[-1px] outline-white backdrop-blur-sm flex justify-center items-center gap-2"
             >
               <div className="flex items-center gap-2 text-center justify-start text-white text-base font-semibold leading-none">
                 <DownloadIcon /> 이미지 저장
               </div>
             </a>
-            <a
-              href={data?.videoUrl}
-              download="generated-video.mp4"
+            <button
+              onClick={() =>
+                handleDownload(data?.videoUrl ?? '', 'generated-video.mp4')
+              }
+              disabled={!data?.videoUrl}
               className="flex-1 h-13 bg-white/5 rounded-xl shadow-[0px_2px_10px_0px_rgba(0,0,0,0.25)] outline-1 outline-offset-[-1px] outline-white backdrop-blur-sm flex justify-center items-center gap-2"
             >
               <div className="flex items-center gap-2 text-center justify-start text-white text-base font-semibold leading-none">
                 <DownloadIcon /> 비디오 저장
               </div>
-            </a>
+            </button>
           </div>
         </div>
         <section className="flex flex-col items-center  w-full gap-3 ">
