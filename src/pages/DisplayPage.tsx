@@ -9,7 +9,7 @@ interface PlaylistItem {
   isUserContent: boolean;
 }
 
-const TRANSITION_DURATION_MS = 300; // CSS 트랜지션 시간과 일치
+const TRANSITION_DURATION_MS = 1000; // CSS 트랜지션 시간과 일치
 
 const DisplayPage = () => {
   const [playlist, setPlaylist] = useState<PlaylistItem[]>([]);
@@ -48,7 +48,10 @@ const DisplayPage = () => {
       }));
       setPlaylist(initialPlaylist);
 
-      console.log(`[Playlist] Initial playlist set. Total fixed videos: ${initialPlaylist.length}`, initialPlaylist);
+      console.log(
+        `[Playlist] Initial playlist set. Total fixed videos: ${initialPlaylist.length}`,
+        initialPlaylist
+      );
 
       const firstPlayer = videoRefs[0].current;
       if (firstPlayer) {
@@ -62,16 +65,16 @@ const DisplayPage = () => {
   useEffect(() => {
     const ctrl = new AbortController();
     const API_BASE_URL =
-      import.meta.env.MODE === 'production'
-        ? 'https://api.cxsctfair.com'
-        : '';
+      import.meta.env.MODE === 'production' ? 'https://api.cxsctfair.com' : '';
     fetchEventSource(`${API_BASE_URL}/api/contents/subscribe`, {
       headers: { Authorization: 'Bearer 41f065b5-7c8f-4c29-8dad-68478c706778' },
       onopen: async (response) => {
         if (response.ok) {
           console.log('[SSE] Connection established');
         } else {
-          console.error(`[SSE] Connection failed: ${response.status} ${response.statusText}`);
+          console.error(
+            `[SSE] Connection failed: ${response.status} ${response.statusText}`
+          );
         }
       },
       onmessage(event) {
@@ -87,13 +90,17 @@ const DisplayPage = () => {
             const userVideo: PlaylistItem = { ...payload, isUserContent: true };
             setPlaylist((current) => {
               // ref를 사용하여 최신 currentIndex를 가져옵니다.
-              const nextIdx = (currentIndexRef.current + 1) % (current.length + 1);
+              const nextIdx =
+                (currentIndexRef.current + 1) % (current.length + 1);
               const newPlaylist = [
                 ...current.slice(0, nextIdx),
                 userVideo,
                 ...current.slice(nextIdx),
               ];
-              console.log(`[Playlist] New video inserted at index ${nextIdx}. Updated playlist:`, newPlaylist);
+              console.log(
+                `[Playlist] New video inserted at index ${nextIdx}. Updated playlist:`,
+                newPlaylist
+              );
               return newPlaylist;
             });
           }
@@ -129,7 +136,9 @@ const DisplayPage = () => {
       setPlaylist(newPlaylist);
       if (newPlaylist.length > 0) {
         const nextIndex = finishedIndex % newPlaylist.length;
-        console.log(`[Playback] User video finished. Advancing to index: ${nextIndex}`);
+        console.log(
+          `[Playback] User video finished. Advancing to index: ${nextIndex}`
+        );
         setCurrentIndex(nextIndex);
       }
     } else {
@@ -144,7 +153,9 @@ const DisplayPage = () => {
         }
       } else {
         const nextIndex = (currentIndex + 1) % playlist.length;
-        console.log(`[Playback] Fixed video finished. Advancing from index ${currentIndex} to ${nextIndex}`);
+        console.log(
+          `[Playback] Fixed video finished. Advancing from index ${currentIndex} to ${nextIndex}`
+        );
         setCurrentIndex(nextIndex);
       }
     }
@@ -195,7 +206,8 @@ const DisplayPage = () => {
       setActivePlayerIndex(standbyPlayerIndex);
     };
     standbyPlayer.addEventListener('canplaythrough', onCanPlayThrough);
-    return () => standbyPlayer.removeEventListener('canplaythrough', onCanPlayThrough);
+    return () =>
+      standbyPlayer.removeEventListener('canplaythrough', onCanPlayThrough);
   }, [currentIndex, playlist, activePlayerIndex]);
 
   // 5. 메모리 관리: 비활성화된 플레이어 정리
