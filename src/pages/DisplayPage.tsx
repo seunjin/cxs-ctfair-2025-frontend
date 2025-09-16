@@ -54,7 +54,11 @@ const DisplayPage = () => {
   // 2. SSE 핸들러
   useEffect(() => {
     const ctrl = new AbortController();
-    fetchEventSource(`https://api.cxsctfair.com/api/contents/subscribe`, {
+    const API_BASE_URL =
+      import.meta.env.MODE === 'production'
+        ? 'https://api.cxsctfair.com'
+        : '';
+    fetchEventSource(`${API_BASE_URL}/api/contents/subscribe`, {
       headers: { Authorization: 'Bearer 41f065b5-7c8f-4c29-8dad-68478c706778' },
       onmessage(event) {
         if (!event.data) return;
