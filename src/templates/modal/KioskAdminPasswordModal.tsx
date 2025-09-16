@@ -22,7 +22,7 @@ const PhoneNumberButton = ({
 }) => {
   return (
     <div
-      className="size-24 bg-[#111] rounded-full shadow-[0px_2px_10px_0px_rgba(0,0,0,0.25)] flex justify-center items-center gap-3 outline-[3px] outline-offset-[-3px] outline-white active-scale-95 duration-100"
+      className="size-24 bg-[#111] rounded-full shadow-[0px_2px_10px_0px_rgba(0,0,0,0.25)] flex justify-center items-center gap-3 outline-[3px] outline-offset-[-3px] outline-white active:scale-95 duration-100"
       onClick={onClick}
     >
       <div className="text-center justify-start text-white text-3xl font-semibold leading-[60px]">
@@ -35,7 +35,7 @@ const PhoneNumberButton = ({
 const PhoneClearButton = ({ onClick }: { onClick: VoidFunction }) => {
   return (
     <div
-      className="size-24  bg-[#111]/5 rounded-full shadow-[0px_2px_10px_0px_rgba(0,0,0,0.25)]  outline-[3px] outline-offset-[-3px] outline-white backdrop-blur-sm flex justify-center items-center gap-2.5 active-scale-95 duration-100"
+      className="size-24  bg-[#111]/5 rounded-full shadow-[0px_2px_10px_0px_rgba(0,0,0,0.25)]  outline-[3px] outline-offset-[-3px] outline-white backdrop-blur-sm flex justify-center items-center gap-2.5 active:scale-95 duration-100"
       onClick={onClick}
     >
       <div className="text-center justify-start text-black text-xl font-semibold ">
@@ -48,7 +48,7 @@ const PhoneClearButton = ({ onClick }: { onClick: VoidFunction }) => {
 const PhoneRemoveButton = ({ onClick }: { onClick: VoidFunction }) => {
   return (
     <div
-      className="size-24  bg-[#111]/5 rounded-full shadow-[0px_2px_10px_0px_rgba(0,0,0,0.25)]  outline-[3px] outline-offset-[-3px] outline-white backdrop-blur-sm flex justify-center items-center gap-2.5 active-scale-95 duration-100"
+      className="size-24  bg-[#111]/5 rounded-full shadow-[0px_2px_10px_0px_rgba(0,0,0,0.25)]  outline-[3px] outline-offset-[-3px] outline-white backdrop-blur-sm flex justify-center items-center gap-2.5 active:scale-95 duration-100"
       onClick={onClick}
     >
       <div className="text-center justify-start">

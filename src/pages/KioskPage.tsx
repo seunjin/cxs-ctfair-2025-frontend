@@ -1,12 +1,28 @@
-import { Outlet, useLocation } from 'react-router-dom';
+import { Outlet, useLocation, useNavigate } from 'react-router-dom';
 import { ROUTER_PATH } from '../router';
 import KioskHeader from '../components/kiosk/KioskHeader';
 import KioskCaptureStep from './kiosk/CaptureStep'; // 이름 변경
 import DocentCaptureStep from './docent/CaptureStep'; // 도슨트 스텝 추가
 import clsx from 'clsx';
+import { useIdleTimer } from '../hooks/useIdleTimer';
+import { useKiosk } from '../contexts/kiosk/useKiosk';
+import { useCallback } from 'react';
+
+const IDLE_TIMEOUT = 120000; // 2분
 
 const KioskPage = () => {
   const location = useLocation();
+  const navigate = useNavigate();
+  const { resetState } = useKiosk();
+
+  const handleIdle = useCallback(() => {
+    console.log('유휴 상태 감지. 상태를 초기화하고 메인으로 이동합니다.');
+    resetState();
+    navigate('/kiosk');
+  }, [navigate, resetState]);
+
+  useIdleTimer(handleIdle, IDLE_TIMEOUT);
+
   const isCapturePage = [
     ROUTER_PATH.KIOSK_CAPTURE,
     ROUTER_PATH.DOCENT_CAPTURE,

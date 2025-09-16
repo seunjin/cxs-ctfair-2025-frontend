@@ -32,6 +32,7 @@ import DocentKeywordsStep from './pages/docent/KeywordsStep';
 import DocentCompleteStep from './pages/docent/CompleteStep';
 import DocentPhoneStep from './pages/docent/PhoneStep';
 import DocentResultPage from './pages/docent/ResultPage';
+import DocentGuard from './components/guards/DocentGuard';
 
 export const ROUTER_PATH = {
   HOME: '/',
@@ -107,24 +108,29 @@ const router = createBrowserRouter([
             element: <DocentMainStep />,
           },
           {
-            path: ROUTER_PATH.DOCENT_INFO,
-            element: <DocentInfoStep />,
-          },
-          {
-            path: ROUTER_PATH.DOCENT_CAPTURE,
-            element: <></>,
-          },
-          {
-            path: ROUTER_PATH.DOCENT_KEYWORDS,
-            element: <DocentKeywordsStep />,
-          },
-          {
-            path: ROUTER_PATH.DOCENT_COMPLETE,
-            element: <DocentCompleteStep />,
-          },
-          {
-            path: ROUTER_PATH.DOCENT_PHONE,
-            element: <DocentPhoneStep />,
+            element: <DocentGuard />,
+            children: [
+              {
+                path: ROUTER_PATH.DOCENT_INFO,
+                element: <DocentInfoStep />,
+              },
+              {
+                path: ROUTER_PATH.DOCENT_CAPTURE,
+                element: <></>,
+              },
+              {
+                path: ROUTER_PATH.DOCENT_KEYWORDS,
+                element: <DocentKeywordsStep />,
+              },
+              {
+                path: ROUTER_PATH.DOCENT_COMPLETE,
+                element: <DocentCompleteStep />,
+              },
+              {
+                path: ROUTER_PATH.DOCENT_PHONE,
+                element: <DocentPhoneStep />,
+              },
+            ],
           },
         ],
       },
