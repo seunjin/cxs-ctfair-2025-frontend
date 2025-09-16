@@ -11,6 +11,9 @@ type FaceCaptureProps = {
   capturedImage: string | null;
   isDetectingFace: boolean;
   setIsWebcamReady: (isReady: boolean) => void;
+  zoomCapabilities: { min: number; max: number; step: number } | null;
+  currentZoom: number;
+  handleZoomChange: (zoomValue: number) => void;
 };
 
 const FaceCapture = ({
@@ -19,9 +22,35 @@ const FaceCapture = ({
   capturedImage,
   isDetectingFace,
   setIsWebcamReady,
+  zoomCapabilities,
+  currentZoom,
+  handleZoomChange,
 }: FaceCaptureProps) => {
   return (
     <div className={`${COMPONENT_SIZE_CLASS} `}>
+      {zoomCapabilities && !capturedImage && (
+        <div
+          className="fixed top-5 right-5 bg-black bg-opacity-50 p-4 rounded-lg text-white"
+          style={{ zIndex: 9999 }}
+        >
+          <label
+            htmlFor="zoom-slider"
+            className="block mb-2 text-center font-semibold"
+          >
+            카메라 줌
+          </label>
+          <input
+            id="zoom-slider"
+            type="range"
+            min={zoomCapabilities.min}
+            max={zoomCapabilities.max}
+            step={zoomCapabilities.step}
+            value={currentZoom}
+            onChange={(e) => handleZoomChange(parseFloat(e.target.value))}
+            className="w-48"
+          />
+        </div>
+      )}
       <div
         className={clsx(
           'relative w-full overflow-hidden bg-[#333333]',

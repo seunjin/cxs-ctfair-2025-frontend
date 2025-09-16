@@ -2,7 +2,7 @@ import { useState, useEffect, useRef } from 'react';
 import { useQuery, useMutation } from '@tanstack/react-query';
 import { getFixedPlaylist, reportContentPresented } from '../api/kioskApi';
 import { fetchEventSource } from '@microsoft/fetch-event-source';
-
+// import M from '../assets/screen_masking(p).png';
 interface PlaylistItem {
   videoUrl: string;
   contentId: number | null;
@@ -54,7 +54,11 @@ const DisplayPage = () => {
   // 2. SSE 핸들러
   useEffect(() => {
     const ctrl = new AbortController();
-    fetchEventSource(`/api/contents/subscribe`, {
+    const API_BASE_URL =
+      import.meta.env.MODE === 'production'
+        ? 'https://api.cxsctfair.com'
+        : '';
+    fetchEventSource(`${API_BASE_URL}/api/contents/subscribe`, {
       headers: { Authorization: 'Bearer 41f065b5-7c8f-4c29-8dad-68478c706778' },
       onmessage(event) {
         if (!event.data) return;
@@ -181,29 +185,38 @@ const DisplayPage = () => {
   }
 
   return (
-    <div className="w-full h-screen bg-black flex justify-center items-center">
-      <div className="relative" style={{ width: '100vmin', height: '100vmin' }}>
-        {videoRefs.map((ref, index) => (
-          <video
-            key={index}
-            ref={ref}
-            width="100%"
-            height="100%"
-            muted
-            playsInline
-            onEnded={handleVideoEnded}
-            onError={handleVideoError}
-            className={`absolute top-0 left-0 object-cover w-full h-full transition-opacity ease-in-out ${
-              activePlayerIndex === index ? 'opacity-100' : 'opacity-0'
-            }`}
-            style={{ transitionDuration: `${TRANSITION_DURATION_MS}ms` }}
-          />
-        ))}
+    <>
+      <div className="w-full h-screen bg-black flex justify-center items-center">
+        <div
+          className="relative"
+          style={{ width: '100vmin', height: '100vmin' }}
+        >
+          {videoRefs.map((ref, index) => (
+            <video
+              key={index}
+              ref={ref}
+              width="100%"
+              height="100%"
+              muted
+              playsInline
+              onEnded={handleVideoEnded}
+              onError={handleVideoError}
+              className={`absolute top-0 left-0 object-cover w-full h-full transition-opacity ease-in-out ${
+                activePlayerIndex === index ? 'opacity-100' : 'opacity-0'
+              }`}
+              style={{ transitionDuration: `${TRANSITION_DURATION_MS}ms` }}
+            />
+          ))}
+        </div>
+        {playlist.length === 0 && !isLoading && (
+          <div className="absolute text-white text-4xl">재생 대기 중...</div>
+        )}
       </div>
-      {playlist.length === 0 && !isLoading && (
-        <div className="absolute text-white text-4xl">재생 대기 중...</div>
-      )}
-    </div>
+      {/* <div className="fixed inset-0 z-10 flex items-center justify-center opacity-30">
+        <h2 className="text-blue-600 text-7xl">마스킹 테스트</h2>
+        <img src={M} className="w-full" />
+      </div> */}
+    </>
   );
 };
 
