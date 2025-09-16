@@ -14,6 +14,11 @@ const TRANSITION_DURATION_MS = 300; // CSS 트랜지션 시간과 일치
 const DisplayPage = () => {
   const [playlist, setPlaylist] = useState<PlaylistItem[]>([]);
   const [currentIndex, setCurrentIndex] = useState(0);
+  const currentIndexRef = useRef(currentIndex);
+
+  useEffect(() => {
+    currentIndexRef.current = currentIndex;
+  }, [currentIndex]);
 
   const videoRefs = [
     useRef<HTMLVideoElement>(null),
@@ -81,13 +86,14 @@ const DisplayPage = () => {
           if (payload?.contentId && payload?.videoUrl) {
             const userVideo: PlaylistItem = { ...payload, isUserContent: true };
             setPlaylist((current) => {
-              const nextIdx = (currentIndex + 1) % (current.length + 1);
+              // ref를 사용하여 최신 currentIndex를 가져옵니다.
+              const nextIdx = (currentIndexRef.current + 1) % (current.length + 1);
               const newPlaylist = [
                 ...current.slice(0, nextIdx),
                 userVideo,
                 ...current.slice(nextIdx),
               ];
-              console.log('[Playlist] New video added. Updated playlist:', newPlaylist);
+              console.log(`[Playlist] New video inserted at index ${nextIdx}. Updated playlist:`, newPlaylist);
               return newPlaylist;
             });
           }
@@ -105,8 +111,11 @@ const DisplayPage = () => {
       },
       signal: ctrl.signal,
     });
-    return () => ctrl.abort();
-  }, [currentIndex]);
+    return () => {
+      console.log('[SSE] Closing connection on component unmount.');
+      ctrl.abort();
+    };
+  }, []); // 의존성 배열을 비워서 한 번만 실행되도록 수정합니다.
 
   // 3. 비디오 재생 완료 또는 오류 시 호출될 함수
   const advanceToNextVideo = (finishedIndex: number) => {
