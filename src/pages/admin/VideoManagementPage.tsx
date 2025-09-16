@@ -108,6 +108,9 @@ const VideoManagementPage = () => {
                     className="relative flex items-center justify-center bg-[#DCE2E6] border-1 border-[#E9E9E9] rounded-[12px]"
                   >
                     <Icon.LoaderCircle className="stroke-white size-8 animate-spin" />
+                    <DeleteButton
+                      onClick={() => handleDelete(content.fixedContentId)}
+                    />
                   </div>
                 );
               } else if (content.status === 'FAILED') {
