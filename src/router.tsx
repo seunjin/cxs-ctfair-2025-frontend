@@ -30,8 +30,6 @@ import DocentMainStep from './pages/docent/MainStep';
 import DocentInfoStep from './pages/docent/InfoStep';
 import DocentKeywordsStep from './pages/docent/KeywordsStep';
 import DocentCompleteStep from './pages/docent/CompleteStep';
-import DocentPhoneStep from './pages/docent/PhoneStep';
-import DocentResultPage from './pages/docent/ResultPage';
 import DocentGuard from './components/guards/DocentGuard';
 
 export const ROUTER_PATH = {
@@ -52,8 +50,6 @@ export const ROUTER_PATH = {
   DOCENT_CAPTURE: '/docent/capture',
   DOCENT_KEYWORDS: '/docent/keywords',
   DOCENT_COMPLETE: '/docent/complete',
-  DOCENT_PHONE: '/docent/phone',
-  DOCENT_RESULT: '/docent/result/:id',
   ADMIN_GENERATIONS: '/admin/generations',
   ADMIN_GENERATION_DETAIL: '/admin/generations/:id',
   ADMIN_VIDEOS: '/admin/videos',
@@ -126,10 +122,6 @@ const router = createBrowserRouter([
                 path: ROUTER_PATH.DOCENT_COMPLETE,
                 element: <DocentCompleteStep />,
               },
-              {
-                path: ROUTER_PATH.DOCENT_PHONE,
-                element: <DocentPhoneStep />,
-              },
             ],
           },
         ],
@@ -137,10 +129,6 @@ const router = createBrowserRouter([
       {
         path: ROUTER_PATH.KIOSK_RESULT,
         element: <ResultPage />,
-      },
-      {
-        path: ROUTER_PATH.DOCENT_RESULT,
-        element: <DocentResultPage />,
       },
       {
         path: ROUTER_PATH.ADMIN,
