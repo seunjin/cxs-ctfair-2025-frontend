@@ -3,6 +3,7 @@ import Webcam from 'react-webcam';
 import { useMutation } from '@tanstack/react-query';
 import { detectFace } from '../api/akoolApi';
 import { useKiosk } from '../contexts/kiosk';
+import { openDialog } from '../lib/dialogs';
 
 // --- 에러 코드 한글 메시지 맵 ---
 const AKOOL_ERROR_MESSAGES: { [key: number]: string } = {
@@ -73,21 +74,18 @@ export const useFaceCapture = () => {
     }
   }, [isWebcamReady]);
 
-  const handleZoomChange = useCallback(
-    (zoomValue: number) => {
-      if (videoTrackRef.current) {
-        try {
-          videoTrackRef.current.applyConstraints({
-            advanced: [{ zoom: zoomValue }],
-          });
-          setCurrentZoom(zoomValue);
-        } catch (error) {
-          console.error('Failed to apply zoom constraints:', error);
-        }
+  const handleZoomChange = useCallback((zoomValue: number) => {
+    if (videoTrackRef.current) {
+      try {
+        videoTrackRef.current.applyConstraints({
+          advanced: [{ zoom: zoomValue }],
+        });
+        setCurrentZoom(zoomValue);
+      } catch (error) {
+        console.error('Failed to apply zoom constraints:', error);
       }
-    },
-    []
-  );
+    }
+  }, []);
 
   useEffect(() => {
     if (globalCapturedImage === null) {
@@ -106,7 +104,16 @@ export const useFaceCapture = () => {
     mutationFn: detectFace,
     onSuccess: (data) => {
       console.log('✅ Face Detect API 성공:', data);
-      setLandmarks(data.landmarks_str);
+      if (!data.landmarks_str || data.landmarks_str.length === 0) {
+        openDialog({
+          type: 'alert',
+          form: 'kiosk',
+          message: '얼굴 인식에 실패했습니다. 다시 시도해주세요.',
+        });
+        resetCapture();
+      } else {
+        setLandmarks(data.landmarks_str);
+      }
     },
     onError: (error) => {
       console.error('❌ Face Detect API 실패:', error);
