@@ -190,12 +190,12 @@ const DisplayPage = () => {
     standbyPlayer.src = nextVideoUrl;
     standbyPlayer.load(); // 비디오 소스가 변경되었음을 명시적으로 알리고 로드를 시작합니다.
 
-    const onCanPlay = () => {
+    const onCanPlayThrough = () => {
       standbyPlayer.play().catch((e) => console.error('재생 실패:', e));
       setActivePlayerIndex(standbyPlayerIndex);
     };
-    standbyPlayer.addEventListener('canplay', onCanPlay);
-    return () => standbyPlayer.removeEventListener('canplay', onCanPlay);
+    standbyPlayer.addEventListener('canplaythrough', onCanPlayThrough);
+    return () => standbyPlayer.removeEventListener('canplaythrough', onCanPlayThrough);
   }, [currentIndex, playlist, activePlayerIndex]);
 
   // 5. 메모리 관리: 비활성화된 플레이어 정리
