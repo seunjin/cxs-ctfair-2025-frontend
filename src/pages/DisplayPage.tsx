@@ -83,7 +83,7 @@ const DisplayPage = () => {
             return;
           }
           console.log('[SSE] New data received:', payload);
-          if (payload?.contentId && payload?.videoUrl) {
+          if (payload?.videoUrl && payload?.contentId != null) {
             const userVideo: PlaylistItem = { ...payload, isUserContent: true };
             setPlaylist((current) => {
               // ref를 사용하여 최신 currentIndex를 가져옵니다.
@@ -123,7 +123,7 @@ const DisplayPage = () => {
     if (!finishedContent) return;
 
     if (finishedContent.isUserContent) {
-      if (finishedContent.contentId)
+      if (finishedContent.contentId != null)
         reportPresented({ contentId: finishedContent.contentId });
       const newPlaylist = playlist.filter((_, i) => i !== finishedIndex);
       setPlaylist(newPlaylist);
@@ -174,7 +174,7 @@ const DisplayPage = () => {
     const activeVideoIndex = playlist.findIndex((item) =>
       activePlayer.src.endsWith(item.videoUrl)
     );
-    if (activeVideoIndex === currentIndex || activeVideoIndex === -1) return;
+    if (activeVideoIndex === currentIndex) return;
 
     const standbyPlayerIndex = 1 - activePlayerIndex;
     const standbyPlayer = videoRefs[standbyPlayerIndex].current;
@@ -188,13 +188,14 @@ const DisplayPage = () => {
       return;
 
     standbyPlayer.src = nextVideoUrl;
+    standbyPlayer.load(); // 비디오 소스가 변경되었음을 명시적으로 알리고 로드를 시작합니다.
 
-    const onCanPlay = () => {
+    const onCanPlayThrough = () => {
       standbyPlayer.play().catch((e) => console.error('재생 실패:', e));
       setActivePlayerIndex(standbyPlayerIndex);
     };
-    standbyPlayer.addEventListener('canplay', onCanPlay);
-    return () => standbyPlayer.removeEventListener('canplay', onCanPlay);
+    standbyPlayer.addEventListener('canplaythrough', onCanPlayThrough);
+    return () => standbyPlayer.removeEventListener('canplaythrough', onCanPlayThrough);
   }, [currentIndex, playlist, activePlayerIndex]);
 
   // 5. 메모리 관리: 비활성화된 플레이어 정리
