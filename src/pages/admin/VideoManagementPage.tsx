@@ -105,7 +105,7 @@ const VideoManagementPage = () => {
                 return (
                   <div
                     key={content.fixedContentId}
-                    className="relative flex items-center justify-center bg-[#DCE2E6] border-1 border-[#E9E9E9] rounded-[12px]"
+                    className="aspect-square relative flex items-center justify-center bg-[#DCE2E6] border-1 border-[#E9E9E9] rounded-[12px]"
                   >
                     <Icon.LoaderCircle className="stroke-white size-8 animate-spin" />
                     <DeleteButton
@@ -117,7 +117,7 @@ const VideoManagementPage = () => {
                 return (
                   <div
                     key={content.fixedContentId}
-                    className="relative flex items-center justify-center bg-[#DCE2E6] border-1 border-[#E9E9E9] rounded-[12px]"
+                    className="aspect-square relative flex items-center justify-center bg-[#DCE2E6] border-1 border-[#E9E9E9] rounded-[12px]"
                   >
                     <span className="font-semibold text-[24px] text-[#BDC4C8]">
                       생성실패
@@ -131,7 +131,7 @@ const VideoManagementPage = () => {
               return (
                 <div
                   key={content.fixedContentId}
-                  className="relative bg-[#DCE2E6] border-1 border-[#E9E9E9] rounded-[12px]"
+                  className="aspect-square relative bg-[#DCE2E6] border-1 border-[#E9E9E9] rounded-[12px]"
                 >
                   <AdminVideo videoUrl={content.url} />
                   <DeleteButton
