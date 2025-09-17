@@ -8,11 +8,7 @@ interface CompleteStepProps {
   goToStep: (stepName: string) => void;
 }
 
-const CompleteStep = ({
-  isActive: _isActive,
-  onNext,
-  goToStep,
-}: CompleteStepProps) => {
+const CompleteStep = ({ goToStep }: CompleteStepProps) => {
   const { resetState } = useKiosk();
 
   const handleExit = () => {
@@ -57,7 +53,7 @@ const CompleteStep = ({
             <br />약{' '}
           </span>
           <span className="text-yellow-300 text-[50px] font-extrabold font-['Pretendard'] leading-[75px] [text-shadow:_0px_2px_9px_rgb(0_0_0_/_0.25)]">
-            5분
+            10분
           </span>
           <span className="text-white text-[50px] font-semibold font-['Pretendard'] leading-[75px] [text-shadow:_0px_2px_9px_rgb(0_0_0_/_0.25)]">
             {' '}
@@ -75,7 +71,7 @@ const CompleteStep = ({
             종료
           </button>
           <button
-            onClick={onNext}
+            // onClick={onNext}
             className="inline-flex justify-center items-center gap-3 flex-1 rounded-full h-40 bg-[#0033FF] text-[50px] font-bold text-white"
           >
             휴대폰번호 입력 <ArrowRighgt />

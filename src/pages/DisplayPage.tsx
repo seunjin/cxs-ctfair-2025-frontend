@@ -127,12 +127,14 @@ const DisplayPage = () => {
 
           const newQueue = sortPlaylist([...playlistQueueRef.current, newItem]);
           playlistQueueRef.current = newQueue;
-          
+
           console.log('[Playlist] 갱신된 큐:', playlistQueueRef.current);
 
           // Stale Closure 방지를 위해 state 대신 ref를 사용
           if (!nowPlayingRef.current) {
-            console.log('[Playback] 플레이어 유휴 상태. 새 항목으로 재생 시작.');
+            console.log(
+              '[Playback] 플레이어 유휴 상태. 새 항목으로 재생 시작.'
+            );
             if (playlistQueueRef.current.length > 0) {
               setNowPlaying(playlistQueueRef.current[0]);
             }
@@ -148,7 +150,7 @@ const DisplayPage = () => {
     return () => {
       console.log('[SSE] SSE 연결을 종료합니다.');
       ctrl.abort();
-    }
+    };
     // 의존성 배열을 비워 마운트 시 한 번만 실행되도록 수정
   }, []);
 
@@ -168,7 +170,7 @@ const DisplayPage = () => {
     const standbyPlayer = videoRefs[standbyPlayerIndex].current;
 
     if (!standbyPlayer || !nowPlaying.videoUrl) return;
-    
+
     if (standbyPlayer.src.endsWith(nowPlaying.videoUrl)) return;
 
     console.log(
@@ -200,7 +202,10 @@ const DisplayPage = () => {
 
   return (
     <div className="w-full h-screen bg-black flex justify-center items-center">
-      <div className="relative" style={{ width: '100vmin', height: '100vmin' }}>
+      <div
+        className="relative"
+        style={{ width: '100vmin', height: '100vmin', backgroundColor: '#fff' }}
+      >
         {videoRefs.map((ref, index) => (
           <video
             key={index}
