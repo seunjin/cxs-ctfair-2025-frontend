@@ -53,7 +53,8 @@ const PhoneRemoveButton = ({ onClick }: { onClick: VoidFunction }) => {
   );
 };
 
-const PhoneStep = () => {
+// eslint-disable-next-line @typescript-eslint/no-unused-vars
+const PhoneStep = ({ isActive }: { isActive: boolean }) => {
   const router = useNavigate();
   // const { id } = useKiosk();
   const [phoneNumber, setPhoneNumber] = useState<string>('010');

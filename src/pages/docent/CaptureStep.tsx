@@ -10,7 +10,7 @@ import CameraIcon from '../../assets/icons/camera.svg?react';
 import ArrowRight from '../../assets/icons/arrow-narrow-right.svg?react';
 import RefreshIcon from '../../assets/icons/refresh.svg?react';
 
-const CaptureStep = () => {
+const CaptureStep = ({ isActive }: { isActive: boolean }) => {
   const {
     webcamRef,
     isFaceAligned,
@@ -23,7 +23,7 @@ const CaptureStep = () => {
     handleCapture,
     resetCapture,
     handleUsePhoto,
-  } = useFaceCapture({ shouldDetectFace: false });
+  } = useFaceCapture({ shouldDetectFace: isActive && false }); // 도슨트 모드에서는 항상 false
 
   const navigate = useNavigate();
 

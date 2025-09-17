@@ -22,7 +22,7 @@ const KeywardSectionLabel = ({ text }: { text: string }) => {
   );
 };
 
-const KeywordsStep = () => {
+const KeywordsStep = ({ isActive }: { isActive: boolean }) => {
   const kiosk = useKiosk();
   const router = useNavigate();
   const {
@@ -38,6 +38,7 @@ const KeywordsStep = () => {
   const { data } = useQuery({
     queryKey: ['keywords'],
     queryFn: getKeywords,
+    enabled: isActive,
   });
 
   // 도슨트 모드에서는 API 호출을 주석 처리합니다.
