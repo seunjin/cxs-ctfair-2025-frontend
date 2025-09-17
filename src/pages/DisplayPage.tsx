@@ -29,6 +29,9 @@ const DisplayPage = () => {
   const { data: fixedPlaylist, isLoading } = useQuery({
     queryKey: ['fixedPlaylist'],
     queryFn: getFixedPlaylist,
+    refetchOnWindowFocus: false, // 창 포커스 시 재요청 방지
+    refetchOnReconnect: false, // 네트워크 재연결 시 재요청 방지
+    staleTime: Infinity, // 데이터를 항상 최신 상태로 간주
   });
 
   const { mutate: reportPresented } = useMutation({
