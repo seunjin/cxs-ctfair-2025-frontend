@@ -3,11 +3,16 @@ import ComlpleteImg from '../../assets/images/kiosk/complete-img.jpg';
 import ArrowRighgt from '../../assets/icons/arrow-narrow-right.svg?react';
 
 interface CompleteStepProps {
+  isActive: boolean;
   onNext: () => void;
   goToStep: (stepName: string) => void;
 }
 
-const CompleteStep = ({ onNext, goToStep }: CompleteStepProps) => {
+const CompleteStep = ({
+  isActive: _isActive,
+  onNext,
+  goToStep,
+}: CompleteStepProps) => {
   const { resetState } = useKiosk();
 
   const handleExit = () => {

@@ -6,24 +6,32 @@ import { fetchEventSource } from '@microsoft/fetch-event-source';
 interface PlaylistItem {
   videoUrl: string;
   contentId: number;
+  status: 'fixed' | 'user' | 'docent';
 }
 
 const TRANSITION_DURATION_MS = 1000; // CSS 트랜지션 시간과 일치
 
 const DisplayPage = () => {
+  // --- State Definitions ---
   const [playlist, setPlaylist] = useState<PlaylistItem[]>([]);
-  const playlistRef = useRef(playlist);
-
+  const [fixedPlaylist, setFixedPlaylist] = useState<PlaylistItem[]>([]);
   const [currentIndex, setCurrentIndex] = useState(0);
+  const [loopCount, setLoopCount] = useState(0);
+  const [activePlayerIndex, setActivePlayerIndex] = useState(0);
+  const [isLoading, setIsLoading] = useState(true);
+
+  // --- Ref Definitions for non-rendering state ---
+  const playlistRef = useRef(playlist);
+  const fixedPlaylistRef = useRef(fixedPlaylist);
   const currentIndexRef = useRef(currentIndex);
+  const loopCountRef = useRef(loopCount);
 
   const videoRefs = [
     useRef<HTMLVideoElement>(null),
     useRef<HTMLVideoElement>(null),
   ];
-  const [activePlayerIndex, setActivePlayerIndex] = useState(0);
-  const [isLoading, setIsLoading] = useState(true);
 
+  // --- API Mutation ---
   const { mutate: reportPresented } = useMutation({
     mutationFn: reportContentPresented,
     onError: (error) => {
@@ -31,7 +39,15 @@ const DisplayPage = () => {
     },
   });
 
-  // SSE 핸들러: 새로운 재생 목록을 받아 처리
+  // --- State/Ref Synchronization ---
+  useEffect(() => {
+    playlistRef.current = playlist;
+    fixedPlaylistRef.current = fixedPlaylist;
+    currentIndexRef.current = currentIndex;
+    loopCountRef.current = loopCount;
+  }, [playlist, fixedPlaylist, currentIndex, loopCount]);
+
+  // --- SSE Event Source Handler ---
   useEffect(() => {
     const ctrl = new AbortController();
     const API_BASE_URL =
@@ -39,45 +55,45 @@ const DisplayPage = () => {
 
     fetchEventSource(`${API_BASE_URL}/api/contents/subscribe`, {
       headers: { Authorization: 'Bearer 41f065b5-7c8f-4c29-8dad-68478c706778' },
-      onopen: async (response) => {
-        if (response.ok) console.log('[SSE] Connection established');
-        else
-          console.error(
-            `[SSE] Connection failed: ${response.status} ${response.statusText}`
-          );
-      },
+      onopen: async (res) =>
+        res.ok
+          ? console.log('[SSE] Connection established')
+          : console.error(`[SSE] Connection failed: ${res.status}`),
       onmessage(event) {
         if (!event.data) return;
         try {
-          const newPlaylist = JSON.parse(event.data);
-
-          // Heartbeat 체크
-          if (newPlaylist?.heartbeat === 'ok') {
+          const payload = JSON.parse(event.data);
+          if (payload?.heartbeat === 'ok') {
             console.log('[SSE] Heartbeat received');
             return;
           }
 
-          // 배열 형태가 아니거나 비어있으면 무시
-          if (!Array.isArray(newPlaylist) || newPlaylist.length === 0) {
-            console.warn('[SSE] Received invalid or empty playlist');
+          const newList = payload?.data?.list;
+          if (!Array.isArray(newList)) {
+            console.warn('[SSE] Received invalid playlist data:', payload);
             return;
           }
 
-          console.log('[SSE] New playlist received:', newPlaylist);
+          console.log('[SSE] New playlist received:', newList);
 
-          // Ref와 State 업데이트
-          playlistRef.current = newPlaylist;
-          setPlaylist(newPlaylist);
+          const newFixedList = newList.filter(
+            (item) => item.status === 'fixed'
+          );
 
-          // 로딩 상태 해제 및 첫 비디오 재생 (최초 수신 시)
-          if (isLoading) {
+          // Reset everything for the new playlist
+          setPlaylist(newList);
+          setFixedPlaylist(newFixedList);
+          setCurrentIndex(0);
+          setLoopCount(0);
+
+          if (isLoading && newList.length > 0) {
             setIsLoading(false);
             const firstPlayer = videoRefs[0].current;
-            if (firstPlayer && newPlaylist[0]) {
-              firstPlayer.src = newPlaylist[0].videoUrl;
+            if (firstPlayer) {
+              firstPlayer.src = newList[0].videoUrl;
               firstPlayer
                 .play()
-                .catch((e) => console.error('초기 재생 실패:', e));
+                .catch((e) => console.error('Initial play failed:', e));
             }
           }
         } catch (error) {
@@ -89,57 +105,74 @@ const DisplayPage = () => {
       signal: ctrl.signal,
     });
 
-    return () => {
-      console.log('[SSE] Closing connection on component unmount.');
-      ctrl.abort();
-    };
+    return () => ctrl.abort();
     // eslint-disable-next-line react-hooks/exhaustive-deps
   }, []);
 
-  // 비디오 재생 완료 또는 오류 시 다음 비디오 재생
+  // --- Core Playback Logic ---
   const advanceToNextVideo = useCallback(() => {
-    const currentPlaylist = playlistRef.current;
-    if (currentPlaylist.length === 0) return;
+    const isFirstLoop = loopCountRef.current === 0;
+    const currentList = isFirstLoop
+      ? playlistRef.current
+      : fixedPlaylistRef.current;
 
-    const finishedContent = currentPlaylist[currentIndexRef.current];
+    if (currentList.length === 0) {
+      // If the current loop's list is empty, try to switch to the fixed list.
+      if (isFirstLoop && fixedPlaylistRef.current.length > 0) {
+        console.log('[Playback] First loop list is empty, switching to fixed list.');
+        setLoopCount(1);
+        setCurrentIndex(0);
+      }
+      return;
+    }
+
+    const finishedContent = currentList[currentIndexRef.current];
     if (finishedContent?.contentId) {
       reportPresented({ contentId: finishedContent.contentId });
     }
 
-    const nextIndex = (currentIndexRef.current + 1) % currentPlaylist.length;
+    let nextIndex = (currentIndexRef.current + 1) % currentList.length;
+
+    // Transition from the first loop to the fixed loop
+    if (isFirstLoop && nextIndex === 0) {
+      console.log('[Playback] First loop finished. Switching to fixed playlist.');
+      setLoopCount(1);
+      // If the fixed playlist is empty, loop the full list again.
+      if (fixedPlaylistRef.current.length === 0) {
+        console.warn('[Playback] Fixed playlist is empty. Looping full list again.');
+      } else {
+        // The next video will be the first one from the fixed list.
+        // The index is already 0, so we just need to let the state update.
+      }
+    }
     setCurrentIndex(nextIndex);
   }, [reportPresented]);
 
-  // 메인 크로스페이드 로직
+  // --- Video Player Effect ---
   useEffect(() => {
-    currentIndexRef.current = currentIndex; // currentIndex가 변경될 때마다 Ref 업데이트
+    const isFirstLoop = loopCountRef.current === 0;
+    const activePlaylist = isFirstLoop ? playlist.slice() : fixedPlaylist.slice();
 
-    const currentPlaylist = playlistRef.current;
-    if (currentPlaylist.length === 0) return;
+    if (activePlaylist.length === 0) return;
 
     const standbyPlayerIndex = 1 - activePlayerIndex;
     const standbyPlayer = videoRefs[standbyPlayerIndex].current;
-    const nextVideoUrl = currentPlaylist[currentIndex]?.videoUrl;
+    const nextVideoUrl = activePlaylist[currentIndex]?.videoUrl;
 
-    if (!standbyPlayer || !nextVideoUrl) return;
-
-    // 이미 로드된 비디오는 다시 로드하지 않음
-    if (standbyPlayer.src.endsWith(nextVideoUrl)) return;
+    if (!standbyPlayer || !nextVideoUrl || standbyPlayer.src.endsWith(nextVideoUrl)) return;
 
     standbyPlayer.src = nextVideoUrl;
     standbyPlayer.load();
 
     const onCanPlayThrough = () => {
-      standbyPlayer.play().catch((e) => console.error('재생 실패:', e));
+      standbyPlayer.play().catch((e) => console.error('Playback failed:', e));
       setActivePlayerIndex(standbyPlayerIndex);
     };
 
-    standbyPlayer.addEventListener('canplaythrough', onCanPlayThrough, {
-      once: true,
-    });
-    return () =>
-      standbyPlayer.removeEventListener('canplaythrough', onCanPlayThrough);
-  }, [currentIndex, activePlayerIndex]);
+    standbyPlayer.addEventListener('canplaythrough', onCanPlayThrough, { once: true });
+    return () => standbyPlayer.removeEventListener('canplaythrough', onCanPlayThrough);
+  }, [currentIndex, playlist, fixedPlaylist, activePlayerIndex]);
+
 
   if (isLoading) {
     return (
@@ -151,10 +184,7 @@ const DisplayPage = () => {
 
   return (
     <div className="w-full h-screen bg-black flex justify-center items-center">
-      <div
-        className="relative"
-        style={{ width: '100vmin', height: '100vmin' }}
-      >
+      <div className="relative" style={{ width: '100vmin', height: '100vmin' }}>
         {videoRefs.map((ref, index) => (
           <video
             key={index}
@@ -164,7 +194,7 @@ const DisplayPage = () => {
             muted
             playsInline
             onEnded={advanceToNextVideo}
-            onError={advanceToNextVideo} // 오류 발생 시에도 다음 영상으로 넘김
+            onError={advanceToNextVideo}
             className={`absolute top-0 left-0 object-cover w-full h-full transition-opacity ease-in-out ${
               activePlayerIndex === index ? 'opacity-100' : 'opacity-0'
             }`}
