@@ -84,7 +84,7 @@ const KioskAdminPasswordModal = () => {
       const team = DOCENT_PASSWORDS[password];
       if (team) {
         setDocentTeam(team);
-        navigate(ROUTER_PATH.DOCENT, { state: { startStep: 'info' } });
+        navigate(ROUTER_PATH.DOCENT, { state: { startStep: 'main' } });
         closeDialog();
       } else {
         // TODO: 비밀번호 오류 처리 (예: 흔들리는 애니메이션)
