@@ -11,6 +11,7 @@ const DOCENT_PASSWORDS: Record<string, DocentTeam> = {
   '2329': 'b', // 은실이사님
   '0224': 'c', // 선혜실장님
   '3469': 'd', // 하경차장님
+  '8282': 'e', // 장관
 };
 
 const PhoneNumberButton = ({
@@ -83,7 +84,7 @@ const KioskAdminPasswordModal = () => {
       const team = DOCENT_PASSWORDS[password];
       if (team) {
         setDocentTeam(team);
-        navigate(ROUTER_PATH.DOCENT, { state: { startStep: 'info' } });
+        navigate(ROUTER_PATH.DOCENT, { state: { startStep: 'main' } });
         closeDialog();
       } else {
         // TODO: 비밀번호 오류 처리 (예: 흔들리는 애니메이션)
