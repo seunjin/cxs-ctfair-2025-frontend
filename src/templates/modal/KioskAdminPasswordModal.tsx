@@ -11,6 +11,7 @@ const DOCENT_PASSWORDS: Record<string, DocentTeam> = {
   '2329': 'b', // 은실이사님
   '0224': 'c', // 선혜실장님
   '3469': 'd', // 하경차장님
+  '8282': 'e', // 장관
 };
 
 const PhoneNumberButton = ({
