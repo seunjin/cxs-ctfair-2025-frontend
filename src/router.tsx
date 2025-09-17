@@ -10,6 +10,7 @@ import { getKeywords } from './api/kioskApi';
 import GenerationsListPage from './pages/admin/GenerationsListPage';
 import GenerationDetailPage from './pages/admin/GenerationDetailPage';
 import VideoManagementPage from './pages/admin/VideoManagementPage';
+import DocentGuard from './components/guards/DocentGuard';
 
 // 키워드 데이터를 미리 로드하는 loader 함수
 const keywordsLoader = async () => {
@@ -56,12 +57,69 @@ const router = createBrowserRouter([
       {
         path: ROUTER_PATH.KIOSK,
         element: <KioskPage />,
-        loader: keywordsLoader, // KioskPage에 loader 연결
+        loader: keywordsLoader,
+        children: [
+          {
+            index: true,
+            element: null,
+          },
+          {
+            path: ROUTER_PATH.KIOSK_INFO,
+            element: null,
+          },
+          {
+            path: ROUTER_PATH.KIOSK_CAPTURE,
+            element: null,
+          },
+          {
+            path: ROUTER_PATH.KIOSK_KEYWORDS,
+            element: null,
+          },
+          {
+            path: ROUTER_PATH.KIOSK_COMPLETE,
+            element: null,
+          },
+          {
+            path: ROUTER_PATH.KIOSK_PHONE,
+            element: null,
+          },
+        ],
       },
       {
         path: ROUTER_PATH.DOCENT,
-        element: <KioskPage />, // 동일한 레이아웃 사용
+        element: <KioskPage />,
         loader: keywordsLoader,
+        children: [
+          {
+            index: true,
+            element: null,
+          },
+          {
+            element: <DocentGuard />,
+            children: [
+              {
+                path: ROUTER_PATH.DOCENT_INFO,
+                element: null,
+              },
+              {
+                path: ROUTER_PATH.DOCENT_CAPTURE,
+                element: null,
+              },
+              {
+                path: ROUTER_PATH.DOCENT_KEYWORDS,
+                element: null,
+              },
+              {
+                path: ROUTER_PATH.DOCENT_COMPLETE,
+                element: null,
+              },
+              {
+                path: ROUTER_PATH.DOCENT_PHONE,
+                element: null,
+              },
+            ],
+          },
+        ],
       },
       {
         path: ROUTER_PATH.KIOSK_RESULT,
