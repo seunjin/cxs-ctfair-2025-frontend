@@ -8,11 +8,7 @@ interface CompleteStepProps {
   goToStep: (stepName: string) => void;
 }
 
-const CompleteStep = ({
-  isActive: _isActive,
-  onNext,
-  goToStep,
-}: CompleteStepProps) => {
+const CompleteStep = ({ goToStep }: CompleteStepProps) => {
   const { resetState } = useKiosk();
 
   const handleExit = () => {
@@ -75,7 +71,7 @@ const CompleteStep = ({
             종료
           </button>
           <button
-            onClick={onNext}
+            // onClick={onNext}
             className="inline-flex justify-center items-center gap-3 flex-1 rounded-full h-40 bg-[#0033FF] text-[50px] font-bold text-white"
           >
             휴대폰번호 입력 <ArrowRighgt />
