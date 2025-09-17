@@ -1,13 +1,22 @@
-import { Link } from 'react-router-dom';
 import SettingIcon from '../../assets/icons/settings.svg?react';
-import { ROUTER_PATH } from '../../router';
 import { useKiosk } from '../../contexts/kiosk';
 import { useEffect } from 'react';
 import clsx from 'clsx';
 import { useDialogs } from '../../lib/dialogs';
 import KioskAdminPasswordModal from '../../templates/modal/KioskAdminPasswordModal';
 
-const MainStep = ({ isActive }: { isActive: boolean }) => {
+interface MainStepProps {
+  isActive: boolean;
+  onNext: () => void;
+  isDocentMode: boolean;
+}
+
+interface MainStepProps {
+  isActive: boolean;
+  onNext: () => void;
+}
+
+const MainStep = ({ isActive, onNext }: MainStepProps) => {
   const { openDialog } = useDialogs();
   const { resetState, modelsLoaded } = useKiosk();
 
@@ -46,17 +55,18 @@ const MainStep = ({ isActive }: { isActive: boolean }) => {
       </section>
       <section>
         <div className="flex justify-center ">
-          <Link
-            to={modelsLoaded ? ROUTER_PATH.KIOSK_INFO : '#'}
+          <button
+            onClick={modelsLoaded ? onNext : undefined}
             className={clsx(
-              "w-[920px] px-2.5 py-12 rounded-[32px] mx-auto shadow-[0px_0px_15px_0px_rgba(208,82,153,1.00)] text-center text-white text-5xl font-bold font-['Pretendard'] leading-[75px] active:scale-95 duration-100",
+              "w-[920px] px-2.5 py-12 rounded-[32px] mx-auto shadow-[0px_0px_15px_0px_rgba(208_82_153_1.00)] text-center text-white text-5xl font-bold font-['Pretendard'] leading-[75px] active:scale-95 duration-100",
               modelsLoaded
                 ? 'bg-blue-700 cursor-pointer'
                 : 'bg-gray-500 cursor-not-allowed'
             )}
+            disabled={!modelsLoaded}
           >
             {modelsLoaded ? '체험 시작하기' : 'AI 모델을 불러오는 중...'}
-          </Link>
+          </button>
         </div>
       </section>
 

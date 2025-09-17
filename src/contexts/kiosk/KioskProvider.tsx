@@ -29,7 +29,7 @@ export const KioskProvider = ({ children }: { children: ReactNode }) => {
     setMoodGroup(initialMood);
     setCapturedImage(null);
     setLandmarks(null);
-    setDocentTeam(initialDocentTeam);
+    // setDocentTeam(initialDocentTeam); // docentTeam은 초기화하지 않음
   }, []);
 
   return (

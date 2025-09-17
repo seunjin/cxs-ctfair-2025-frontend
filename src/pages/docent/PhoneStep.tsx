@@ -2,12 +2,13 @@ import { useState } from 'react';
 import ArrowRight from '../../assets/icons/arrow-narrow-right.svg?react';
 import Checked from '../../assets/icons/checked.svg?react';
 import clsx from 'clsx';
+import { useKiosk } from '../../contexts/kiosk';
 import { useNavigate } from 'react-router-dom';
-import { ROUTER_PATH } from '../../router';
-// import { useKiosk } from '../../contexts/kiosk/useKiosk';
-// import { useMutation } from '@tanstack/react-query';
-// import { updateUserPhone } from '../../api/kioskApi';
-// import LoaderIcon from '../../assets/icons/loader.svg?react';
+
+interface PhoneStepProps {
+  goToStep: (stepName: string) => void;
+}
+
 const PhoneNumberButton = ({
   number,
   onClick,
@@ -53,40 +54,24 @@ const PhoneRemoveButton = ({ onClick }: { onClick: VoidFunction }) => {
   );
 };
 
-// eslint-disable-next-line @typescript-eslint/no-unused-vars
-const PhoneStep = ({ isActive }: { isActive: boolean }) => {
-  const router = useNavigate();
-  // const { id } = useKiosk();
+const PhoneStep = ({ goToStep }: PhoneStepProps) => {
+  const { resetState } = useKiosk();
+  const navigate = useNavigate();
   const [phoneNumber, setPhoneNumber] = useState<string>('010');
   const [agree, setAgree] = useState<boolean>(false);
 
-  // const { mutate, isPending } = useMutation({
-  //   mutationFn: updateUserPhone,
-  //   onSuccess: () => {
-  //     router(ROUTER_PATH.KIOSK);
-  //   },
-  //   onError: (error) => {
-  //     console.error('전화번호 업데이트에 실패했습니다:', error);
-  //     alert(`전화번호 전송에 실패했습니다: ${error.message}`);
-  //   },
-  // });
-
   const handleNumberClick = (number: string) => {
-    // 현재 값에서 하이픈(-)을 제외하고 숫자만 남깁니다.
     const currentNumber = phoneNumber.replace(/-/g, '');
-    // 새로 입력된 숫자를 추가합니다.
     const newNumber = currentNumber + number;
 
-    // 11자리를 초과하지 않도록 합니다.
     if (newNumber.length > 11) {
       return;
     }
 
-    // 정규식을 사용하여 010-1234-5678 형식으로 포맷팅합니다.
     const formattedNumber = newNumber
-      .replace(/^(\d{0,3})/, '$1') // 첫 3자리
-      .replace(/^(\d{3})(\d{0,4})/, '$1-$2') // 중간 4자리
-      .replace(/^(\d{3}-\d{4})(\d{0,4})/, '$1-$2'); // 마지막 4자리
+      .replace(/^(\d{0,3})/, '$1')
+      .replace(/^(\d{3})(\d{0,4})/, '$1-$2')
+      .replace(/^(\d{3}-\d{4})(\d{0,4})/, '$1-$2');
 
     setPhoneNumber(formattedNumber);
   };
@@ -96,7 +81,6 @@ const PhoneStep = ({ isActive }: { isActive: boolean }) => {
   };
 
   const handleRemove = () => {
-    // 현재 값에서 마지막 문자(숫자 또는 하이픈)를 제거한 후 다시 포맷팅합니다.
     const currentNumber = phoneNumber.replace(/-/g, '');
     const newNumber = currentNumber.slice(0, -1);
 
@@ -109,11 +93,9 @@ const PhoneStep = ({ isActive }: { isActive: boolean }) => {
   };
 
   const handleSubmit = () => {
-    // mutate({
-    //   id,
-    //   phoneNumber: phoneNumber.replace(/-/g, ''), // 하이픈 제거 후 전송
-    // });
-    router(ROUTER_PATH.KIOSK);
+    // 도슨트 모드에서는 API 호출 없이 상태만 초기화하고 키오스크 메인으로 이동
+    resetState();
+    navigate('/kiosk');
   };
 
   return (
@@ -127,10 +109,9 @@ const PhoneStep = ({ isActive }: { isActive: boolean }) => {
           <div className="flex flex-col items-center justify-center">
             <div className="pb-[70px]">
               <input
-                type="tel" // type을 'tel'로 변경하여 시맨틱을 개선합니다.
+                type="tel"
                 value={phoneNumber}
                 readOnly
-                // placeholder="010-0000-0000"
                 className="appearance-none text-6xl font-semibold leading-[60px] w-[590px] focus:outline-none bg-transparent text-white text-center tracking-widest"
               />
             </div>
@@ -189,18 +170,20 @@ const PhoneStep = ({ isActive }: { isActive: boolean }) => {
           </div>
         </section>
         <section>
-          <div className="inline-flex justify-start items-center gap-5 pb-[30px]">
-            <button
-              onClick={() => setAgree(!agree)}
+          <div
+            onClick={() => setAgree(!agree)}
+            className="inline-flex justify-start items-center gap-5 pb-[30px] cursor-pointer active:scale-95 duration-100"
+          >
+            <div
               className={clsx(
-                'w-20 h-20  rounded-[99px] shadow-[0px_2px_10px_0px_rgba(0,0,0,0.25)]  outline-[3px] outline-offset-[-3px]  backdrop-blur-sm flex justify-center items-center gap-2.5 active:scale-95 duration-100',
+                'w-20 h-20  rounded-[99px] shadow-[0px_2px_10px_0px_rgba(0,0,0,0.25)]  outline-[3px] outline-offset-[-3px]  backdrop-blur-sm flex justify-center items-center gap-2.5',
                 agree
                   ? 'bg-[#0033FF] outline-[#0033FF]'
                   : 'bg-white/5 outline-white'
               )}
             >
               <Checked />
-            </button>
+            </div>
             <div className="text-center justify-start text-white text-5xl font-semibold leading-[50px]">
               개인정보 수집∙이용 동의
             </div>
@@ -223,12 +206,6 @@ const PhoneStep = ({ isActive }: { isActive: boolean }) => {
           </div>
         </section>
       </div>
-
-      {/* {isPending && (
-        <div className="fixed inset-0 z-100 bg-black/70 flex items-center justify-center ">
-          <LoaderIcon className="w-13 h-13 animate-spin opacity-100" />
-        </div>
-      )} */}
     </>
   );
 };

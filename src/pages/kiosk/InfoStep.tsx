@@ -1,19 +1,18 @@
 import { RadioGroup } from '../../components/ui/RadioGroup';
 import Arrowleft from '../../assets/icons/arrow-narrow-left.svg?react';
 import ArrowRighgt from '../../assets/icons/arrow-narrow-right.svg?react';
-import { Link, useNavigate } from 'react-router-dom';
-import { ROUTER_PATH } from '../../router';
 import { useKiosk } from '../../contexts/kiosk/useKiosk';
 import clsx from 'clsx';
 
+interface InfoStepProps {
+  onNext: () => void;
+  onPrev: () => void;
+}
+
 // eslint-disable-next-line @typescript-eslint/no-unused-vars
-const InfoStep = ({ isActive }: { isActive: boolean }) => {
+const InfoStep = ({ onNext, onPrev }: InfoStepProps) => {
   const { sexGroup, setSexGroup, ageGroup, setAgeGroup } = useKiosk();
-  const router = useNavigate();
-  const handleNext = () => {
-    router(ROUTER_PATH.KIOSK_CAPTURE);
-  };
-  console.log({ sexGroup, ageGroup });
+
   return (
     <div className="flex h-full flex-col py-[40px_130px] px-20 ">
       <div className="flex flex-col justify-center flex-1">
@@ -56,14 +55,14 @@ const InfoStep = ({ isActive }: { isActive: boolean }) => {
       </div>
       <section className=" flex items-end">
         <div className="flex w-full gap-[30px]">
-          <Link
-            to={ROUTER_PATH.KIOSK}
+          <button
+            onClick={onPrev}
             className="inline-flex justify-center items-center gap-3 flex-1 rounded-full h-40 bg-white text-[50px] font-bold text-[#0033FF] active:scale-95 duration-100"
           >
             <Arrowleft className="w-13 h-13" /> 이전
-          </Link>
+          </button>
           <button
-            onClick={handleNext}
+            onClick={onNext}
             className="inline-flex justify-center items-center gap-3 flex-1 rounded-full h-40 bg-[#0033FF] text-[50px] font-bold text-white disabled:text-white/40 not-disabled:active:scale-95 duration-100"
             disabled={!sexGroup || !ageGroup}
           >

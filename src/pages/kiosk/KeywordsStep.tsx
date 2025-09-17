@@ -1,7 +1,5 @@
 import { useMemo } from 'react';
 import { RadioGroup } from '../../components/ui/RadioGroup';
-import { Link, useNavigate } from 'react-router-dom';
-import { ROUTER_PATH } from '../../router';
 import { useKiosk } from '../../contexts/kiosk/useKiosk';
 import Arrowleft from '../../assets/icons/arrow-narrow-left.svg?react';
 import ArrowRighgt from '../../assets/icons/arrow-narrow-right.svg?react';
@@ -20,9 +18,14 @@ const KeywardSectionLabel = ({ text }: { text: string }) => {
   );
 };
 
-const KeywordsStep = ({ isActive }: { isActive: boolean }) => {
+interface KeywordsStepProps {
+  isActive: boolean;
+  onNext: () => void;
+  onPrev: () => void;
+}
+
+const KeywordsStep = ({ isActive, onNext, onPrev }: KeywordsStepProps) => {
   const kiosk = useKiosk();
-  const router = useNavigate();
   const {
     id,
     sexGroup,
@@ -35,15 +38,6 @@ const KeywordsStep = ({ isActive }: { isActive: boolean }) => {
     setMoodGroup,
   } = kiosk;
 
-  console.log({
-    id,
-    sexGroup,
-    ageGroup,
-    styleGroup,
-    moodGroup,
-    capturedImage,
-    landmarks,
-  });
   const { data } = useQuery({
     queryKey: ['keywords'],
     queryFn: getKeywords,
@@ -54,7 +48,7 @@ const KeywordsStep = ({ isActive }: { isActive: boolean }) => {
     mutationFn: createJob,
     onSuccess: () => {
       console.log('SUCCESS : createJob ');
-      router(ROUTER_PATH.KIOSK_COMPLETE);
+      onNext();
     },
     onError: (error) => {
       // TODO: 사용자에게 에러를 표시하는 UI (예: 토스트 메시지)
@@ -136,12 +130,12 @@ const KeywordsStep = ({ isActive }: { isActive: boolean }) => {
 
         <section className=" flex items-end">
           <div className="flex w-full gap-[30px]">
-            <Link
-              to={ROUTER_PATH.KIOSK_CAPTURE}
+            <button
+              onClick={onPrev}
               className="inline-flex justify-center items-center gap-3 flex-1 rounded-full h-40 bg-white text-[50px] font-bold text-[#0033FF] active:scale-95 duration-100"
             >
               <Arrowleft /> 이전
-            </Link>
+            </button>
             <button
               onClick={handleNext}
               disabled={isPending || !styleGroup || !moodGroup}

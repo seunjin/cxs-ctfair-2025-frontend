@@ -2,12 +2,15 @@ import { useState } from 'react';
 import ArrowRight from '../../assets/icons/arrow-narrow-right.svg?react';
 import Checked from '../../assets/icons/checked.svg?react';
 import clsx from 'clsx';
-import { useNavigate } from 'react-router-dom';
-import { ROUTER_PATH } from '../../router';
 import { useKiosk } from '../../contexts/kiosk/useKiosk';
 import { useMutation } from '@tanstack/react-query';
 import { updateUserPhone } from '../../api/kioskApi';
 import LoaderIcon from '../../assets/icons/loader.svg?react';
+
+interface PhoneStepProps {
+  goToStep: (stepName: string) => void;
+}
+
 const PhoneNumberButton = ({
   number,
   onClick,
@@ -53,17 +56,16 @@ const PhoneRemoveButton = ({ onClick }: { onClick: VoidFunction }) => {
   );
 };
 
-// eslint-disable-next-line @typescript-eslint/no-unused-vars
-const PhoneStep = ({ isActive }: { isActive: boolean }) => {
-  const router = useNavigate();
-  const { id } = useKiosk();
+const PhoneStep = ({ goToStep }: PhoneStepProps) => {
+  const { id, resetState } = useKiosk();
   const [phoneNumber, setPhoneNumber] = useState<string>('010');
   const [agree, setAgree] = useState<boolean>(false);
 
   const { mutate, isPending } = useMutation({
     mutationFn: updateUserPhone,
     onSuccess: () => {
-      router(ROUTER_PATH.KIOSK);
+      resetState();
+      goToStep('main');
     },
     onError: (error) => {
       console.error('전화번호 업데이트에 실패했습니다:', error);
@@ -188,18 +190,20 @@ const PhoneStep = ({ isActive }: { isActive: boolean }) => {
           </div>
         </section>
         <section>
-          <div className="inline-flex justify-start items-center gap-5 pb-[30px]">
-            <button
-              onClick={() => setAgree(!agree)}
+          <div
+            onClick={() => setAgree(!agree)}
+            className="inline-flex justify-start items-center gap-5 pb-[30px] cursor-pointer active:scale-95 duration-100"
+          >
+            <div
               className={clsx(
-                'w-20 h-20  rounded-[99px] shadow-[0px_2px_10px_0px_rgba(0,0,0,0.25)]  outline-[3px] outline-offset-[-3px]  backdrop-blur-sm flex justify-center items-center gap-2.5 active:scale-95 duration-100',
+                'w-20 h-20  rounded-[99px] shadow-[0px_2px_10px_0px_rgba(0,0,0,0.25)]  outline-[3px] outline-offset-[-3px]  backdrop-blur-sm flex justify-center items-center gap-2.5',
                 agree
                   ? 'bg-[#0033FF] outline-[#0033FF]'
                   : 'bg-white/5 outline-white'
               )}
             >
               <Checked />
-            </button>
+            </div>
             <div className="text-center justify-start text-white text-5xl font-semibold leading-[50px]">
               개인정보 수집∙이용 동의
             </div>

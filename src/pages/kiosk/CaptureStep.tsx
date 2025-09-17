@@ -1,7 +1,5 @@
-import { Link, useNavigate } from 'react-router-dom';
 import clsx from 'clsx';
 import { useFaceCapture } from '../../hooks/useFaceCapture';
-import { ROUTER_PATH } from '../../router';
 import CautionIcon from '../../assets/icons/caution.svg?react';
 import FaceCapture from '../../components/kiosk/FaceCapture';
 import CaptureCountdown from '../../components/ui/CaptureCountdown';
@@ -10,7 +8,13 @@ import CameraIcon from '../../assets/icons/camera.svg?react';
 import ArrowRight from '../../assets/icons/arrow-narrow-right.svg?react';
 import RefreshIcon from '../../assets/icons/refresh.svg?react';
 
-const CaptureStep = ({ isActive }: { isActive: boolean }) => {
+interface CaptureStepProps {
+  isActive: boolean;
+  onNext: () => void;
+  onPrev: () => void;
+}
+
+const CaptureStep = ({ isActive, onNext, onPrev }: CaptureStepProps) => {
   const {
     webcamRef,
     isFaceAligned,
@@ -25,11 +29,9 @@ const CaptureStep = ({ isActive }: { isActive: boolean }) => {
     handleUsePhoto,
   } = useFaceCapture({ shouldDetectFace: isActive });
 
-  const navigate = useNavigate();
-
   const handleConfirmPhoto = () => {
     handleUsePhoto();
-    navigate(ROUTER_PATH.KIOSK_KEYWORDS);
+    onNext();
   };
 
   return (
@@ -134,12 +136,12 @@ const CaptureStep = ({ isActive }: { isActive: boolean }) => {
               'opacity-0': isCountingDown,
             })}
           >
-            <Link
-              to={ROUTER_PATH.KIOSK_INFO}
+            <button
+              onClick={onPrev}
               className="inline-flex w-[310px] items-center justify-center gap-3 rounded-full bg-white h-40 text-[50px] font-bold text-[#0033FF] active:scale-95 duration-100"
             >
               <Arrowleft className="h-13 w-13" /> 이전
-            </Link>
+            </button>
             <button
               onClick={handleCapture}
               className="flex flex-1 items-center justify-center gap-3 rounded-full bg-[#0033FF] h-40 text-[50px] font-bold text-white disabled:cursor-not-allowed  disabled:text-white/40 not-disabled:active:scale-95 duration-100"
