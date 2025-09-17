@@ -1,7 +1,6 @@
 import { useState, useEffect, useRef, useCallback } from 'react';
 import { fetchEventSource } from '@microsoft/fetch-event-source';
 
-// 'fixed' 타입을 다시 포함하고, 'user'/'docent'일 경우 index를 갖도록 수정
 interface PlaylistItem {
   videoUrl: string;
   type: 'fixed' | 'user' | 'docent';
@@ -12,14 +11,11 @@ const TRANSITION_DURATION_MS = 1000;
 
 /**
  * 재생 목록을 우선순위에 따라 정렬하는 함수.
- * 1. 'user' 또는 'docent' 타입의 항목들이 'fixed' 타입의 항목들보다 앞에 옵니다.
- * 2. 'user'/'docent' 항목들 사이에서는 'index'를 기준으로 내림차순 정렬됩니다.
- * 3. 'fixed' 항목들 사이의 순서는 유지됩니다.
  */
 const sortPlaylist = (playlist: PlaylistItem[]): PlaylistItem[] => {
   const priorityItems = playlist
     .filter((item) => item.type === 'user' || item.type === 'docent')
-    .sort((a, b) => (b.index ?? 0) - (a.index ?? 0)); // index 내림차순
+    .sort((a, b) => (a.index ?? 0) - (b.index ?? 0)); // index 오름차순으로 변경
 
   const fixedItems = playlist.filter((item) => item.type === 'fixed');
 
@@ -34,17 +30,10 @@ const DisplayPage = () => {
 
   // --- Refs for All Logic and Data (Single Source of Truth) ---
   const initialPlaylist: PlaylistItem[] = [
-    {
-      videoUrl: 'https://cdn.cxsctfair.com/fixed/87.mp4',
-      type: 'fixed',
-    },
+    { videoUrl: 'https://cdn.cxsctfair.com/fixed/87.mp4', type: 'fixed' },
     { videoUrl: 'https://cdn.cxsctfair.com/fixed/82.mp4', type: 'fixed' },
   ];
-  const activePlaylistRef = useRef<PlaylistItem[]>(initialPlaylist);
-  const fixedPlaylistRef = useRef<PlaylistItem[]>(initialPlaylist);
-  const currentIndexRef = useRef(0);
-  const loopCountRef = useRef(0);
-  const priorityInterruptRef = useRef(false); // 우선순위 인터럽트 플래그
+  const playlistQueueRef = useRef<PlaylistItem[]>(initialPlaylist);
   const videoRefs = [
     useRef<HTMLVideoElement>(null),
     useRef<HTMLVideoElement>(null),
@@ -52,55 +41,33 @@ const DisplayPage = () => {
 
   // --- The "Brain" of the player, wrapped in useCallback for stability ---
   const advanceToNextVideo = useCallback(() => {
-    // 1. 최우선 순위: 인터럽트 신호가 있는지 확인
-    if (priorityInterruptRef.current) {
-      priorityInterruptRef.current = false; // 플래그 즉시 리셋
-      loopCountRef.current = 0; // 인터럽트는 새 루프의 시작으로 간주
-      const playlist = activePlaylistRef.current;
-      if (playlist.length > 0) {
-        console.log('[Playback] 우선순위 인터럽트! 0번 인덱스부터 다시 시작합니다.');
-        currentIndexRef.current = 0;
-        setNowPlaying(playlist[0]);
-      } else {
-        setNowPlaying(null);
-      }
-      return;
-    }
+    const finishedVideo = nowPlaying; // 방금 재생이 끝난 비디오
+    if (!finishedVideo) return;
 
-    // 2. 현재 재생 단계에 맞는 재생 목록 결정
-    const isRepeating = loopCountRef.current > 0;
-    const canRepeatFixed = fixedPlaylistRef.current.length > 0;
-    const currentPlaylist =
-      isRepeating && canRepeatFixed
-        ? fixedPlaylistRef.current
-        : activePlaylistRef.current;
+    const currentQueue = playlistQueueRef.current;
 
-    if (currentPlaylist.length === 0) {
-      setNowPlaying(null);
-      return;
-    }
+    // 1. "방금 끝난 비디오"를 큐에서 정확히 찾아 제거
+    const indexToRemove = currentQueue.findIndex(
+      (item) => item.videoUrl === finishedVideo.videoUrl
+    );
 
-    // 3. 다음 인덱스 계산
-    const safeCurrentIndex = Math.min(currentIndexRef.current, currentPlaylist.length - 1);
-    let nextIndex = safeCurrentIndex + 1;
-
-    // 4. 루프 전환 처리
-    if (nextIndex >= currentPlaylist.length) {
-      if (!isRepeating && canRepeatFixed) {
-        console.log('[Playback] 첫 번째 루프 완료. 고정 영상 반복을 시작합니다.');
-        loopCountRef.current = 1;
-        currentIndexRef.current = 0;
-        setNowPlaying(fixedPlaylistRef.current[0]);
-      } else {
-        console.log('[Playback] 목록의 끝에 도달. 처음부터 다시 반복합니다.');
-        currentIndexRef.current = 0;
-        setNowPlaying(currentPlaylist[0]);
-      }
+    if (indexToRemove !== -1) {
+      currentQueue.splice(indexToRemove, 1);
+      console.log('[Playback] 재생 완료, 큐에서 제거:', finishedVideo.videoUrl);
     } else {
-      currentIndexRef.current = nextIndex;
-      setNowPlaying(currentPlaylist[nextIndex]);
+      console.warn('[Playback] 경고: 방금 끝난 비디오를 큐에서 찾을 수 없습니다.');
     }
-  }, []);
+
+    // 2. 큐에 다음 비디오가 있는지 확인하고 재생
+    if (currentQueue.length > 0) {
+      const nextVideo = currentQueue[0];
+      console.log('[Playback] 다음 비디오 재생:', nextVideo.videoUrl);
+      setNowPlaying(nextVideo);
+    } else {
+      console.log('[Playback] 큐가 비었습니다. 재생을 멈추고 대기합니다.');
+      setNowPlaying(null);
+    }
+  }, [nowPlaying]); // nowPlaying에 의존하여 항상 최신 값을 참조
 
   // --- Ref to hold the latest version of the callback to solve closure issue ---
   const advanceCallbackRef = useRef(advanceToNextVideo);
@@ -128,33 +95,19 @@ const DisplayPage = () => {
 
           const newItem = payload?.data as PlaylistItem;
           if (!newItem || !newItem.videoUrl) return;
+
+          console.log('[SSE] 새 항목 수신:', newItem);
+
+          const newQueue = sortPlaylist([...playlistQueueRef.current, newItem]);
+          playlistQueueRef.current = newQueue;
           
-          // 수신된 데이터가 fixed 타입이 아니거나, 아직 fixed 타입이 목록에 없을 때만 추가 (중복 방지)
-          if (newItem.type !== 'fixed' || fixedPlaylistRef.current.every(i => i.videoUrl !== newItem.videoUrl)) {
-            console.log('[SSE] 새 항목 수신:', newItem);
+          console.log('[Playlist] 갱신된 큐:', playlistQueueRef.current);
 
-            const newPlaylist = sortPlaylist([...activePlaylistRef.current, newItem]);
-            activePlaylistRef.current = newPlaylist;
-            fixedPlaylistRef.current = newPlaylist.filter(
-              (item) => item.type === 'fixed'
-            );
-            
-            console.log('[Playlist] 갱신된 재생 목록:', activePlaylistRef.current);
-
-            const isPriorityItem = newItem.type === 'user' || newItem.type === 'docent';
-            const isNowFirst = newPlaylist.length > 0 && newPlaylist[0].videoUrl === newItem.videoUrl;
-
-            if (isPriorityItem && isNowFirst) {
-              console.log('[Playback] 우선순위 인터럽트가 설정되었습니다.');
-              priorityInterruptRef.current = true;
+          if (!nowPlaying) {
+            console.log('[Playback] 플레이어 유휴 상태. 새 항목으로 재생 시작.');
+            if (playlistQueueRef.current.length > 0) {
+              setNowPlaying(playlistQueueRef.current[0]);
             }
-          }
-
-          if (isLoading) {
-            setIsLoading(false);
-          } else if (!nowPlaying) {
-            console.log('[Playback] 플레이어 유휴 상태. advanceToNextVideo 호출.');
-            advanceCallbackRef.current();
           }
         } catch (error) {
           console.error('[SSE] 메시지 파싱 실패:', error);
@@ -165,16 +118,15 @@ const DisplayPage = () => {
       signal: ctrl.signal,
     });
     return () => ctrl.abort();
-    // eslint-disable-next-line react-hooks/exhaustive-deps
-  }, []);
+  }, [nowPlaying]);
 
   // --- Effect 2: Kicks off the very first video playback ---
   useEffect(() => {
-    if (isLoading && activePlaylistRef.current.length > 0 && !nowPlaying) {
-      setNowPlaying(activePlaylistRef.current[0]);
+    if (isLoading && playlistQueueRef.current.length > 0) {
+      setNowPlaying(playlistQueueRef.current[0]);
       setIsLoading(false);
     }
-  }, [isLoading, nowPlaying]);
+  }, [isLoading]);
 
   // --- Effect 3: "Player" - Renders the video decided by `nowPlaying` state ---
   useEffect(() => {
@@ -185,14 +137,7 @@ const DisplayPage = () => {
 
     if (!standbyPlayer || !nowPlaying.videoUrl) return;
     
-    if (standbyPlayer.src.endsWith(nowPlaying.videoUrl)) {
-      // 재생목록에 영상이 하나뿐일 때, 또는 현재 영상과 다음 영상이 같을 때 (반복재생)
-      if (activePlaylistRef.current.length === 1 || nowPlaying.videoUrl === (activePlaylistRef.current[currentIndexRef.current] || {}).videoUrl) {
-          standbyPlayer.currentTime = 0;
-          standbyPlayer.play().catch((e) => console.error('Playback failed:', e));
-      }
-      return;
-    }
+    if (standbyPlayer.src.endsWith(nowPlaying.videoUrl)) return;
 
     console.log(
       `[Player] #${standbyPlayerIndex} 플레이어에 비디오 로딩:`,
@@ -241,7 +186,7 @@ const DisplayPage = () => {
           />
         ))}
       </div>
-      {activePlaylistRef.current.length === 0 && !isLoading && (
+      {playlistQueueRef.current.length === 0 && !isLoading && !nowPlaying && (
         <div className="absolute text-white text-4xl">재생 대기 중...</div>
       )}
     </div>
