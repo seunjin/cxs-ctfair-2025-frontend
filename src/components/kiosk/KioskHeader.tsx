@@ -1,19 +1,20 @@
-import { useNavigate } from 'react-router-dom';
 import { useKiosk } from '../../contexts/kiosk';
 import { useDialogs } from '../../lib/dialogs';
-import { ROUTER_PATH } from '../../router';
 
-const KioskHeader = () => {
-  const router = useNavigate();
+interface KioskHeaderProps {
+  onGoToMain: () => void;
+}
+
+const KioskHeader = ({ onGoToMain }: KioskHeaderProps) => {
   const { resetState } = useKiosk();
   const { openDialog } = useDialogs();
 
   const handleReset = () => {
     console.log('resetState called from KioskHeader');
     resetState();
-    router(ROUTER_PATH.KIOSK);
+    onGoToMain();
   };
-  // openDialog('modal', { children: <div>asd</div> });
+
   return (
     <header className="sticky z-100 top-0 w-full h-[136px] flex items-center justify-between px-10">
       <h1 className="text-center justify-start text-[#0033FF] text-[50px] font-extrabold   [text-shadow:_0px_0px_15px_rgb(208_82_153_/_1.00)] ">

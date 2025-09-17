@@ -1,11 +1,19 @@
-import { Link } from 'react-router-dom';
-import { ROUTER_PATH } from '../../router';
 import { useKiosk } from '../../contexts/kiosk';
 import ComlpleteImg from '../../assets/images/kiosk/complete-img.jpg';
 import ArrowRighgt from '../../assets/icons/arrow-narrow-right.svg?react';
-// eslint-disable-next-line @typescript-eslint/no-unused-vars
-const CompleteStep = ({ isActive }: { isActive: boolean }) => {
+
+interface CompleteStepProps {
+  onNext: () => void;
+  goToStep: (stepName: string) => void;
+}
+
+const CompleteStep = ({ onNext, goToStep }: CompleteStepProps) => {
   const { resetState } = useKiosk();
+
+  const handleExit = () => {
+    resetState();
+    goToStep('main');
+  };
 
   return (
     <div className="flex h-full flex-col py-[40px_130px] px-20">
@@ -55,19 +63,18 @@ const CompleteStep = ({ isActive }: { isActive: boolean }) => {
 
       <section className="flex-1 flex items-end">
         <div className="flex w-full gap-[30px]">
-          <Link
-            to={ROUTER_PATH.KIOSK}
-            onClick={resetState}
+          <button
+            onClick={handleExit}
             className="flex w-[310px] justify-center items-center gap-3  rounded-full h-40 bg-white text-[50px] font-bold text-[#0033FF] active:scale-95 duration-100"
           >
             종료
-          </Link>
-          <Link
-            to={ROUTER_PATH.DOCENT_PHONE}
+          </button>
+          <button
+            onClick={onNext}
             className="inline-flex justify-center items-center gap-3 flex-1 rounded-full h-40 bg-[#0033FF] text-[50px] font-bold text-white"
           >
             휴대폰번호 입력 <ArrowRighgt />
-          </Link>
+          </button>
         </div>
       </section>
     </div>

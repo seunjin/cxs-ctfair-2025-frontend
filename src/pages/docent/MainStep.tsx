@@ -1,23 +1,19 @@
-import { Link } from 'react-router-dom';
-import SettingIcon from '../../assets/icons/settings.svg?react';
-import { ROUTER_PATH } from '../../router';
 import { useKiosk } from '../../contexts/kiosk';
 import { useEffect } from 'react';
 import clsx from 'clsx';
 import { useDialogs } from '../../lib/dialogs';
-import KioskAdminPasswordModal from '../../templates/modal/KioskAdminPasswordModal';
+import { useNavigate } from 'react-router-dom';
+import { ROUTER_PATH } from '../../router';
 
-const MainStep = ({ isActive }: { isActive: boolean }) => {
-  const { openDialog } = useDialogs();
+interface MainStepProps {
+  isActive: boolean;
+  onNext: () => void;
+}
+
+const MainStep = ({ isActive, onNext }: MainStepProps) => {
+  const router = useNavigate();
   const { resetState, modelsLoaded } = useKiosk();
-
-  const handleAdminModal = () => {
-    openDialog('modal', {
-      form: 'kiosk',
-      children: <KioskAdminPasswordModal />,
-    });
-  };
-
+  const { openDialog } = useDialogs();
   // MainStep이 활성화될 때마다 상태를 초기화합니다.
   useEffect(() => {
     if (isActive) {
@@ -46,28 +42,36 @@ const MainStep = ({ isActive }: { isActive: boolean }) => {
       </section>
       <section>
         <div className="flex justify-center ">
-          <Link
-            to={modelsLoaded ? ROUTER_PATH.KIOSK_INFO : '#'}
+          <button
+            onClick={modelsLoaded ? onNext : undefined}
             className={clsx(
               "w-[920px] px-2.5 py-12 rounded-[32px] mx-auto shadow-[0px_0px_15px_0px_rgba(208,82,153,1.00)] text-center text-white text-5xl font-bold font-['Pretendard'] leading-[75px]",
               modelsLoaded
                 ? 'bg-blue-700 cursor-pointer'
                 : 'bg-gray-500 cursor-not-allowed'
             )}
+            disabled={!modelsLoaded}
           >
             {modelsLoaded ? '체험 시작하기' : 'AI 모델을 불러오는 중...'}
-          </Link>
+          </button>
         </div>
       </section>
 
       <section className=" flex flex-1 items-end justify-center ">
         <button
-          onClick={handleAdminModal}
-          className="inline-flex items-center gap-2 cursor-pointer"
+          className="inline-flex items-center gap-2"
+          onClick={() => {
+            openDialog('confirm', {
+              form: 'kiosk',
+              message: '키오스크로 돌아가시겠습니까?',
+              onConfirm: () => {
+                router(ROUTER_PATH.KIOSK);
+              },
+            });
+          }}
         >
-          <SettingIcon className="w-7 h-7" />{' '}
-          <span className="text-center justify-start text-zinc-100/90 text-3xl font-semibold ">
-            관리자
+          <span className="text-center justify-start text-zinc-100/90 text-3xl font-semibold animate-pulse">
+            - Docent -
           </span>
         </button>
       </section>

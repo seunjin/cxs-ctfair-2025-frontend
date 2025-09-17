@@ -1,7 +1,5 @@
 import { useMemo } from 'react';
 import { RadioGroup } from '../../components/ui/RadioGroup';
-import { Link, useNavigate } from 'react-router-dom';
-import { ROUTER_PATH } from '../../router';
 import { useKiosk } from '../../contexts/kiosk/useKiosk';
 import Arrowleft from '../../assets/icons/arrow-narrow-left.svg?react';
 import ArrowRighgt from '../../assets/icons/arrow-narrow-right.svg?react';
@@ -22,9 +20,14 @@ const KeywardSectionLabel = ({ text }: { text: string }) => {
   );
 };
 
-const KeywordsStep = ({ isActive }: { isActive: boolean }) => {
+interface KeywordsStepProps {
+  isActive: boolean;
+  onNext: () => void;
+  onPrev: () => void;
+}
+
+const KeywordsStep = ({ isActive, onNext, onPrev }: KeywordsStepProps) => {
   const kiosk = useKiosk();
-  const router = useNavigate();
   const {
     styleGroup,
     moodGroup,
@@ -48,7 +51,7 @@ const KeywordsStep = ({ isActive }: { isActive: boolean }) => {
     onSuccess: () => {
       console.log('SUCCESS : createDocentJob (Simulated)');
       // 도슨트 모드의 다음 경로로 이동합니다.
-      router(ROUTER_PATH.DOCENT_COMPLETE);
+      onNext();
     },
     onError: (error) => {
       console.error('도슨트 작업 생성에 실패했습니다 (Simulated):', error);
@@ -127,12 +130,12 @@ const KeywordsStep = ({ isActive }: { isActive: boolean }) => {
 
         <section className=" flex items-end">
           <div className="flex w-full gap-[30px]">
-            <Link
-              to={ROUTER_PATH.DOCENT_CAPTURE}
+            <button
+              onClick={onPrev}
               className="inline-flex justify-center items-center gap-3 flex-1 rounded-full h-40 bg-white text-[50px] font-bold text-[#0033FF] not-disabled:active:scale-95 duration-100"
             >
               <Arrowleft /> 이전
-            </Link>
+            </button>
             <button
               onClick={handleNext}
               disabled={isPending || !styleGroup || !moodGroup}

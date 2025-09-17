@@ -10,7 +10,6 @@ import { getKeywords } from './api/kioskApi';
 import GenerationsListPage from './pages/admin/GenerationsListPage';
 import GenerationDetailPage from './pages/admin/GenerationDetailPage';
 import VideoManagementPage from './pages/admin/VideoManagementPage';
-import DocentGuard from './components/guards/DocentGuard';
 
 // 키워드 데이터를 미리 로드하는 loader 함수
 const keywordsLoader = async () => {
@@ -27,20 +26,8 @@ export const ROUTER_PATH = {
   KIOSK: '/kiosk',
   ADMIN: '/admin',
   DISPLAY: '/display',
-  KIOSK_MAIN: '/kiosk',
-  KIOSK_INFO: '/kiosk/info',
-  KIOSK_CAPTURE: '/kiosk/capture',
-  KIOSK_KEYWORDS: '/kiosk/keywords',
-  KIOSK_COMPLETE: '/kiosk/complete',
-  KIOSK_PHONE: '/kiosk/phone',
   KIOSK_RESULT: '/kiosk/result/:id',
   DOCENT: '/docent',
-  DOCENT_MAIN: '/docent',
-  DOCENT_INFO: '/docent/info',
-  DOCENT_CAPTURE: '/docent/capture',
-  DOCENT_KEYWORDS: '/docent/keywords',
-  DOCENT_COMPLETE: '/docent/complete',
-  DOCENT_PHONE: '/docent/phone',
   ADMIN_GENERATIONS: '/admin/generations',
   ADMIN_GENERATION_DETAIL: '/admin/generations/:id',
   ADMIN_VIDEOS: '/admin/videos',
@@ -58,68 +45,11 @@ const router = createBrowserRouter([
         path: ROUTER_PATH.KIOSK,
         element: <KioskPage />,
         loader: keywordsLoader,
-        children: [
-          {
-            index: true,
-            element: null,
-          },
-          {
-            path: ROUTER_PATH.KIOSK_INFO,
-            element: null,
-          },
-          {
-            path: ROUTER_PATH.KIOSK_CAPTURE,
-            element: null,
-          },
-          {
-            path: ROUTER_PATH.KIOSK_KEYWORDS,
-            element: null,
-          },
-          {
-            path: ROUTER_PATH.KIOSK_COMPLETE,
-            element: null,
-          },
-          {
-            path: ROUTER_PATH.KIOSK_PHONE,
-            element: null,
-          },
-        ],
       },
       {
         path: ROUTER_PATH.DOCENT,
         element: <KioskPage />,
         loader: keywordsLoader,
-        children: [
-          {
-            index: true,
-            element: null,
-          },
-          {
-            element: <DocentGuard />,
-            children: [
-              {
-                path: ROUTER_PATH.DOCENT_INFO,
-                element: null,
-              },
-              {
-                path: ROUTER_PATH.DOCENT_CAPTURE,
-                element: null,
-              },
-              {
-                path: ROUTER_PATH.DOCENT_KEYWORDS,
-                element: null,
-              },
-              {
-                path: ROUTER_PATH.DOCENT_COMPLETE,
-                element: null,
-              },
-              {
-                path: ROUTER_PATH.DOCENT_PHONE,
-                element: null,
-              },
-            ],
-          },
-        ],
       },
       {
         path: ROUTER_PATH.KIOSK_RESULT,
