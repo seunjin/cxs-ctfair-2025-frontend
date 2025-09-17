@@ -6,7 +6,8 @@ import { ROUTER_PATH } from '../../router';
 import { useKiosk } from '../../contexts/kiosk/useKiosk';
 import clsx from 'clsx';
 
-const InfoStep = () => {
+// eslint-disable-next-line @typescript-eslint/no-unused-vars
+const InfoStep = ({ isActive }: { isActive: boolean }) => {
   const { sexGroup, setSexGroup, ageGroup, setAgeGroup } = useKiosk();
   const router = useNavigate();
   const handleNext = () => {

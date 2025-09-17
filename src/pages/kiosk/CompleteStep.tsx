@@ -3,7 +3,8 @@ import { ROUTER_PATH } from '../../router';
 import ArrowRighgt from '../../assets/icons/arrow-narrow-right.svg?react';
 import { useKiosk } from '../../contexts/kiosk';
 import ComlpleteImg from '../../assets/images/kiosk/complete-img.jpg';
-const CompleteStep = () => {
+// eslint-disable-next-line @typescript-eslint/no-unused-vars
+const CompleteStep = ({ isActive }: { isActive: boolean }) => {
   const { resetState } = useKiosk();
 
   return (

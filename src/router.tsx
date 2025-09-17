@@ -4,11 +4,6 @@ import HomePage from './pages/HomePage';
 import KioskPage from './pages/KioskPage';
 import AdminPage from './pages/AdminPage';
 import DisplayPage from './pages/DisplayPage';
-import MainStep from './pages/kiosk/MainStep';
-import InfoStep from './pages/kiosk/InfoStep';
-import KeywordsStep from './pages/kiosk/KeywordsStep';
-import CompleteStep from './pages/kiosk/CompleteStep';
-import PhoneStep from './pages/kiosk/PhoneStep';
 import ResultPage from './pages/kiosk/ResultPage';
 import { queryClient } from './queryClient';
 import { getKeywords } from './api/kioskApi';
@@ -25,13 +20,6 @@ const keywordsLoader = async () => {
   // 캐시된 데이터가 없으면 API를 호출하고, 있으면 캐시된 데이터를 반환합니다.
   return await queryClient.ensureQueryData(query);
 };
-
-import DocentMainStep from './pages/docent/MainStep';
-import DocentInfoStep from './pages/docent/InfoStep';
-import DocentKeywordsStep from './pages/docent/KeywordsStep';
-import DocentCompleteStep from './pages/docent/CompleteStep';
-import DocentPhoneStep from './pages/docent/PhoneStep';
-import DocentGuard from './components/guards/DocentGuard';
 
 export const ROUTER_PATH = {
   HOME: '/',
@@ -69,68 +57,11 @@ const router = createBrowserRouter([
         path: ROUTER_PATH.KIOSK,
         element: <KioskPage />,
         loader: keywordsLoader, // KioskPage에 loader 연결
-        children: [
-          {
-            index: true, // /kiosk 경로의 기본 페이지
-            element: <MainStep />,
-          },
-          {
-            path: ROUTER_PATH.KIOSK_INFO, // /kiosk/info
-            element: <InfoStep />,
-          },
-          {
-            path: ROUTER_PATH.KIOSK_CAPTURE, // /kiosk/capture
-            element: <></>, // Outlet 렌더링 방지를 위해 빈 엘리먼트 설정
-          },
-          {
-            path: ROUTER_PATH.KIOSK_KEYWORDS, // /kiosk/keywords
-            element: <KeywordsStep />,
-          },
-          {
-            path: ROUTER_PATH.KIOSK_COMPLETE, // /kiosk/complete
-            element: <CompleteStep />,
-          },
-          {
-            path: ROUTER_PATH.KIOSK_PHONE, // /kiosk/phone
-            element: <PhoneStep />,
-          },
-        ],
       },
       {
         path: ROUTER_PATH.DOCENT,
         element: <KioskPage />, // 동일한 레이아웃 사용
         loader: keywordsLoader,
-        children: [
-          {
-            index: true,
-            element: <DocentMainStep />,
-          },
-          {
-            element: <DocentGuard />,
-            children: [
-              {
-                path: ROUTER_PATH.DOCENT_INFO,
-                element: <DocentInfoStep />,
-              },
-              {
-                path: ROUTER_PATH.DOCENT_CAPTURE,
-                element: <></>,
-              },
-              {
-                path: ROUTER_PATH.DOCENT_KEYWORDS,
-                element: <DocentKeywordsStep />,
-              },
-              {
-                path: ROUTER_PATH.DOCENT_COMPLETE,
-                element: <DocentCompleteStep />,
-              },
-              {
-                path: ROUTER_PATH.DOCENT_PHONE,
-                element: <DocentPhoneStep />,
-              },
-            ],
-          },
-        ],
       },
       {
         path: ROUTER_PATH.KIOSK_RESULT,

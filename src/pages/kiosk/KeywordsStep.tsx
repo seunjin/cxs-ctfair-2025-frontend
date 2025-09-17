@@ -20,7 +20,7 @@ const KeywardSectionLabel = ({ text }: { text: string }) => {
   );
 };
 
-const KeywordsStep = () => {
+const KeywordsStep = ({ isActive }: { isActive: boolean }) => {
   const kiosk = useKiosk();
   const router = useNavigate();
   const {
@@ -47,6 +47,7 @@ const KeywordsStep = () => {
   const { data } = useQuery({
     queryKey: ['keywords'],
     queryFn: getKeywords,
+    enabled: isActive, // 이 컴포넌트가 활성화될 때만 쿼리를 실행합니다.
   });
 
   const { mutate, isPending } = useMutation({

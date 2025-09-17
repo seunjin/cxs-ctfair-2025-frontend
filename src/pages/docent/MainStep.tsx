@@ -7,7 +7,7 @@ import clsx from 'clsx';
 import { useDialogs } from '../../lib/dialogs';
 import KioskAdminPasswordModal from '../../templates/modal/KioskAdminPasswordModal';
 
-const MainStep = () => {
+const MainStep = ({ isActive }: { isActive: boolean }) => {
   const { openDialog } = useDialogs();
   const { resetState, modelsLoaded } = useKiosk();
 
@@ -18,10 +18,12 @@ const MainStep = () => {
     });
   };
 
-  // MainStep이 렌더링될 때마다 상태를 초기화합니다.
+  // MainStep이 활성화될 때마다 상태를 초기화합니다.
   useEffect(() => {
-    resetState();
-  }, [resetState]);
+    if (isActive) {
+      resetState();
+    }
+  }, [isActive, resetState]);
 
   return (
     <div className="flex flex-col h-full pt-76 pb-15">
