@@ -1,7 +1,7 @@
 import { createContext, type RefObject } from 'react';
 import { FaceLandmarker } from '@mediapipe/tasks-vision';
 
-export type DocentTeam = 'a' | 'b' | 'c' | 'd' | null;
+export type DocentTeam = 'a' | 'b' | 'c' | 'd' | 'e' | null;
 
 type KioskContextType = {
   id: string; // 세션 ID
