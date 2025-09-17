@@ -57,7 +57,7 @@ const PhoneRemoveButton = ({ onClick }: { onClick: VoidFunction }) => {
   );
 };
 
-const PhoneStep = ({ isActive: _isActive, goToStep }: PhoneStepProps) => {
+const PhoneStep = ({ goToStep }: PhoneStepProps) => {
   const { id, resetState } = useKiosk();
   const [phoneNumber, setPhoneNumber] = useState<string>('010');
   const [agree, setAgree] = useState<boolean>(false);
@@ -122,8 +122,11 @@ const PhoneStep = ({ isActive: _isActive, goToStep }: PhoneStepProps) => {
     <>
       <div className="flex h-full flex-col py-[40px_130px] px-20">
         <section className="pb-[112px]">
-          <div className="text-center justify-start text-white text-[60px] font-semibold leading-[70px] pb-[110px]">
+          <div className="text-center justify-start text-white text-[60px] font-semibold leading-[70px] pb-3">
             휴대폰번호를 입력해주세요.
+          </div>
+          <div className="text-[30px] text-white text-center pb-[100px]">
+            *데이터는 보안을 위해 당일까지만 보관후 삭제됩니다.
           </div>
 
           <div className="flex flex-col items-center justify-center">

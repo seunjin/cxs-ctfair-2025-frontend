@@ -48,7 +48,7 @@ function ResultPage() {
           생성된 이미지와 영상을 저장해주세요.
         </h2>
         <p className="text-center justify-start text-white text-xs font-normal leading-tight pb-[30px]">
-          * 데이터는 보안을 위해 ??시간 후 자동 삭제되며,
+          * 데이터는 보안을 위해 당일까지만 보관 후 삭제되며,
           <br />
           이후에는 다운로드가 불가능합니다.
         </p>

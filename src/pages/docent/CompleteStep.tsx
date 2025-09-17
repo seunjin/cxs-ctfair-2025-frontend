@@ -53,7 +53,7 @@ const CompleteStep = ({ goToStep }: CompleteStepProps) => {
             <br />약{' '}
           </span>
           <span className="text-yellow-300 text-[50px] font-extrabold font-['Pretendard'] leading-[75px] [text-shadow:_0px_2px_9px_rgb(0_0_0_/_0.25)]">
-            5분
+            10분
           </span>
           <span className="text-white text-[50px] font-semibold font-['Pretendard'] leading-[75px] [text-shadow:_0px_2px_9px_rgb(0_0_0_/_0.25)]">
             {' '}
