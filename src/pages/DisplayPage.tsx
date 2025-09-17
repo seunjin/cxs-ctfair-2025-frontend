@@ -15,7 +15,7 @@ const TRANSITION_DURATION_MS = 1000;
 const sortPlaylist = (playlist: PlaylistItem[]): PlaylistItem[] => {
   const priorityItems = playlist
     .filter((item) => item.type === 'user' || item.type === 'docent')
-    .sort((a, b) => (a.index ?? 0) - (b.index ?? 0)); // index 오름차순으로 변경
+    .sort((a, b) => (a.index ?? 0) - (b.index ?? 0)); // index 오름차순
 
   const fixedItems = playlist.filter((item) => item.type === 'fixed');
 
@@ -34,40 +34,62 @@ const DisplayPage = () => {
     { videoUrl: 'https://cdn.cxsctfair.com/fixed/82.mp4', type: 'fixed' },
   ];
   const playlistQueueRef = useRef<PlaylistItem[]>(initialPlaylist);
+  const nowPlayingRef = useRef(nowPlaying); // Stale Closure 문제 해결을 위한 ref
+  const isAdvancingRef = useRef(false); // 레이스 컨디션 방지를 위한 가드
   const videoRefs = [
     useRef<HTMLVideoElement>(null),
     useRef<HTMLVideoElement>(null),
   ];
 
+  // nowPlaying state가 변경될 때마다 ref에도 최신 값을 동기화
+  useEffect(() => {
+    nowPlayingRef.current = nowPlaying;
+  }, [nowPlaying]);
+
   // --- The "Brain" of the player, wrapped in useCallback for stability ---
   const advanceToNextVideo = useCallback(() => {
-    const finishedVideo = nowPlaying; // 방금 재생이 끝난 비디오
-    if (!finishedVideo) return;
+    // --- 가드 로직: 이미 다음 영상으로 넘어가는 중이면 실행 방지 ---
+    if (isAdvancingRef.current) return;
+    isAdvancingRef.current = true;
+
+    const finishedVideo = nowPlaying;
+    if (!finishedVideo) {
+      isAdvancingRef.current = false;
+      return;
+    }
 
     const currentQueue = playlistQueueRef.current;
 
-    // 1. "방금 끝난 비디오"를 큐에서 정확히 찾아 제거
+    // 1. "방금 끝난 비디오"를 큐에서 제거
     const indexToRemove = currentQueue.findIndex(
       (item) => item.videoUrl === finishedVideo.videoUrl
     );
-
     if (indexToRemove !== -1) {
       currentQueue.splice(indexToRemove, 1);
-      console.log('[Playback] 재생 완료, 큐에서 제거:', finishedVideo.videoUrl);
-    } else {
-      console.warn('[Playback] 경고: 방금 끝난 비디오를 큐에서 찾을 수 없습니다.');
+      console.log('[Playback] 재생 완료:', finishedVideo.videoUrl);
     }
 
-    // 2. 큐에 다음 비디오가 있는지 확인하고 재생
+    // 2. 만약 끝난 비디오가 'fixed' 타입이면, 큐의 맨 뒤로 다시 추가하여 순환
+    if (finishedVideo.type === 'fixed') {
+      currentQueue.push(finishedVideo);
+      console.log('[Playback] fixed 영상 순환:', finishedVideo.videoUrl);
+    }
+
+    // 3. 큐에 다음 비디오가 있는지 확인하고 재생
     if (currentQueue.length > 0) {
       const nextVideo = currentQueue[0];
       console.log('[Playback] 다음 비디오 재생:', nextVideo.videoUrl);
       setNowPlaying(nextVideo);
     } else {
-      console.log('[Playback] 큐가 비었습니다. 재생을 멈추고 대기합니다.');
+      console.log('[Playback] 큐가 비었습니다. 대기합니다.');
       setNowPlaying(null);
     }
-  }, [nowPlaying]); // nowPlaying에 의존하여 항상 최신 값을 참조
+
+    // 짧은 시간 후 가드 해제
+    setTimeout(() => {
+      isAdvancingRef.current = false;
+    }, 100);
+  }, [nowPlaying]);
 
   // --- Ref to hold the latest version of the callback to solve closure issue ---
   const advanceCallbackRef = useRef(advanceToNextVideo);
@@ -96,6 +118,11 @@ const DisplayPage = () => {
           const newItem = payload?.data as PlaylistItem;
           if (!newItem || !newItem.videoUrl) return;
 
+          const isDuplicate = playlistQueueRef.current.some(
+            (item) => item.videoUrl === newItem.videoUrl
+          );
+          if (isDuplicate) return;
+
           console.log('[SSE] 새 항목 수신:', newItem);
 
           const newQueue = sortPlaylist([...playlistQueueRef.current, newItem]);
@@ -103,7 +130,8 @@ const DisplayPage = () => {
           
           console.log('[Playlist] 갱신된 큐:', playlistQueueRef.current);
 
-          if (!nowPlaying) {
+          // Stale Closure 방지를 위해 state 대신 ref를 사용
+          if (!nowPlayingRef.current) {
             console.log('[Playback] 플레이어 유휴 상태. 새 항목으로 재생 시작.');
             if (playlistQueueRef.current.length > 0) {
               setNowPlaying(playlistQueueRef.current[0]);
@@ -117,8 +145,12 @@ const DisplayPage = () => {
       onerror: (err) => console.error('[SSE] EventSource 오류:', err),
       signal: ctrl.signal,
     });
-    return () => ctrl.abort();
-  }, [nowPlaying]);
+    return () => {
+      console.log('[SSE] SSE 연결을 종료합니다.');
+      ctrl.abort();
+    }
+    // 의존성 배열을 비워 마운트 시 한 번만 실행되도록 수정
+  }, []);
 
   // --- Effect 2: Kicks off the very first video playback ---
   useEffect(() => {
