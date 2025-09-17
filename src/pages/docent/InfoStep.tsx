@@ -5,12 +5,13 @@ import { useKiosk } from '../../contexts/kiosk/useKiosk';
 import clsx from 'clsx';
 
 interface InfoStepProps {
+  isActive: boolean;
   onNext: () => void;
   onPrev: () => void;
 }
 
 // eslint-disable-next-line @typescript-eslint/no-unused-vars
-const InfoStep = ({ onNext, onPrev }: InfoStepProps) => {
+const InfoStep = ({ isActive: _isActive, onNext, onPrev }: InfoStepProps) => {
   const { sexGroup, setSexGroup, ageGroup, setAgeGroup } = useKiosk();
 
   return (

@@ -6,7 +6,8 @@ import { useKiosk } from '../../contexts/kiosk';
 import { useNavigate } from 'react-router-dom';
 
 interface PhoneStepProps {
-  goToStep: (stepName: string) => void;
+  isActive: boolean;
+  // goToStep: (stepName: string) => void; // 사용하지 않으므로 제거
 }
 
 const PhoneNumberButton = ({
@@ -54,7 +55,7 @@ const PhoneRemoveButton = ({ onClick }: { onClick: VoidFunction }) => {
   );
 };
 
-const PhoneStep = ({ goToStep }: PhoneStepProps) => {
+const PhoneStep = ({ isActive: _isActive }: PhoneStepProps) => {
   const { resetState } = useKiosk();
   const navigate = useNavigate();
   const [phoneNumber, setPhoneNumber] = useState<string>('010');

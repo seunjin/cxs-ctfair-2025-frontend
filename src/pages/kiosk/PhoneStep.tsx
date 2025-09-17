@@ -8,6 +8,7 @@ import { updateUserPhone } from '../../api/kioskApi';
 import LoaderIcon from '../../assets/icons/loader.svg?react';
 
 interface PhoneStepProps {
+  isActive: boolean;
   goToStep: (stepName: string) => void;
 }
 
@@ -56,7 +57,7 @@ const PhoneRemoveButton = ({ onClick }: { onClick: VoidFunction }) => {
   );
 };
 
-const PhoneStep = ({ goToStep }: PhoneStepProps) => {
+const PhoneStep = ({ isActive: _isActive, goToStep }: PhoneStepProps) => {
   const { id, resetState } = useKiosk();
   const [phoneNumber, setPhoneNumber] = useState<string>('010');
   const [agree, setAgree] = useState<boolean>(false);
