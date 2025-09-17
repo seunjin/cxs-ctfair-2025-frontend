@@ -73,7 +73,7 @@ const MainStep = ({ isActive, onNext }: MainStepProps) => {
       <section className=" flex flex-1 items-end justify-center ">
         <button
           onClick={handleAdminModal}
-          className="inline-flex items-center gap-2 cursor-pointer active:scale-95 duration-100"
+          className="inline-flex items-center gap-2 cursor-pointer active:scale-95 duration-100 p-4 translate-y-1/2"
         >
           <SettingIcon className="w-7 h-7" />{' '}
           <span className="text-center justify-start text-zinc-100/90 text-3xl font-semibold ">
