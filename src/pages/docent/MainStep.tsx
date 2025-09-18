@@ -59,7 +59,7 @@ const MainStep = ({ isActive, onNext }: MainStepProps) => {
 
       <section className=" flex flex-1 items-end justify-center ">
         <button
-          className="inline-flex items-center gap-2"
+          className="inline-flex items-center gap-2 p-4 translate-y-1/2"
           onClick={() => {
             openDialog('confirm', {
               form: 'kiosk',

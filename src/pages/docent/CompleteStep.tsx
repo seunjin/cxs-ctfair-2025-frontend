@@ -1,6 +1,7 @@
 import { useKiosk } from '../../contexts/kiosk';
 import ComlpleteImg from '../../assets/images/kiosk/complete-img.jpg';
 import ArrowRighgt from '../../assets/icons/arrow-narrow-right.svg?react';
+import { useNavigate } from 'react-router-dom';
 
 interface CompleteStepProps {
   isActive: boolean;
@@ -9,11 +10,12 @@ interface CompleteStepProps {
 }
 
 const CompleteStep = ({ goToStep }: CompleteStepProps) => {
+  const router = useNavigate();
   const { resetState } = useKiosk();
 
   const handleExit = () => {
     resetState();
-    goToStep('main');
+    router('/kiosk');
   };
 
   return (
