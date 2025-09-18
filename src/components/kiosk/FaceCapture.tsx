@@ -1,7 +1,7 @@
 import React from 'react';
 import Webcam from 'react-webcam';
 
-import FaceFrameGuide from '../../assets/images/kiosk/face-frame-guide.png';
+// import FaceFrameGuide from '../../assets/images/kiosk/face-frame-guide.png';
 import clsx from 'clsx';
 const COMPONENT_SIZE_CLASS = 'w-[70%]';
 
@@ -59,11 +59,11 @@ const FaceCapture = ({
           </>
         ) : (
           <>
-            {!capturedImage && (
+            {/* {!capturedImage && (
               <div className="absolute top-1/2 left-1/2  -translate-1/2 z-100 w-[300px] h-[355px]">
                 <img src={FaceFrameGuide} alt="face-frame-guide" />
               </div>
-            )}
+            )} */}
             <Webcam
               ref={webcamRef}
               audio={false}
