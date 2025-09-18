@@ -14,8 +14,8 @@ type AlertContentProps = Pick<
   handleOk: VoidFunction;
 };
 
-// 관리자 폼 Confirm Content
-const AdminFormConfirmContent = (props: AlertContentProps) => {
+// 관리자 폼 Alert Content
+const AdminFormAlertContent = (props: AlertContentProps) => {
   const { title, message, handleOk, panelRef, okButtonRef } = props;
   return (
     <motion.div
@@ -43,8 +43,8 @@ const AdminFormConfirmContent = (props: AlertContentProps) => {
   );
 };
 
-// 키오스크 폼 Confirm Content
-const KioskFormConfirmContent = (props: AlertContentProps) => {
+// 키오스크 폼 Alert Content
+const KioskFormAlertContent = (props: AlertContentProps) => {
   const { title, message, handleOk, panelRef, okButtonRef } = props;
   return (
     <motion.div
@@ -63,12 +63,14 @@ const KioskFormConfirmContent = (props: AlertContentProps) => {
       <p
         id="confirm-message"
         className="mt-2 text-[40px] text-[#0033ff] text-center whitespace-pre-wrap font-semibold leading-[1.3] pb-[50px]"
+        style={{ userSelect: 'none' }}
       >
         {message}
       </p>
       <div className="flex justify-end gap-4">
         <button
           className="inline-flex items-center px-10 h-[100px] border-[3px] rounded-[20px] border-[#0033ff] font-bold text-[30px] text-white bg-[#0033ff]"
+          style={{ userSelect: 'none' }}
           ref={okButtonRef}
           onClick={handleOk}
         >
@@ -112,7 +114,7 @@ export const Alert = (props: AlertProps) => {
     outsideClickRef: panelRef,
   });
   const Content =
-    form === 'admin' ? AdminFormConfirmContent : KioskFormConfirmContent;
+    form === 'admin' ? AdminFormAlertContent : KioskFormAlertContent;
 
   const overlayBG = form === 'admin' ? 'bg-black/60' : 'bg-black/70';
   return (
