@@ -78,6 +78,13 @@ const adminApi = {
   createDocentJob: (payload: { docent: string }) => {
     return http.post('/api/admin/docent', payload);
   },
+
+  /**
+   * @description contentId로 비디오 생성을 재시도합니다.
+   */
+  retryVideoGeneration: (contentId: number) => {
+    return http.post(`/api/admin/contents/${contentId}/retry-video`);
+  },
 };
 
 export default adminApi;
