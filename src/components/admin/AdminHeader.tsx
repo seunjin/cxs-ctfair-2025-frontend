@@ -39,6 +39,7 @@ const AdminHeader = () => {
               'text-[18px] font-semibold',
               activeStyle(
                 location.pathname === ROUTER_PATH.ADMIN ||
+                  location.pathname === `${ROUTER_PATH.ADMIN}/` ||
                   location.pathname.includes(ROUTER_PATH.ADMIN_GENERATIONS)
               )
             )}
