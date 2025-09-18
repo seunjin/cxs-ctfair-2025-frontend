@@ -1,4 +1,4 @@
-import { useState } from 'react';
+import { useEffect, useState } from 'react';
 import ArrowRight from '../../assets/icons/arrow-narrow-right.svg?react';
 import Checked from '../../assets/icons/checked.svg?react';
 import clsx from 'clsx';
@@ -57,10 +57,17 @@ const PhoneRemoveButton = ({ onClick }: { onClick: VoidFunction }) => {
   );
 };
 
-const PhoneStep = ({ goToStep }: PhoneStepProps) => {
+const PhoneStep = ({ isActive, goToStep }: PhoneStepProps) => {
   const { id, resetState } = useKiosk();
   const [phoneNumber, setPhoneNumber] = useState<string>('010');
   const [agree, setAgree] = useState<boolean>(false);
+
+  useEffect(() => {
+    if (isActive) {
+      setPhoneNumber('010');
+      setAgree(false);
+    }
+  }, [isActive]);
 
   const { mutate, isPending } = useMutation({
     mutationFn: updateUserPhone,
