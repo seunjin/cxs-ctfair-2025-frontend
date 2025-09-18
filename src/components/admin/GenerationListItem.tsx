@@ -12,6 +12,8 @@ import { useNavigate } from 'react-router-dom';
 import { ROUTER_PATH } from '../../router';
 import clsx from 'clsx';
 import { Icon } from '../ui/Icon';
+import { useMutation, useQueryClient } from '@tanstack/react-query';
+import adminApi from '../../api/adminApi';
 export type SmsStatus = 'SENT' | 'FAILED' | 'PENDING' | 'NOT_FOUND';
 
 export type AdminContentStatus = 'PROCESSING' | 'COMPLETE' | 'FAILED';
@@ -31,6 +33,7 @@ const GenerationsListItem = ({
   createdAt,
 }: GenerationsListItemType) => {
   const router = useNavigate();
+  const queryClient = useQueryClient();
   dayjs.extend(utc);
   dayjs.extend(timezone);
 
@@ -39,13 +42,20 @@ const GenerationsListItem = ({
     .tz('Asia/Seoul')
     .format('YYYY.MM.DD HH:mm:ss');
 
+  const { mutate: retryMutate } = useMutation({
+    mutationFn: adminApi.retryVideoGeneration,
+    onSuccess: () => {
+      queryClient.invalidateQueries({ queryKey: ['generations'] });
+    },
+  });
+
   const handleMoveDetailPage = () => {
     if (status == 'COMPLETE')
       router(`${ROUTER_PATH.ADMIN_GENERATIONS}/${String(contentId)}`);
   };
   const handleRetry = (e: React.MouseEvent<HTMLButtonElement, MouseEvent>) => {
     e.stopPropagation();
-    console.log('target');
+    retryMutate(contentId);
   };
   return (
     <div
