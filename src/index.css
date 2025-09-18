@@ -35,6 +35,9 @@ body {
   display: none;
 }
 
+#kiosk-container * {
+  user-select: none;
+}
 /* react-layered-dialog 스크롤 잠금 */
 body:has([data-scroll-lock='true']) {
   overflow: hidden;

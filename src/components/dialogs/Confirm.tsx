@@ -84,18 +84,21 @@ const KioskFormConfirmContent = (props: ConfirmContentProps) => {
       <p
         id="confirm-message"
         className="mt-2 text-[40px] text-[#0033ff] text-center whitespace-pre-wrap font-semibold leading-[1.3] pb-[50px]"
+        style={{ userSelect: 'none' }}
       >
         {message}
       </p>
       <div className="flex justify-end gap-4">
         <button
           className="w-[284px] h-[100px] border-[3px] rounded-[20px] border-[#0033ff] font-bold text-[30px] text-[#0033ff] active:scale-95 duration-100"
+          style={{ userSelect: 'none' }}
           onClick={handleCancel}
         >
           {cancelButtonText}
         </button>
         <button
           className="w-[284px] h-[100px] border-[3px] rounded-[20px] border-[#0033ff] font-bold text-[30px] text-white bg-[#0033ff] active:scale-95 duration-100"
+          style={{ userSelect: 'none' }}
           ref={confirmButtonRef}
           onClick={handleConfirm}
         >
