@@ -6,10 +6,9 @@ import { useNavigate } from 'react-router-dom';
 interface CompleteStepProps {
   isActive: boolean;
   onNext: () => void;
-  goToStep: (stepName: string) => void;
 }
 
-const CompleteStep = ({ goToStep }: CompleteStepProps) => {
+const CompleteStep = ({}: CompleteStepProps) => {
   const router = useNavigate();
   const { resetState } = useKiosk();
 
