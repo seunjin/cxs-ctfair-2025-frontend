@@ -6,9 +6,21 @@ import { Fragment, useRef, useCallback } from 'react';
 import type { GenerationsResponse } from '../../api/types';
 import { useDialogs } from '../../lib/dialogs';
 import KeywordManagerModal from '../../templates/modal/KeywordManagerModal';
+import clsx from 'clsx';
+import { useSearchParams } from 'react-router-dom';
+
+type FilterStatus = 'ALL' | 'FAILED';
 
 const GenerationsListPage = () => {
   const { openDialog } = useDialogs();
+  const [searchParams, setSearchParams] = useSearchParams();
+
+  const filterStatus = (searchParams.get('filter') as FilterStatus) || 'ALL';
+
+  const setFilterStatus = (status: FilterStatus) => {
+    setSearchParams(status === 'ALL' ? {} : { filter: status });
+  };
+
   const {
     data,
     error,
@@ -18,18 +30,21 @@ const GenerationsListPage = () => {
     isPending,
     isError,
   } = useInfiniteQuery<
-    GenerationsResponse, // queryFn이 반환하는 데이터 타입
-    Error, // 에러 타입
-    InfiniteData<GenerationsResponse>, // select 함수 등으로 가공된 최종 데이터 타입
-    string[], // 쿼리 키 타입
-    number | undefined // pageParam 타입
+    GenerationsResponse,
+    Error,
+    InfiniteData<GenerationsResponse>,
+    (string | FilterStatus)[],
+    number | undefined
   >({
-    queryKey: ['generations'],
+    queryKey: ['generations', filterStatus],
     queryFn: ({ pageParam }) =>
-      adminApi.getGenerations({ lastId: pageParam, limit: 12 }),
+      adminApi.getGenerations({
+        lastId: pageParam,
+        limit: 12,
+        sorting: filterStatus === 'FAILED' ? 'FAILED' : undefined,
+      }),
     initialPageParam: undefined,
     getNextPageParam: (lastPage) => {
-      // 서버에서 받은 데이터가 limit(12)보다 적으면 마지막 페이지로 간주합니다.
       if (lastPage.list.length < 12) {
         return undefined;
       }
@@ -38,7 +53,6 @@ const GenerationsListPage = () => {
     },
   });
 
-  // Intersection Observer를 위한 설정
   const observer = useRef<IntersectionObserver | null>(null);
   const observerRef = useCallback(
     (node: HTMLDivElement | null) => {
@@ -65,15 +79,46 @@ const GenerationsListPage = () => {
   }
 
   const allGenerations = data.pages.flatMap((page) => page.list);
-  const totalCount = data.pages[0]?.count ?? allGenerations.length;
+  const totalCount = data.pages[0]?.count ?? 0;
+  const failedCount = data.pages[0]?.failedCount ?? 0;
 
   return (
     <main className="py-[40px_120px]">
       <div className="w-[min(calc(100%-100px),1200px)] h-full mx-auto">
         <div className="flex justify-between pb-6">
-          <div className="text-[20px] font-semibold">
-            <span>총 생성 수</span>
-            <span className="text-cxs-primary ml-0.5">({totalCount})</span>
+          <div className="flex items-center gap-4">
+            <div className="text-[20px] font-semibold">
+              <span>총 생성 수</span>
+              <span className="text-cxs-primary ml-0.5">({totalCount})</span>
+
+              <span className="text-gray-400 mx-1">|</span>
+              <span>실패</span>
+              <span className="text-red-500 ml-0.5">({failedCount})</span>
+            </div>
+            <div className="flex items-center gap-2 rounded-full bg-[#F1F3F5] p-1">
+              <button
+                onClick={() => setFilterStatus('ALL')}
+                className={clsx(
+                  'px-4 py-1 rounded-full text-[14px] font-medium duration-200',
+                  filterStatus === 'ALL'
+                    ? 'bg-white text-black shadow'
+                    : 'text-[#818A92] hover:bg-white/50'
+                )}
+              >
+                전체
+              </button>
+              <button
+                onClick={() => setFilterStatus('FAILED')}
+                className={clsx(
+                  'px-4 py-1 rounded-full text-[14px] font-medium duration-200',
+                  filterStatus === 'FAILED'
+                    ? 'bg-white text-black shadow'
+                    : 'text-[#818A92] hover:bg-white/50'
+                )}
+              >
+                실패
+              </button>
+            </div>
           </div>
           <AdminButton
             onClick={() =>
@@ -105,10 +150,8 @@ const GenerationsListPage = () => {
           <p className="text-center py-10">생성된 콘텐츠가 없습니다.</p>
         )}
 
-        {/* 감시 대상 요소: 이 요소가 보이면 다음 페이지를 불러옵니다. */}
         <div ref={observerRef} style={{ height: '1px' }} />
 
-        {/* 다음 페이지 로딩 중 인디케이터 */}
         {isFetchingNextPage && (
           <p className="text-center py-4">다음 목록을 불러오는 중...</p>
         )}

@@ -10,7 +10,7 @@ import type {
 interface GetGenerationsParams {
   lastId?: number;
   limit?: number;
-  status?: string; // 예: 필터링을 위한 파라미터
+  sorting?: 'FAILED';
 }
 
 const adminApi = {
@@ -19,14 +19,18 @@ const adminApi = {
    * @param lastId 마지막으로 조회된 항목의 ID
    * @param limit 한 페이지에 가져올 항목 수
    */
-  getGenerations: ({ lastId, limit = 24, status }: GetGenerationsParams) => {
+  getGenerations: ({
+    lastId,
+    limit = 24,
+    sorting,
+  }: GetGenerationsParams) => {
     const searchParams = new URLSearchParams();
     if (lastId) {
       searchParams.append('lastId', String(lastId));
     }
     searchParams.append('limit', String(limit));
-    if (status) {
-      searchParams.append('status', status);
+    if (sorting) {
+      searchParams.append('sorting', sorting);
     }
 
     // http.ts에서 '/api'를 붙여주지 않으므로 전체 경로를 명시해야 합니다.

@@ -82,6 +82,7 @@ export interface Generation {
 export interface GenerationsResponse {
   list: Generation[];
   count?: number; // 전체 항목 개수
+  failedCount?: number; // 실패 항목 개수
 }
 
 export interface StyleMoodKeyword {
