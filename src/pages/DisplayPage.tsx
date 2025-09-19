@@ -13,13 +13,17 @@ const TRANSITION_DURATION_MS = 1000;
  * 재생 목록을 우선순위에 따라 정렬하는 함수.
  */
 const sortPlaylist = (playlist: PlaylistItem[]): PlaylistItem[] => {
-  const priorityItems = playlist
-    .filter((item) => item.type === 'user' || item.type === 'docent')
-    .sort((a, b) => (a.index ?? 0) - (b.index ?? 0)); // index 오름차순
+  const docentItems = playlist
+    .filter((item) => item.type === 'docent')
+    .sort((a, b) => (a.index ?? 0) - (b.index ?? 0));
+
+  const userItems = playlist
+    .filter((item) => item.type === 'user')
+    .sort((a, b) => (a.index ?? 0) - (b.index ?? 0));
 
   const fixedItems = playlist.filter((item) => item.type === 'fixed');
 
-  return [...priorityItems, ...fixedItems];
+  return [...docentItems, ...userItems, ...fixedItems];
 };
 
 const DisplayPage = () => {
